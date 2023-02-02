@@ -198,9 +198,11 @@ async def main1(api_id, api_hash, channel_id):
         await client.start()
         await client.run_until_disconnected()    
 
+        
+        
 async def main2(api_id, api_hash, channel_id):
 
-    MSG = '/start'
+    MSG = '/checkin'
 
     async with TelegramClient("id_" + str(api_id), api_id, api_hash) as client:
         
@@ -254,7 +256,9 @@ async def main2(api_id, api_hash, channel_id):
                     msg.append('已签到:')
                     print_now(event.message.text)
                     msg.append(event.message.text)
+                    
                     await client.send_read_acknowledge(channel_id) #退出运行
+                    return
                     #await asyncio.sleep(0)
                     time.sleep(5)
                     await client.disconnect()
@@ -332,7 +336,7 @@ async def main2(api_id, api_hash, channel_id):
             return
         print_now('ga')
         '''
-        await client.run_until_disconnected()
+        #await client.run_until_disconnected()
 
 
 async def main3(api_id, api_hash, channel_id):
@@ -519,9 +523,9 @@ if __name__ == "__main__":
         #time.sleep(yc)
 
         cishu = 0
-        if i == '9421323' or i == '4524860':
+        #if i == '9421323' or i == '4524860':
 
-            asyncio.run(main2(i, API_HASH[API_ID.index(i)], 'https://t.me/PronembyTGBot2_bot')) #签到
+        asyncio.run(main2(i, API_HASH[API_ID.index(i)], 'https://t.me/PronembyTGBot2_bot')) #签到
 
             #break
     

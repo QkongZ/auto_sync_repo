@@ -308,7 +308,7 @@ async def main2(api_id, api_hash, channel_id):
                     if channel_id == '@EmbyCc_bot' or channel_id == "@Orange_Emby_Bot":
                         await event.message.click(3)
                     else:
-                        await event.message.click(2)  #签到按钮所在位置
+                        await event.message.click(3)  #签到按钮所在位置
                     time.sleep(3) 
                     
                     async for msgs in client.iter_messages(channel_id, 1):  #获取最新一条消息
