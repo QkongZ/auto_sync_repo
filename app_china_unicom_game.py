@@ -218,7 +218,7 @@ if __name__ == '__main__':
         if len(unic) > 10:
             unicom_game_infoArr.append(unic)
     print(f'------------------共{len(unicom_game_infoArr)}个账号------------------')
-    msg += '------共{len(unicom_game_infoArr)}个账号------\n\n'
+    msg += f'------共{len(unicom_game_infoArr)}个账号------\n\n'
     shuffle(unicom_game_infoArr)
     i = 0
     for info in unicom_game_infoArr:
