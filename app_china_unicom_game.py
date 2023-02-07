@@ -213,8 +213,12 @@ if __name__ == '__main__':
     msg = ''
     if unicom_game_info == "":
         exit(0)
-    unicom_game_infoArr = unicom_game_info.split("\n")
+    unicom_game_infoArr = []
+    for unic in unicom_game_info.split("\n"):
+        if len(unic) > 10:
+            unicom_game_infoArr.append(unic)
     print(f'------------------共{len(unicom_game_infoArr)}个账号------------------')
+    msg += '------共{len(unicom_game_infoArr)}个账号------\n\n'
     shuffle(unicom_game_infoArr)
     i = 0
     for info in unicom_game_infoArr:
@@ -223,16 +227,7 @@ if __name__ == '__main__':
         cug = CUG(*info.split("#"))
         msg += cug.main() + '\n'
     print(msg)
-    push("某通畅游\n", msg)
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    push("某通畅游", msg)
     
     
     
