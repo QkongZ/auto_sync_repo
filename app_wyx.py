@@ -197,6 +197,8 @@ class WYX:
 
         if self.taskId == "":
             print("获取任务id失败 退出")
+            send('无忧行token失效', f'无忧行token可能失效，去日志查看')
+            return
             exit(0)
 
     def checkin(self):
