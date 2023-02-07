@@ -147,7 +147,7 @@ class China_Unicom:
         self.get_cardid()
         self.get_cntindex()
         self.get_chapterallindex()
-        self.print_now(f"正在执行观看{cishu}次小说, 此过程较久, 最大时长为{cishu} * 5s = {cishu * 5 / 60}min")
+        self.print_now(f"正在执行观看{cishu}次小说, 此过程较久, 最大时长为{cishu} * 4s = {cishu * 4 / 60}min")
         for i in range(cishu):
             date = datetime.today().__format__("%Y%m%d%H%M%S")
             chapterAllIndex = choice(self.chapterallindex_list)
@@ -162,7 +162,7 @@ class China_Unicom:
                 self.print_now("阅读小说发生异常, 正在重新登录执行, 接口返回")
                 self.print_now(data)
                 return self.main()
-            sleep(uniform(2, 6))
+            sleep(uniform(2, 4))
 
     def query_score(self):
         url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/queryUserScore"
@@ -240,8 +240,8 @@ class China_Unicom:
         date = datetime.today().__format__("%Y%m%d%H%M%S")
         crypt_text = f'{{"ticketValue":"500","activeid":"61yd210901","timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
         data = self.req(url, crypt_text)
-        print(data)
-        push(f'兑换5花费结果 {data}')
+        print(f'兑换5话费红包结果 {data}')
+        push('某通阅读5话费红包兑换', f'兑换5话费红包结果 {data}')
 
     def query_red(self):
         url = "https://10010.woread.com.cn/ng_woread_service/rest/phone/vouchers/queryTicketAccount"
@@ -259,7 +259,7 @@ class China_Unicom:
             if can_use_red >= 5:
                 self.print_now(f"\n查询成功 账户{phone} 当前有话费红包{can_use_red} 可以去兑换了")
                 send('某通阅读', f"账户{phone} \n当前有话费红包{can_use_red} 可以去兑换了 \n 入口：联通app搜索 阅读专区，点击必得10元话费大转盘")
-                if can_use_red > 10:
+                if can_use_red > 10.3:
                     self.print_now(f'账户大于10.3元，尝试去兑换5元红包')
                     self.exchange()
                 
