@@ -13,13 +13,17 @@
 """
 from requests import post
 from tool import timestamp, md5, get_environ, sha1
+from send_msg import push
+from time import sleep, time
 
-wyx_account_info = get_environ("WXY_ACCOUNT_PWD")
-if wyx_account_info == "":
-    exit(0)
-account_info = wyx_account_info.split("&")
-account = account_info[0]
-password = account_info[1]
+wyx_account_infos = get_environ("WXY_ACCOUNT_PWD").split("\n")
+if wyx_account_infos == "":
+    exit(0) 
+'''
+account_info = "13032999940&zxcvbnm130%"  #wyx_account_info.split("&")
+account = account_info.split("&")[0]
+password = account_info.split("&")[1]
+'''
 
 
 def timestamp_to_arr(times):
@@ -42,21 +46,29 @@ def get_sign_img_code(imgCodeToken, mobile, times):
 
 
 def login_by_pwd():
-    times = timestamp()
-    url = f"https://app1.jegotrip.com.cn/api/user/v1/phoneUserLogin?n_token=&lang=zh_CN&timestamp={times}&sign={get_sign(times)}"
-    body = {
-        "countryCode": "86",
-        "logintype": "2",
-        "mobile": account,
-        "password": md5(f"20150727*{password}")
-    }
-    data = post(url, json=body).json()
-    if data["code"] == "0":
-        print("您的token为(请直接复制使用): ")
-        print(data["body"]["token"])
-    else:
-        print("登录失败, 登录接口返回的日志为: ")
-        print(data)
+    msg = ''
+    for wyx in wyx_account_infos:
+        account = wyx.split("&")[0]
+        password = wyx.split("&")[1]
+        times = timestamp()
+        url = f"https://app1.jegotrip.com.cn/api/user/v1/phoneUserLogin?n_token=&lang=zh_CN&timestamp={times}&sign={get_sign(times)}"
+        body = {
+            "countryCode": "86",
+            "logintype": "2",
+            "mobile": account,
+            "password": md5(f"20150727*{password}")
+        }
+        data = post(url, json=body).json()
+        if data["code"] == "0":
+            print(f"账号{account}的token为: ",data["body"]["token"])
+            msg += data["body"]["token"] + '@' + account + '\n'
+            #push("无忧行获取token\n\n",data["body"]["token"])
+        else:
+            print("登录失败, 登录接口返回的日志为: ")
+            print(data)
+        sleep(5)
+    print(msg)
+    push("无忧行获取token\n",msg)
 
 
 if __name__ == "__main__":
