@@ -205,12 +205,12 @@ class CUG:
         sleep(5)
         now_score = self.init()
         today_score = now_score - old_score
-        self.msg += f"账号{self.phone_num}---今日获得{today_score}分, 当前共有{now_score}分\n"
+        self.msg += f"账号{self.phone_num}：本次获得/共有:{today_score}/{now_score}分\n"
         return self.msg
         push("某通畅游", self.msg)
 if __name__ == '__main__':
     unicom_game_info = get_environ("UNICOM_GAME_ACCOUNT_INFO")
-    msg = ''
+    msg = '\n活动入口: 某通app首页-5g新通信-某通畅游\n'
     if unicom_game_info == "":
         exit(0)
     unicom_game_infoArr = []
@@ -218,16 +218,16 @@ if __name__ == '__main__':
         if len(unic) > 10:
             unicom_game_infoArr.append(unic)
     print(f'------------------共{len(unicom_game_infoArr)}个账号------------------')
-    msg += f'------共{len(unicom_game_infoArr)}个账号------\n\n'
+    msg += f'\n------------共{len(unicom_game_infoArr)}个账号------------\n\n'
     shuffle(unicom_game_infoArr)
     i = 0
     for info in unicom_game_infoArr:
         i += 1
         print(f'\n*********** 开始账号{i} {info.split("#")[0]} ***********\n')
         cug = CUG(*info.split("#"))
-        msg += cug.main() + '\n'
+        msg += cug.main() 
     print(msg)
-    push("某通畅游", msg)
+    push("某通畅游\n", msg)
     
     
     
