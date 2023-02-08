@@ -41,8 +41,17 @@ class CUG:
             "user-agent": self.run_ua
         }
         data = post(url, headers=headers, data=body).json()
-        print(data)
-        self.ecs_token = data["ecs_token"]
+        
+        #print(data)
+        if data['code'] == '1':
+            print('登录失败，可能token_online失效')
+            self.msg += f'账户{self.phone_num}token_online可能失效了\n'
+            push("某通 token_online 失效通知\n", f'账户 {self.phone_num} token_online 可能失效了')
+            #return self.msg
+        elif data['code'] == '0' and data["ecs_token"]:
+            print('获取ecs_token成功')
+            self.ecs_token = data["ecs_token"]
+        
         # print(self.ecs_token)
     def login(self):
         url = "https://game.wostore.cn/api/app//user/v2/login"
@@ -195,6 +204,8 @@ class CUG:
         return None
     def main(self):
         self.get_ecsToken()
+        if self.msg:
+            return self.msg
         self.login()
         old_score = self.init()
         self.check_in()
