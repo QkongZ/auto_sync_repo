@@ -46,11 +46,15 @@ class CUG:
         if data['code'] == '1':
             print('登录失败，可能token_online失效')
             self.msg += f'账户{self.phone_num}token_online可能失效了\n'
-            push("某通 token_online 失效通知\n", f'账户 {self.phone_num} token_online 可能失效了')
+            push("某通畅游 token_online 失效通知\n", f'账户 {self.phone_num} token_online 可能失效了')
             #return self.msg
         elif data['code'] == '0' and data["ecs_token"]:
             print('获取ecs_token成功')
             self.ecs_token = data["ecs_token"]
+        else:
+            print(f'不知道咋回事 {data}')
+            self.msg += f'账户{self.phone_num}不知道咋回事\n'
+            push("某通畅游意外通知\n", f'账户 {self.phone_num} 不知道咋回事，自行去查看日志')
         
         # print(self.ecs_token)
     def login(self):
