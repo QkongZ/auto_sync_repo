@@ -108,7 +108,7 @@ async def main1(api_id, api_hash, channel_id):
                 # 结束循环
                 print_now('已签到，终止')
                 
-                if '积分' in event.message.text or '总分' in event.message.text or "your point" in event.message.text:
+                if '积分' in event.message.text or '余额总计' in event.message.text or "your point" in event.message.text:
                     msg.append('已签到:')
                     print_now(event.message.text)
                     msg.append(event.message.text)
@@ -120,45 +120,9 @@ async def main1(api_id, api_hash, channel_id):
                 
                 
             elif 'KeyboardButtonCallback' in str(event.message): #计算签到
-                buttons = event.message.reply_markup.rows[0].buttons
-                print_now( event.message.reply_markup.rows[0])
-                sz = re.findall(r'\d+', event.message.message)
-                print_now(sz)
-                sz[0] = int(sz[0])
-                sz[1] = int(sz[1])
-                mespin = py.get_pinyin(event.message.message)
-                if 'jian' in mespin or '－' in mespin:
-                    print_now('本次执行减法')
-                    res = sz[0] - sz[1]
-                elif 'jia' in mespin or '+' in mespin:
-                    print_now('本次执行加法')
-                    res = sz[0] + sz[1]
-                elif 'cheng' in mespin or '*' in mespin or '×' in mespin:
-                    print_now('本次执行×法')
-                    res = sz[0] * sz[1]
-                elif 'chu' in mespin or '/' in mespin or '÷' in mespin:
-                    print_now('本次执行÷法')
-                    res = sz[0] / sz[1]
-                else:
-                    res = 0
-                print_now('计算结果：' + str(res))
-                if res:
-                    for button in buttons:
-                        if int(button.text) == res:
-                            print_now('点击提交正确答案按钮')
-                            #await event.message.click(button)
-                            time.sleep(sj(2,7))
-                            await event.message.click(buttons.index(button))
-                            
-                    print_now('提交过正确答案，不清楚是否成功，终止')
-                    msg.append('提交过正确答案，不清楚是否成功')
-                    await client.send_read_acknowledge(channel_id)
-                    await client.disconnect()
-                    
-                else:
-                    print_now('没匹配到算法，重新获取')
-                    time.sleep(sj(5,30))
-                    await client.send_message(event.message.chat_id, MSG)
+
+                await event.message.click(0)
+
             elif "会话超时已取消" in event.message.text or "验证码错误" in event.message.text or "Wrong captcha code" in event.message.text or "Session canceled due to timeout" in event.message.text:
                 await client.send_message(channel_id, MSG)
                         
@@ -225,7 +189,7 @@ async def main2(api_id, api_hash, channel_id):
             await client.disconnect()
         '''
         @client.on(events.NewMessage(chats=channel_id))#
-        @client.on(events.MessageEdited(chats=channel_id))
+        #@client.on(events.MessageEdited(chats=channel_id))
 
 
         async def my_event_handler(event):
@@ -258,7 +222,7 @@ async def main2(api_id, api_hash, channel_id):
                     msg.append(event.message.text)
                     
                     await client.send_read_acknowledge(channel_id) #退出运行
-                    return
+                    #return
                     #await asyncio.sleep(0)
                     time.sleep(5)
                     await client.disconnect()
@@ -292,23 +256,25 @@ async def main2(api_id, api_hash, channel_id):
                 # 删除临时文件
                 os.remove("captcha.jpg")
             elif 'KeyboardButtonCallback' in str(event.message): #按钮
+                #print(event.message)
                 buttons = event.message.reply_markup.rows[0].buttons
                 #print_now( event.message.reply_markup.rows[0])
-                if '身份:注册会员' in event.message.text:  #orange
-                    await event.message.click(1)  #签到按钮所在位置
-                    '''
-                    time.sleep(sj(5,7)) 
-                    
-                    async for msgs in client.iter_messages(channel_id, 1):  #获取最新一条消息
-                        if '已经签到过' in msgs.text or '签到成功' in msgs.text:   #如果签到过，运行
-                            print_now(msgs.text)
-                            msg.append(msgs.text)
-                            await client.send_read_acknowledge(channel_id)  
-                            #await asyncio.sleep(0)
-                            await client.disconnect()
-                            '''
+                await event.message.click(0)  #签到按钮所在位置
+                '''
+                print('12')
+                time.sleep(sj(5,7))
+                await client.send_read_acknowledge(channel_id)
+                async for msgs in client.iter_messages(channel_id, 1):  #获取最新一条消息
+                    print(msgs)
+                    if '已经签到过' in msgs.text or '签到成功' in msgs.text:   #如果签到过，运行
+                        print_now(msgs.text)
+                        msg.append(msgs.text)
+                        await client.send_read_acknowledge(channel_id)  
+                        #await asyncio.sleep(0)
+                        await client.disconnect()
+                        '''
                         
-         
+                            
 
             # 是否成功签到
             elif '签到成功' in event.message.text or '你回答正确' in event.message.text:
@@ -328,6 +294,7 @@ async def main2(api_id, api_hash, channel_id):
                 #await asyncio.sleep(0)
                 await client.disconnect()           
         await client.start()
+        await client.run_until_disconnected()   
         '''
         js = await iter_messages(client, channel_id, me)
         print_now(js)
@@ -339,173 +306,7 @@ async def main2(api_id, api_hash, channel_id):
         #await client.run_until_disconnected()
 
 
-async def main3(api_id, api_hash, channel_id):
-    
-    MSG1 = '🎲更多功能'
-    MSG2 = '🛎每日签到'
-    MSG3 = '🎟我的积分'
-    
-    async with TelegramClient("id_" + str(api_id), api_id, api_hash) as client:
 
-        me = await client.get_me() #获取当前账号信息       
-        if me.username not in ''.join(msg):
-            print_now(me.first_name + ' @' + me.username)
-            msg.append(me.first_name + ' @' + me.username + '\n')
-
-        print_now('\n准备去签到:' + channel_id)
-        msg.append('\n准备去签到:' + channel_id)
-        await client.send_message(channel_id, MSG1)
-        time.sleep(sj(5,10))
-
-        @client.on(events.NewMessage(chats=channel_id))
-        
-        async def my_event_handler(event):
-            global cishu
-            global is_signed
-            cishu += 1
-            print_now('当前第' + str(cishu) + '次尝试')
-            print_now(event.message.text)
-            time.sleep(sj(5,8))
-            
-            #尝试八次，失败退出
-            if cishu > 30:
-                print_now('尝试次数已达到10次仍未成功，退出')
-                msg.append('尝试次数已达到10仍未签到成功')
-
-                await client.send_read_acknowledge(channel_id)
-                #await asyncio.sleep(0)
-                await client.disconnect()
-            #print_now(event.message)
-
-            # 区分消息类型
-            if "已经签到过" in event.message.text or "距离上次签到" in event.message.text or '您的积分' in event.message.text:
-                # 结束运行
-                is_signed = True
-
-                if '积分' in event.message.text or '总分' in event.message.text:
-                    print_now('已签到，终止')
-                    msg.append('已签到:')
-                    print_now(event.message.text)
-                    msg.append(event.message.text)
-                    await client.send_read_acknowledge(channel_id) #退出运行
-                    #await asyncio.sleep(0)
-                    time.sleep(3)
-                    await client.disconnect()
-                else:
-                    await client.send_message(channel_id, MSG1)  #查询积分
-            elif "请输入验证码" in event.message.text:  # 获取图像验证码
-                
-                if len(captcha_pwd) < 2 or len(captcha_username) < 2:  #无验证码识别信息
-                    print_now('未填验证码识别账号信息，退出')
-                    await client.send_read_acknowledge(channel_id)
-                    #await asyncio.sleep(0)
-                    await client.disconnect()
-                print_now('开始下载验证码')
-                #print_now(event.message)
-                await client.download_media(event.message.photo, "captcha.jpg")
-                #print_now(aaa)
-                print_now('开始识别验证码')
-                # 使用 TRUECAPTCHA 模块解析验证码
-                
-                if "输入验证码" in event.message.text:
-                    print_now('非两位验证码')
-                    solved_result = await captcha_solver(0)  
-                else:
-                    print_now('两位验证码')
-                    solved_result = await captcha_solver(1)
-                time.sleep(sj(3,6))
-                print_now('输入验证码为：' + solved_result)
-                await client.send_message(event.message.chat_id, solved_result)
-                
-                # 删除临时文件
-                os.remove("captcha.jpg")
-            elif "验证码错误" in event.message.text or "选择您要使用的功能" in event.message.text: 
-                print_now('重新开始。。。')
-                await client.send_message(channel_id, MSG1)
-            elif "请选择功能" in event.message.text: 
-                print_now(is_signed)
-                if is_signed:
-                    await client.send_message(channel_id, MSG3)
-                else:
-
-                    await client.send_message(channel_id, MSG2)
-                await client.send_read_acknowledge(channel_id)
-
-            # 是否成功签到
-            elif '签到成功' in event.message.text or '你回答正确' in event.message.text:
-                msg.append(event.message.text)
-                print_now(event.message.text)
-                is_signed = True
-                await client.send_read_acknowledge(channel_id)
-                #await asyncio.sleep(0)
-                await client.disconnect()
-
-            else :
-                print_now('不知道咋回事，防止意外，退出')
-                msg.append('出现意外，未签到')
-                #time.sleep(sj(5,10))
-                await client.send_read_acknowledge(channel_id)	#将机器人回应设为已读
-                #await asyncio.sleep(0)
-                await client.disconnect()           
-        await client.start()
-
-        await client.run_until_disconnected()
-
-async def mainred(api_id, api_hash, channel_id):
-
-
-    async with TelegramClient("id_" + str(api_id), api_id, api_hash) as client:
-        
-        me = await client.get_me() #获取当前账号信息       
-        if me.username not in ''.join(msg):
-            print_now(me.first_name + ' @' + me.username)
-            msg.append(me.first_name + ' @' + me.username + '\n')
-
-        time.sleep(sj(5,10))
-        '''
-        first_msg = client.iter_messages(channel_id, 1) #首次发送签到命令后等待7秒打印第一条信息
-        print_now(first_msg)
-
-        if me.first_name == first_msg.sender.first_name:  #如果发送人为账号本身，退出
-            print_now('当前账号无反应，可能被禁用或' + channel_id + '卡住了，退出')
-            msg.append('当前账号无反应，可能被禁用或' + channel_id + '卡住了')
-            await client.disconnect()
-        '''
-        @client.on(events.NewMessage(chats=channel_id))
-
-
-        async def my_event_handler(event):
-            global cishu
-            cishu += 1
-
-
-            print_now('当前第' + str(cishu) + '次尝试')
-            print_now(event.message.text)
-            #time.sleep(sj(5,8))
-
-
-            # 区分消息类型
-            if "红包" in event.message.text or "注册" in event.message.text:
-                # 结束运行
-                if 'KeyboardButtonCallback' in str(event.message):
-                    print_now('发现红包，尝试去抢。。。。。。')
-                    print_now(event.message.stringify())
-                    await event.message.click(0)
-            elif '回答A,B,C,D其中一个' in event.message.text:
-                print_now('问答题，选A')
-                time.sleep(sj(1,2))
-                await client.send_message(channel_id, 'A')
-          
-        await client.start()
-        '''
-        js = await iter_messages(client, channel_id, me)
-        print_now(js)
-        if js == 0:
-            await client.disconnect()
-            return
-        print_now('ga')
-        '''
-        await client.run_until_disconnected()
 
 
 
