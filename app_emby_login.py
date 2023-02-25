@@ -51,7 +51,13 @@ def encrypt_md5(s):
 def sjs(a, b):
     return random.randint(a, b)
 
-
+def getmidstring(html, start_str, end):
+    start = html.find(start_str)
+    if start >= 0:
+        start += len(start_str)
+        end = html.find(end, start)
+        if end >= 0:
+            return html[start:end].strip()
 
 class emby_login:
     
@@ -74,10 +80,16 @@ class emby_login:
             'Accept-Language': 'zh-CN,zh;q=0.9',
         }
         self.deviceid = encrypt_md5(usr)[0:8] + '-' + encrypt_md5(usr)[8:12] + '-' + encrypt_md5(usr)[12:16] + '-' + encrypt_md5(usr)[16:20] + '-' + encrypt_md5(usr)[20:32]
+        self.info = f'X-Emby-Client=Emby Web&X-Emby-Device-Name=Edge Windows&X-Emby-Device-Id={self.deviceid}&X-Emby-Client-Version=4.7.1.0&X-Emby-Language=zh-cn'
+        if 'oke' in self.usr:
+            self.info = f'X-Emby-Client=Emby for Android&X-Emby-Device-Name=Redmi&X-Emby-Device-Id=4d9cdf2b2aa6c01c&X-Emby-Client-Version=3.2.92&X-Emby-Language=zh-cn'
+        if 'anc' in self.usr or 'new'  in self.usr:
+            self.info = f'X-Emby-Client=Emby Web&X-Emby-Device-Name=Chrome Windows&X-Emby-Device-Id=3573c6ef-aa58-7ccb-25dc-26fd0da4b399&X-Emby-Client-Version=4.7.3.0&X-Emby-Language=zh-cn'
     
     def login(self):
         global url_wrong
-        url = self.url + f'/emby/Users/authenticatebyname?X-Emby-Client=Emby+Web&X-Emby-Device-Name=Chrome+Windows&X-Emby-Device-Id={self.deviceid}&X-Emby-Client-Version=4.7.3.0'
+        print(f'设备：{getmidstring(self.info,"Device-Name=","&")}')
+        url = self.url + f'/emby/Users/authenticatebyname?' + self.info
         data = {
             'Username': self.usr,
             'Pw': self.pwd
@@ -119,7 +131,7 @@ class emby_login:
 
     def view(self):
         global url_wrong
-        url = self.url + f'/emby/Users/{self.Id}/Views?X-Emby-Client=Emby%20Web&X-Emby-Device-Name=Chrome%20Windows&X-Emby-Device-Id={self.deviceid}&X-Emby-Client-Version=4.7.3.0&X-Emby-Token={self.token}'
+        url = self.url + f'/emby/Users/{self.Id}/Views?{self.info}&X-Emby-Token={self.token}'
         headers = {
             'accept': 'application/json',
             'Accept-Encoding': 'gzip, deflate',
@@ -162,7 +174,7 @@ class emby_login:
     
     def lastest(self):
         global url_wrong
-        url = self.url + f'/emby/Users/{self.Id}/Items/Latest?Limit=16&Fields=BasicSyncInfo%2CCanDelete%2CContainer%2CPrimaryImageAspectRatio%2CProductionYear%2CStatus%2CEndDate&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CThumb&ParentId={self.sjId}&X-Emby-Client=Emby%20Web&X-Emby-Device-Name=Google%20Chrome%20Windows&X-Emby-Device-Id={self.deviceid}&X-Emby-Client-Version=4.7.6.0&X-Emby-Token={self.token}'
+        url = self.url + f'/emby/Users/{self.Id}/Items/Latest?Limit=16&Fields=BasicSyncInfo,CanDelete,Container,PrimaryImageAspectRatio,ProductionYear,Status,EndDate&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb&ParentId={self.sjId}&{self.info}&X-Emby-Token={self.token}'
         headers = {
             'accept': 'application/json',
             'Accept-Encoding': 'gzip, deflate',
@@ -205,7 +217,7 @@ class emby_login:
             time.sleep(sjs(5,20))
             self.view()
             if self.run:
-                time.sleep(sjs(45,500))
+                time.sleep(sjs(5,50))
                 self.lastest()
 
             
