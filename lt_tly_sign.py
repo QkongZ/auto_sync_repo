@@ -126,9 +126,11 @@ def tly(cookie):
             jg = getmidstring(res2,"alert('","')")
             print(f'签到成功 {jg}')
             msg.append(f'签到成功 {jg}')
-            send('tly签到', '\n'.join(msg))
+            
     else:
         print("还未到时间！还需等待",f'{round((86400-(t-timeStamp))/3600,2)}h')
+    if '签到成功' in '\n'.join(msg):
+        send('tly签到', '\n'.join(msg))
 
 
 
