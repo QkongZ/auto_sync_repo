@@ -129,9 +129,7 @@ def tly(cookie):
             
     else:
         print("还未到时间！还需等待",f'{round((86400-(t-timeStamp))/3600,2)}h')
-    if '签到成功' in '\n'.join(msg):
-        send('tly签到', '\n'.join(msg))
-
+    
 
 
 
@@ -143,3 +141,6 @@ if __name__ == "__main__":
     for ck in cookieArr:
         if len(ck) > 10:
             tly(ck)
+    if '签到成功' in '\n'.join(msg):
+        send('tly签到', '\n'.join(msg))
+
