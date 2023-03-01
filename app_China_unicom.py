@@ -358,7 +358,7 @@ class China_Unicom:
         #self.read_novel()  
              
         self.query_score()       
-        self.watch_ad()
+        ###self.watch_ad()
         self.PrizeList()
         if unicom_lotter and self.left_lottery > 0:
             for i in range(self.lotter_num):
