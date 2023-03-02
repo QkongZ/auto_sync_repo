@@ -31,7 +31,7 @@ let userList = []
 let userIdx = 0
 let userCount = 0
 let newurl = "http://m.xmrygnuv.shop"
-let jiance = 0 //1获取检测文章url ,0阅读
+let jiance = 1 //1获取检测文章url ,0阅读
 var msg = ''
 ///////////////////////////////////////////////////////////////////
 class UserInfo {
