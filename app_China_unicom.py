@@ -233,15 +233,15 @@ class China_Unicom:
         data = self.req(url, crypt_text)
         self.print_now(data)
 
-    def exchange(self):
+    def exchange(self,tick):
         # ticketValue activeid来自于https://10010.woread.com.cn/ng_woread_service/rest/phone/vouchers/getSysConfig get请求
         #{"ticketValue":"300","activeid":"61yd210901","timestamp":"20220816213709","token":"","userId":"","userIndex":,"userAccount":"","verifyCode":""}
         url = "https://10010.woread.com.cn/ng_woread_service/rest/phone/vouchers/exchange"
         date = datetime.today().__format__("%Y%m%d%H%M%S")
-        crypt_text = f'{{"ticketValue":"500","activeid":"61yd210901","timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
+        crypt_text = f'{{"ticketValue":{tick},"activeid":"61yd210901","timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
         data = self.req(url, crypt_text)
-        print(f'兑换5话费红包结果 {data}')
-        push('某通阅读5话费红包兑换', f'兑换5话费红包结果 {data}')
+        print(f'兑换{tick}话费红包结果 {data}')
+        push('某通阅读话费兑换', f'{self.phone_num}兑换{tick}话费红包结果 {data}')
 
     def query_red(self):
         url = "https://10010.woread.com.cn/ng_woread_service/rest/phone/vouchers/queryTicketAccount"
@@ -261,7 +261,25 @@ class China_Unicom:
                 send('某通阅读', f"账户{phone} \n当前有话费红包{can_use_red} 可以去兑换了 \n 入口：联通app搜索 阅读专区，点击必得10元话费大转盘")
                 if can_use_red > 10.3:
                     self.print_now(f'账户大于10.3元，尝试去兑换5元红包')
-                    self.exchange()
+                    self.exchange('500')
+            if can_use_red >=10:
+                self.print_now(f'账户大于10元，尝试去兑换5元红包')
+                self.exchange('500')
+            elif can_use_red >=9:
+                self.print_now(f'账户大于9元，尝试去兑换3元红包')
+                self.exchange('300')
+            elif can_use_red >=8:
+                self.print_now(f'账户大于8元，尝试去兑换5元红包')
+                self.exchange('500')
+            elif can_use_red >=6:
+                self.print_now(f'账户大于6元，尝试去兑换3元红包')
+                self.exchange('300')
+            elif can_use_red >=5:
+                self.print_now(f'账户大于5元，尝试去兑换5元红包')
+                self.exchange('500')
+            elif can_use_red >=3:
+                self.print_now(f'账户大于3元，尝试去兑换3元红包')
+                self.exchange('300')
                 
             else:
                 self.print_now(f"\n查询成功 账户{phone} 当前有话费红包{can_use_red} 不足设定的最低额度")
