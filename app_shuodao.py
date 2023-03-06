@@ -162,6 +162,8 @@ class ShuoDao:
             if data['Result'] == 1:
                 data = data["data"]
                 self.print_now(f"奖品类型 {data['prizeType']}，数量 {data['totalPrizeCount']}")
+                if data['prizeType'] == 3 and data['totalPrizeCount'] == 1:
+                    self.print_now(f'{data}')
                 sleep(5)
                 self.pet_doublePrize(data['prizeType'],data['totalPrizeCount'])
                 sleep(3)
@@ -220,18 +222,6 @@ class ShuoDao:
         if data['Result'] == 1:
             data = data["data"]
             self.print_now(f'{data["petName"]}：Lv{data["petLevel"]}({data["growthValue"]}/{data["growthValue"]+data["nextLevelRequiredGrowthValue"]}) \n鱼料：{data["fishNum"]}')
-            if data['treasureHuntStatus'] == 3:
-                self.print_now(f'下次寻宝时间{int(data["nextTreasureHuntRemainingTime"]/60)}分{data["nextTreasureHuntRemainingTime"]%60}秒')
-            elif data['treasureHuntStatus'] == 1:
-                self.print_now(f'寻宝中，剩余时间{int(data["treasureHuntEndRemainingTime"]/60)}分{data["treasureHuntEndRemainingTime"]%60}秒')
-            elif data['treasureHuntStatus'] == 0:
-                self.print_now('可寻宝，准备去。。。')
-                self.pet_treasureHunt()
-            elif data['treasureHuntStatus'] == 2:
-                self.print_now('寻宝结束，领奖翻倍。。。')
-                self.pet_morePrize()
-            else:
-                self.print_now(data)
             if data["nextFeedRemainingTime"] == 0:
                 
                 for x in [50, 10, 5, 2]:
@@ -241,6 +231,27 @@ class ShuoDao:
                         break
             elif  data["nextFeedRemainingTime"] > 0:
                 self.print_now(f'剩余喂食时间：{int(data["nextFeedRemainingTime"]/60)}分{data["nextFeedRemainingTime"]%60}秒')
+
+            if data['treasureHuntStatus'] == 3:
+                self.print_now(f'下次寻宝时间{int(data["nextTreasureHuntRemainingTime"]/60)}分{data["nextTreasureHuntRemainingTime"]%60}秒')
+            elif data['treasureHuntStatus'] == 1:
+                self.print_now(f'寻宝中，剩余时间{int(data["treasureHuntEndRemainingTime"]/60)}分{data["treasureHuntEndRemainingTime"]%60}秒')
+            elif data['treasureHuntStatus'] == 0:
+                
+                self.print_now('可寻宝，准备去。。。')
+                self.pet_treasureHunt()
+            elif data['treasureHuntStatus'] == 2:
+                ty = 2
+                if data['treasureHuntRewardCreditNum']:
+                    self.print_now(f'获得说到币：{data["treasureHuntRewardCreditNum"]}')
+                if data["treasureHuntRewardFishNum"]:
+                    self.print_now(f'获得鱼饵：{data["treasureHuntRewardFishNum"]}')
+                    ty = 1
+                self.print_now('寻宝结束，领奖翻倍。。。')
+                self.pet_morePrize(ty)
+            else:
+                self.print_now(data)
+            
                 
     def checkin_reward(self):
         url = f"https://dt-apigatewayv2.dt-pn1.com/point/checkin/reward?uid={self.uid}"
