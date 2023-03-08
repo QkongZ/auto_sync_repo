@@ -31,7 +31,7 @@ let userList = []
 let userIdx = 0
 let userCount = 0
 let newurl = "http://m.xmrygnuv.shop"
-let jiance = 1 //1获取检测文章url ,0阅读
+let jiance = 0 //1获取检测文章url ,0阅读
 var msg = ''
 ///////////////////////////////////////////////////////////////////
 class UserInfo {
@@ -96,7 +96,7 @@ class UserInfo {
             }
             this.jumpid = readurl.match(/jumpid=(.*?)&/)[1]
             this.state= readurl.match(/state=(.*?)&/)[1]
-            this.ul = newurl+`/fast_reada/oiejr?jumpid=${this.jumpid}&code=031oV60w32RVa03URy0w3E0mzj3oV607&state=` + this.state
+            this.ul = newurl+`/fast_reada/oiejr?jumpid=${this.jumpid}&code=001jS5000wRSzP11ff400JxByD2jS50Y&state=` + this.state
             //console.log(this.ul)
             
             let body = ``;
