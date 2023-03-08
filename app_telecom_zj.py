@@ -600,7 +600,7 @@ class ZJDX:
         data = post(url, headers=self.headers, json=body).json()
         print(data)
         findPrizes = self.get_findPrizes()
-        push(f"浙江电信 - 云养猫小窝 - {findPrizes['result']['userPhone']}", f"{data['result']['massage']}")
+        push(f"浙江电信 - 云养猫小窝 - {findPrizes['result']['userPhone']}", f"{data['result']['message']}")
     def main(self):
         self.getToken()
         self.loginByTicket(TelecomLogin(account, pwd).main())
