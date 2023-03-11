@@ -28,6 +28,8 @@ let newurl = "https://erd.jjt2019.top:10267"
 class UserInfo {
     constructor(str) {
         //console.log(str)
+        this.istx = 1
+        if (str.indexOf('##')!=-1) this.istx=0
         this.index = ++userIdx, this.idx = `账号[${this.index}] `, this.unionid = str.split('&')[0], this.secret = str.split('&')[1]//.split('#'), this.u = this.ck[0], this.t = this.ck[1]
     }
 
@@ -187,7 +189,7 @@ class UserInfo {
             let result = httpResult;
             if (result.msg=='success') {
                 result = result.data
-                console.log(`\n转化获得余额 ${result.money}分 \n`)
+                console.log(`\n转化获得余额 ${result.money}元 \n`)
                 if (result.money >= 0.3) {
                     await this.doWithdraw()
                 }
@@ -249,7 +251,7 @@ class UserInfo {
                 //await $.wait(15000)
                 
             }
-            if (this.left_gold >= 3000) await this.withdrawal()
+            if (this.left_gold >= 3000 && this.istx == 1) await this.withdrawal()
             
         } catch (e) {
             console.log(e)
