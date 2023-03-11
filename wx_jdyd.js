@@ -147,6 +147,7 @@ class UserInfo {
 
                 console.log(`\n今日阅读数量/收益：${result.day_read}/${result.day_gold}金币 `)
                 console.log(`当前余额：${result.last_gold}金币  `)
+                this.left_gold=result.last_gold
                 /*
                 this.cishu = result.infoView.rest
                 
@@ -179,28 +180,26 @@ class UserInfo {
     async withdrawal() {
         try {
             let t = Date.now()
-            let url = newurl+`/withdrawal`;
-            let body = ``;
-            let urlObject = popu(url, body,this.ck)
-            await httpRequest('get', urlObject)
+            let url = newurl+`/yunonline/v1/user_gold`;
+            let body = `unionid=${this.unionid}&request_id=4c33a60c5f1068b83e576ca806bd4b6b&gold=1000`;
+            let urlObject = popu(url, body,this.unionid)
+            await httpRequest('post', urlObject)
             let result = httpResult;
-            if (result.data.user) {
-                result = result.data.user
-                console.log(`\n当前账号余额 ${result.score}分 \n`)
-                if (this.ck.indexOf('##') != -1) return
-                this.f = parseInt(result.score)//= Number(Math.floor(result.info.sum / 1000))
+            if (result.msg=='success') {
+                result = result.data
+                console.log(`\n转化获得余额 ${result.money}分 \n`)
+                if (result.money >= 0.3) {
+                    await this.doWithdraw()
+                }
                 /*
                 if (this.f < 3) console.log(`\n 不满足0.3 提现门槛\n`)
                 this.f >= 3 && this.f < 5 && (this.cash = .3), this.f >= 10 && this.f < 20 && (this.cash = 1), this.f >= 20 && this.f < 50 && (this.cash = 2),
                     this.f >= 50 && this.f < 100 && (this.cash = 2), this.f >= 100 && this.f < 200 && (this.cash = 10), this.f >= 200 && (this.cash = 20)
                 if (this.f >= 3) console.log(`\n可以提现 ${result.info.sum}金币 去提现 ${this.cash} 元\n`), await this.exchange()
                 */
-                if (this.f < 30) {
-                    console.log(`不满足 提现门槛`)
-                } else {
-                    console.log(`去提现${this.f/100}元。。。。。。`)
-                    await this.doWithdraw(this.f)
-                }
+
+            }else{
+                console.log(result)
             }
         } catch (e) {
             console.log(e)
@@ -210,11 +209,11 @@ class UserInfo {
     }
     async doWithdraw(tx) {
         try {
-            if (tx > 2000) tx = 2000
+
             let t = Date.now()
-            let url = newurl+`/withdrawal/doWithdraw`;
-            let body = `amount=` + tx;
-            let urlObject = popu(url, body,this.ck)
+            let url = newurl+`/yunonline/v1/withdraw`;
+            let body =  `unionid=${this.unionid}&request_id=4c33a60c5f1068b83e576ca806bd4b6b&ua=2`;
+            let urlObject = popu(url, body,this.unionid)
             await httpRequest('post', urlObject)
             let result = httpResult;
             console.log(result)
@@ -250,7 +249,7 @@ class UserInfo {
                 //await $.wait(15000)
                 
             }
-            //await this.withdrawal()
+            if (this.left_gold >= 3000) await this.withdrawal()
             
         } catch (e) {
             console.log(e)
