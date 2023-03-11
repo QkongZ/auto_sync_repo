@@ -8,11 +8,7 @@
 抓包获取文章链接 https://erd.jjt2019.top/yunonline/v1/task 请求体中 secret 
 填写变量 jdyuedu ,填写方式 unionid&secret 不要unionid=和secret=，多账户换行隔开
 
-目前验证文章不清楚，但每天第一轮必验证，建议第一轮读到第三篇文章
-
-
-
-
+目前验证文章不清楚，但每天第一轮必验证，不过验证必黑，建议第一轮读到第三篇文章，建议不要凌晨跑
 
 */
 
