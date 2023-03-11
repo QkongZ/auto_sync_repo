@@ -2,7 +2,7 @@
 微信阅读
 需要青龙环境
 入口，微信打开 -> https://zl1208224800-1314804847.cos.ap-nanjing.myqcloud.com/index.html?upuid=10327150
-抓包m.*.shop域名下cookie,填入环境变量 yuedu，多账户换行隔开
+抓包m.*.work域名下cookie,填入环境变量 yuedu，多账户换行隔开
 
 每天会验证2次左右，碰到验证文章手动打开看一篇即可
 当前每日30篇*6轮180篇文章约2.2元
