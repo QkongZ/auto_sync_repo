@@ -620,8 +620,8 @@ class ZJDX:
                 zjdx.share()
         findPrizes = self.get_findPrizes()
         
-        if findPrizes['result']['awardsNum'][0]['value'] >= 870:
-            print(f"当前猫粮大于870 抽奖")
+        if findPrizes['result']['awardsNum'][0]['value'] >= 970:
+            print(f"当前猫粮大于970 抽奖")
             self.lotter()
             
 
