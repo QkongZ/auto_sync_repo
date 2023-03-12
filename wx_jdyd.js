@@ -10,6 +10,8 @@
 
 目前验证文章不清楚，但每天第一轮必验证，不过验证必黑，建议第一轮读到第三篇文章，建议不要凌晨跑
 
+3.12更新：前2篇以及101和102篇文章改为检测文章，遇到不读，请手动阅读
+
 */
 
 const $ = new Env("微信简单阅读");
@@ -52,7 +54,7 @@ class UserInfo {
                 
                 
             } else if (result.errcode == 409){
-                console.log('下次阅读时间：', result.msg/60)
+                console.log('下次阅读时间：', result.msg/60,'分钟后')
 
             } else if (result.errcode == 407){
                 console.log(result.msg)
@@ -77,11 +79,11 @@ class UserInfo {
             readurl = decodeURIComponent(readurl);
             var sj = Math.random() * (7000 - 6000) + 4000
             
-
+            
             this.key = readurl.match(/key=(.*?)&/)[1]
             this.state= readurl.match(/state=(.*?)#/)[1]
             this.ul = newurl+`/yunonline/v1/jump?key=${this.key}&unionid=${this.unionid}&code=071jHI0w3wTxf03NIp1w36OkoF1jHI0P&state=` + this.state
-            //console.log(this.ul)
+            //console.log(readurl)
             
             let body = ``;
             let urlObject = popu(this.ul, body,this.unionid)
@@ -114,9 +116,16 @@ class UserInfo {
             await httpRequest('post', urlObject)
             let result = httpResult;
             if (result && result.data) {
-                console.log('获得',result.data.gold,)
-                await $.wait(sj)
-                await this.dotask()
+                console.log('获得',result.data.gold,'金币')
+                if (result.data.day_read == 100 || result.data.day_read == 101 ) {
+                    console.log('可能是检测文章，请去手动看2-3篇')
+                    msg += `\n======== 账号 ${this.idx} 可能遇到检测文章 ========\n`
+                    msg += '\n前两篇文章请手动阅读\n'
+                } else{
+                    await $.wait(sj)
+                    await this.dotask()
+                }
+                
 
             } else {
                 console.log(result)
@@ -149,7 +158,20 @@ class UserInfo {
 
                 console.log(`\n今日阅读数量/收益：${result.day_read}/${result.day_gold}金币 `)
                 console.log(`当前余额：${result.last_gold}金币  `)
+                this.fb = 1
                 this.left_gold=result.last_gold
+                if (result.day_read == 0 || result.day_read == 1) {
+                    console.log('前两篇文章请手动阅读')
+                    this.fb = 0
+                    msg += `\n======== 账号 ${this.idx} 可能遇到检测文章 ========\n`
+                    msg += '\n前两篇文章请手动阅读\n'
+
+                } else if (result.day_read == 100 || result.day_read == 101) {
+                    console.log('101和102可能为检测文章，请手动阅读')
+                    this.fb=0
+                    msg += `\n======== 账号 ${this.idx} 可能遇到检测文章 ========\n`
+                    msg += '\n前两篇文章请手动阅读\n'
+                }
                 /*
                 this.cishu = result.infoView.rest
                 
@@ -230,24 +252,14 @@ class UserInfo {
         try {
             
             let abc = [...new Array(15).keys()]
-            msg += `\n======== 账号 ${this.idx} 检测文章 ========\n`
+            
             console.log(`\n=========== ${this.idx} 开始阅读文章 ===========\n`)
             await this.gold()
-            await this.dotask()
-            await this.gold()
+            
             //console.log(this.fb)
-            if (this.fb == 11) {
-                for (let i = 0;i< 10;i++) {
-                    await this.task()
-
-                    /*
-                    break
-                    if (this.dx == 1) break
-                    await this.getreadurl()
-                    if (this.fx == 1) break
-                    */
-                }
-                await this.getreadinfo()
+            if (this.fb == 1) {
+                await this.dotask()
+                await this.gold()
                 //await $.wait(15000)
                 
             }
@@ -272,7 +284,7 @@ class UserInfo {
             for (let user of userList) {
                 await user.task()
             }
-            if (msg.indexOf('redirect_uri=') !=-1) await notify.sendNotify('微信阅读检测文章',msg)
+            if (msg.indexOf('请手动阅读') !=-1) await notify.sendNotify('微信阅读检测文章',msg)
         }
     }
 })()
