@@ -76,7 +76,7 @@ class UserInfo {
                 if (result.result.progress > 0 && result.result.coin30award == 2) {
                     console.log('继续阅读。。。')
                     await $.wait(sj)
-                    //await this.statAccess()
+                    await this.statAccess()
                     await this.read()
                 } else {
                     console.log('阅读已完成')
@@ -112,7 +112,7 @@ class UserInfo {
             await httpRequest('post', urlObject)
             let result = httpResult;
             //console.log(result)
-            var sj = Math.random() * (8000 - 6000) + 2000
+            var sj = Math.random() * (8000 - 6000) + 1000
             if (result.msg == '操作成功') {
                 this.fb == 1
                 console.log(result.msg)
