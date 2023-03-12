@@ -1,7 +1,7 @@
 /*
 微信元宝阅读
 需要青龙环境
-入口，微信打开 -> http://edsglqb.cn/coin/index.html?mid=EX6TJSLPW&1678602489815 
+入口，微信打开 -> http://ocmaqjb.cn/coin/index.html?mid=EX6TJSLPW&1678602489815 
 抓包u.cocozx.cn域名下post请求体中的un和token,填入环境变量 ybyd，填写方式 un@token 多账户换行隔开
 
 似乎每轮都要手动验证1-2篇,不确定，建议禁用
