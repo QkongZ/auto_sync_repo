@@ -5,6 +5,7 @@
 抓包u.cocozx.cn域名下post请求体中的un和token,填入环境变量 ybyd，填写方式 un@token 多账户换行隔开
 
 似乎每轮都要手动验证1-2篇,不确定，建议禁用
+增加自动提现，不过首次提现需要手动进去分享一下
 */
 
 const $ = new Env("微信元宝阅读");
@@ -64,8 +65,8 @@ class UserInfo {
             var sj = Math.random() * (8000 - 6000) + 2000
             this.ul = newurl+`/api/coin/submit`;
             //console.log(this.ul)
-            this.codeArr = ['EX6TJSLPW','WG5LC9WBB']
-            let body = {"code":this.codeArr[this.sjs],"un":this.un,"token":this.token,"pageSize":20};
+
+            let body = {"code":'EX6TJSLPW',"un":this.un,"token":this.token,"pageSize":20};
             let urlObject = popu(this.ul, body,this)
             await httpRequest('post', urlObject)
             let result = httpResult;
@@ -105,7 +106,7 @@ class UserInfo {
         try {
             let t = Date.now()
             this.ul = newurl+`/api/coin/statAccess`;
-            let body = {"mid":this.codeArr[this.sjs],"un":this.un,"token":this.token,"pageSize":20};
+            let body = {"mid":'EX6TJSLPW',"un":this.un,"token":this.token,"pageSize":20};
             let urlObject = popu(this.ul, body)
             //console.log(urlObject)
             await httpRequest('post', urlObject)
@@ -143,7 +144,7 @@ class UserInfo {
                 console.log('今日阅读/剩余数量：',result.result.dayCount,'/',result.result.leftCount)
                 console.log('当前元宝', result.result.moneyCurrent)
                 this.fb = 1
-                
+                this.f = result.result.moneyCurrent
                 if (result.result.hopeNo && result.result.hopeNo.status == 50) {
                     console.log('阅读失效')
                     this.fb = 0
@@ -272,11 +273,12 @@ class UserInfo {
             this.fb = 0
             await this.info()
             
-            this.sjs = Math.floor(Math.random() * 2)
+            //this.sjs = Math.floor(Math.random() * 2)
             //await this.read()
             if (this.fb == 1) {
                 //for (let i = 0;i< this.cishu;i++) {
                 await this.read()
+                await this.info()
 
                     /*
                     break
@@ -289,7 +291,8 @@ class UserInfo {
                 //await $.wait(15000)
                 
             }
-            //await this.withdrawal()
+            if (this.f > 3000) await this.doWithdraw(this.f)
+            await $.wait(2000)
             
         } catch (e) {
             console.log(e)
