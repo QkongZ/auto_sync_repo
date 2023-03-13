@@ -4,8 +4,8 @@
 入口，微信打开 -> 入口1：https://api.jiandanss.top:10253/yunonline/v1/auth/156db1c3b5dd01c24254aa07a793ff15?codeurl=jiandanss.top:10253&codeuserid=2&time=1678456261
                 入口2：https://api.testforclass.top:10251/yunonline/v1/auth/156db1c3b5dd01c24254aa07a793ff15?codeurl=testforclass.top:10251&codeuserid=1&time=1678456261
 
-抓包首页 https://erd.jjt2019.top/yunonline/v1/gold?unionid=nonxxxx&time=1678449887000 中的 unionid
-抓包获取文章链接 https://erd.jjt2019.top/yunonline/v1/task 请求体中 secret 
+抓包首页 https://erd.*.top/yunonline/v1/gold?unionid=nonxxxx&time=1678449887000 中的 unionid
+抓包获取文章链接 https://erd.*.top/yunonline/v1/task 请求体中 secret 
 填写变量 jdyuedu ,填写方式 unionid&secret 不要unionid=和secret=，多账户换行隔开
 
 目前验证文章不清楚，但每天第一轮必验证，不过验证必黑，建议第一轮读到第三篇文章，建议不要凌晨跑
