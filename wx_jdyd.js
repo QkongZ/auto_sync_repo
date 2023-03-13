@@ -119,8 +119,8 @@ class UserInfo {
                 console.log('获得',result.data.gold,'金币')
                 if (result.data.day_read == 100 || result.data.day_read == 101 ) {
                     console.log('可能是检测文章，请去手动看2-3篇')
-                    msg += `\n======== 账号 ${this.idx} 可能遇到检测文章 ========\n`
-                    msg += '\n前两篇文章请手动阅读\n'
+                    msg += `\n==== 账号 ${this.idx} 可能遇到检测文章 ====\n`
+                    msg += '\n101和102可能为检测文章请手动阅读\n'
                 } else{
                     await $.wait(sj)
                     await this.dotask()
@@ -163,14 +163,14 @@ class UserInfo {
                 if (result.day_read == 0 || result.day_read == 1) {
                     console.log('前两篇文章请手动阅读')
                     this.fb = 0
-                    msg += `\n======== 账号 ${this.idx} 可能遇到检测文章 ========\n`
+                    msg += `\n==== 账号 ${this.idx} 可能遇到检测文章 ====\n`
                     msg += '\n前两篇文章请手动阅读\n'
 
                 } else if (result.day_read == 100 || result.day_read == 101) {
                     console.log('101和102可能为检测文章，请手动阅读')
                     this.fb=0
-                    msg += `\n======== 账号 ${this.idx} 可能遇到检测文章 ========\n`
-                    msg += '\n前两篇文章请手动阅读\n'
+                    msg += `\n==== 账号 ${this.idx} 可能遇到检测文章 ====\n`
+                    msg += '\n101和102可能为检测文章，请手动阅读\n'
                 }
                 /*
                 this.cishu = result.infoView.rest
@@ -284,7 +284,7 @@ class UserInfo {
             for (let user of userList) {
                 await user.task()
             }
-            if (msg.indexOf('请手动阅读') !=-1) await notify.sendNotify('微信阅读检测文章',msg)
+            if (msg.indexOf('请手动阅读') !=-1) await notify.sendNotify('微信简单阅读检测文章提醒',msg)
         }
     }
 })()
