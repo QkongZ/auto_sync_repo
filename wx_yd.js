@@ -240,7 +240,7 @@ class UserInfo {
                 //await $.wait(15000)
                 
             }
-            //await this.withdrawal()
+            await this.withdrawal()
             
         } catch (e) {
             console.log(e)
