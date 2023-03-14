@@ -3,6 +3,7 @@
 需要青龙环境
 入口，微信打开 -> https://zl1208224800-1314804847.cos.ap-nanjing.myqcloud.com/index.html?upuid=10327150
 抓包m.*.work域名下cookie,填入环境变量 yuedu，多账户换行隔开
+抓包User-Agent填入变量 ydua
 
 每天会验证2次左右，碰到验证文章手动打开看一篇即可
 当前每日30篇*6轮180篇文章约2.2元
@@ -15,12 +16,17 @@ let envSplitor = ['@', '\n']
 let httpResult, httpReq, httpResp
 let ckName = 'yuedu'
 let userCookie = ($.isNode() ? process.env[ckName] : $.getdata(ckName)) || '';
+let ua = process.env['ydua']  || ''
 let userList = []
 let userIdx = 0
 let userCount = 0
 var msg = ''
 let newurl = "http://m.xmrygnuv.shop"
 ///////////////////////////////////////////////////////////////////
+if (!ua) {
+    console.log('请抓包User-Agent并填入变量 ydua 后再运行')
+    return
+}
 class UserInfo {
     constructor(str) {
         //console.log(str)
@@ -234,7 +240,7 @@ class UserInfo {
                 //await $.wait(15000)
                 
             }
-            await this.withdrawal()
+            //await this.withdrawal()
             
         } catch (e) {
             console.log(e)
@@ -319,7 +325,7 @@ function popu(url, body = '',ck) {
             "Host": host,
             "Connection": "keep-alive",
             "Accept": "*/*",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4425 MMWEBSDK/20221206 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.32.2300(0x2800205D) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
+            "User-Agent": ua,
             "X-Requested-With": "com.tencent.mm",
             "Referer": newurl+"/tuijian/read",
             "Accept-Encoding": "gzip, deflate",
@@ -341,7 +347,7 @@ function popugethost(url, body = '',ck) {
         url: url,
         headers:   {
             "Host": "qun.haozhuang.cn.com",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4425 MMWEBSDK/20221206 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.32.2300(0x2800205D) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
+            "User-Agent": ua,
             "Accept": "*/*",
             "Origin": "https://kygj0209122405-1316151879.cos.ap-nanjing.myqcloud.com",
             "X-Requested-With": "com.tencent.mm",
