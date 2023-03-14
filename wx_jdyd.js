@@ -269,7 +269,7 @@ class UserInfo {
                 //await $.wait(15000)
                 
             }
-            //if (this.left_gold >= 3000 && this.istx == 1) await this.withdrawal()
+            if (this.left_gold >= 3000 && this.istx == 1) await this.withdrawal()
             
         } catch (e) {
             console.log(e)
