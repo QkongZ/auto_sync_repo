@@ -27,13 +27,18 @@ let httpResult, httpReq, httpResp
 const notify = $.isNode() ? require('./sendNotify') : '';
 let ckName = 'yuedu'
 let userCookie = ($.isNode() ? process.env[ckName] : $.getdata(ckName)) || '';
+let ua = process.env['ydua']  || ''
 let userList = []
 let userIdx = 0
 let userCount = 0
 let newurl = "http://m.xmrygnuv.shop"
-let jiance = 0 //1获取检测文章url ,0阅读
+let jiance = 1 //1获取检测文章url ,0阅读
 var msg = ''
 ///////////////////////////////////////////////////////////////////
+if (!ua) {
+    console.log('请抓包User-Agent并填入变量 ydua 后再运行')
+    return
+}
 class UserInfo {
     constructor(str) {
         //console.log(str)
@@ -348,7 +353,7 @@ function popu(url, body = '',ck) {
             "Host": host,
             "Connection": "keep-alive",
             "Accept": "*/*",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4425 MMWEBSDK/20221206 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.32.2300(0x2800205D) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
+            "User-Agent": ua,
             "X-Requested-With": "com.tencent.mm",
             "Referer": newurl+"/tuijian/read",
             "Accept-Encoding": "gzip, deflate",
@@ -370,7 +375,7 @@ function popugethost(url, body = '',ck) {
         url: url,
         headers:   {
             "Host": "qun.haozhuang.cn.com",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4425 MMWEBSDK/20221206 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.32.2300(0x2800205D) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
+            "User-Agent": ua,
             "Accept": "*/*",
             "Origin": "https://kygj0209122405-1316151879.cos.ap-nanjing.myqcloud.com",
             "X-Requested-With": "com.tencent.mm",
