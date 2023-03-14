@@ -3,6 +3,7 @@
 需要青龙环境
 入口，微信打开 -> http://ocmaqjb.cn/coin/index.html?mid=EX6TJSLPW&1678602489815 
 抓包u.cocozx.cn域名下post请求体中的un和token,填入环境变量 ybyd，填写方式 un@token 多账户换行隔开
+抓包User-Agent填入变量 ydua
 
 似乎每轮都要手动验证1-2篇,不确定，建议禁用
 增加自动提现，不过首次提现需要手动进去分享一下
@@ -14,12 +15,17 @@ let envSplitor = [ '\n']
 let httpResult, httpReq, httpResp
 let ckName = 'ybyd'
 let userCookie = ($.isNode() ? process.env[ckName] : $.getdata(ckName)) || '';
+let ua = process.env['ydua']  || ''
 let userList = []
 let userIdx = 0
 let userCount = 0
 var msg = ''
 let newurl = "http://u.cocozx.cn"
 ///////////////////////////////////////////////////////////////////
+if (!ua) {
+    console.log('请抓包User-Agent并填入变量 ydua 后再运行')
+    return
+}
 class UserInfo {
     constructor(str) {
         //console.log(str)
@@ -379,7 +385,7 @@ function popu(url, body = '',ck) {
             "Connection": "keep-alive",
             "Content-Length": body.length,
             "Accept": "application/json, text/javascript, */*; q\u003d0.01",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4425 MMWEBSDK/20221206 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.32.2300(0x2800205D) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
+            "User-Agent": ua,
             "Content-Type": "application/json; charset\u003dUTF-8",
             "Origin": "http://mr0304.uddjatl.cn",
             "X-Requested-With": "com.tencent.mm",
@@ -403,7 +409,7 @@ function popugethost(url, body = '',ck) {
         url: url,
         headers:   {
             "Host": "qun.haozhuang.cn.com",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4425 MMWEBSDK/20221206 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.32.2300(0x2800205D) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
+            "User-Agent": ua,
             "Accept": "*/*",
             "Origin": "https://kygj0209122405-1316151879.cos.ap-nanjing.myqcloud.com",
             "X-Requested-With": "com.tencent.mm",
