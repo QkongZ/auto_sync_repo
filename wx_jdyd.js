@@ -1,12 +1,13 @@
 /*
-微信阅读
+微信简单阅读
 需要青龙环境
 入口，微信打开 -> 入口1：https://api.jiandanss.top:10253/yunonline/v1/auth/156db1c3b5dd01c24254aa07a793ff15?codeurl=jiandanss.top:10253&codeuserid=2&time=1678456261
                 入口2：https://api.testforclass.top:10251/yunonline/v1/auth/156db1c3b5dd01c24254aa07a793ff15?codeurl=testforclass.top:10251&codeuserid=1&time=1678456261
 
-抓包首页 https://erd.*.top/yunonline/v1/gold?unionid=nonxxxx&time=1678449887000 中的 unionid
-抓包获取文章链接 https://erd.*.top/yunonline/v1/task 请求体中 secret 
+抓包首页 https://erd.jjt2019.top/yunonline/v1/gold?unionid=nonxxxx&time=1678449887000 中的 unionid
+抓包获取文章链接 https://erd.jjt2019.top/yunonline/v1/task 请求体中 secret 
 填写变量 jdyuedu ,填写方式 unionid&secret 不要unionid=和secret=，多账户换行隔开
+抓包User-Agent填入变量 ydua
 
 目前验证文章不清楚，但每天第一轮必验证，不过验证必黑，建议第一轮读到第三篇文章，建议不要凌晨跑
 
@@ -20,6 +21,7 @@ let envSplitor = ['@', '\n']
 let httpResult, httpReq, httpResp
 let ckName = 'jdyuedu'
 let userCookie = ($.isNode() ? process.env[ckName] : $.getdata(ckName)) || '';
+let ua = process.env['ydua']  || ''
 let userList = []
 let userIdx = 0
 let userCount = 0
@@ -27,6 +29,10 @@ var msg = ''
 var jiance = 0 //1获取文章 ， 0阅读
 let newurl = "https://erd.jjt2019.top:10267"
 ///////////////////////////////////////////////////////////////////
+if (!ua) {
+    console.log('请抓包User-Agent并填入变量 ydua 后再运行')
+    return
+}
 class UserInfo {
     constructor(str) {
         //console.log(str)
@@ -263,7 +269,7 @@ class UserInfo {
                 //await $.wait(15000)
                 
             }
-            if (this.left_gold >= 3000 && this.istx == 1) await this.withdrawal()
+            //if (this.left_gold >= 3000 && this.istx == 1) await this.withdrawal()
             
         } catch (e) {
             console.log(e)
@@ -349,7 +355,7 @@ function popu(url, body = '',ck) {
             //"content-length": "50",
             "accept": "application/json, text/javascript, */*; q\u003d0.01",
             "x-requested-with": "XMLHttpRequest",
-            "user-agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/5019 MMWEBSDK/20221206 Mobile Safari/537.36 MMWEBID/3684 MicroMessenger/8.0.32.2300(0x2800205D) WeChat/arm64 Weixin NetType/5G Language/zh_CN ABI/arm64",
+            "user-agent": ua,
             "content-type": "application/x-www-form-urlencoded; charset\u003dUTF-8",
             //"origin": "https://erd.jjt2019.top:10267",
             "sec-fetch-site": "same-origin",
@@ -375,7 +381,7 @@ function popugethost(url, body = '',ck) {
         url: url,
         headers:   {
             "Host": "qun.haozhuang.cn.com",
-            "User-Agent": "Mozilla/5.0 (Linux; Android 12; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4425 MMWEBSDK/20221206 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.32.2300(0x2800205D) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64",
+            "User-Agent": ua,
             "Accept": "*/*",
             "Origin": "https://kygj0209122405-1316151879.cos.ap-nanjing.myqcloud.com",
             "X-Requested-With": "com.tencent.mm",
