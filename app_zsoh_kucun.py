@@ -11,7 +11,7 @@ def main():
     res=res["data"]
 
     msg=""
-
+    jk = ['枕头', '吹风机','茶具','锅']
     for item in res:
 
         if item["stock"] > 0:
@@ -21,7 +21,8 @@ def main():
             msg += f'{item["name"]} 还有 {item["stock"]} 件库存\n需要积分 {item["scoreprice"]} \n更新时间 {other}\nhttp://lwintegral.wznbw.com{item["thumb"]}\n\n'
 
     print(msg)
-
-    send("掌上瓯海库存", msg)
+    for a in jk:
+        if a in msg:
+            send("掌上瓯海库存", msg)
 
 main()
