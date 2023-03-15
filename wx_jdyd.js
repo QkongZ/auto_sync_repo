@@ -166,7 +166,7 @@ class UserInfo {
                 console.log(`当前余额：${result.last_gold}金币  `)
                 this.fb = 1
                 this.left_gold=result.last_gold
-                if (result.day_read == 0 || result.day_read == 1) {
+                if (result.day_read == 0) {
                     console.log('前两篇文章请手动阅读')
                     this.fb = 0
                     msg += `\n==== 账号 ${this.idx} 可能遇到检测文章 ====\n`
