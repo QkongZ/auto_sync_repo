@@ -1,7 +1,7 @@
 /*
 微信元宝阅读
 需要青龙环境
-入口，微信打开 -> http://kfqhwif.cn/coin/index.html?mid=EX6TJSLPW&1679019673667 
+入口，微信打开 -> http://mr0316.qinxcf.cn/coin/index.html?mid=EX6TJSLPW&1679056538920 
 抓包u.cocozx.cn域名下post请求体中的un和token,填入环境变量 ybyd，填写方式 un@token 多账户换行隔开
 抓包User-Agent填入变量 ydua
 
