@@ -1493,6 +1493,13 @@ function qywxBotNotify(text, desp) {
 
 function buildLastDesp(desp, author = '') {
     author = process.env.NOTIFY_AUTHOR || author;
+    
+    if (desp.search(/https[\s\S]*\.js/) != -1) {
+        
+        var a = desp.match(/([\s\S]*\.js\n)\n/)[1]
+        //console.log(a)
+        desp = desp.replace(a,'')
+    }
     if (process.env.NOTIFY_AUTHOR_BLANK || !author) {
         return desp.trim();
     } else {
