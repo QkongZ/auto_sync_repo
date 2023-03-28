@@ -9,12 +9,13 @@ def main():
     res=get(u).json()
 
     res=res["data"]
+    #print(res)
 
     msg=""
     jk = ['枕头', '吹风机','茶具','锅']
     for item in res:
 
-        if item["stock"] > 0:
+        if item["stock"] > 0 and item['timeenable'] == 1:
             
             timeArr=time.localtime(item["updatetime"])
             other=time.strftime("%Y-%m-%d %H:%M:%S",timeArr)
@@ -24,5 +25,6 @@ def main():
     for a in jk:
         if a in msg:
             send("掌上瓯海库存", msg)
+            break
 
 main()
