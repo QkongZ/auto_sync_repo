@@ -97,7 +97,7 @@ def tly(cookie):
     usr = getmidstring(cookie, 'user_email=',';').replace('%40','@')
     print(f'\n开始账号 {usr}\n')
     msg.append(f'\n账号 {usr}\n')
-    signUrl="https://tly30.com/modules/index.php"
+    signUrl="https://tly.com/modules/index.php"
     hearder={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36','Cookie':cookie}
 
     res=requests.get(url=signUrl,headers=hearder).text
@@ -113,8 +113,8 @@ def tly(cookie):
     if t-timeStamp>86400:
         print("距上次签到时间大于24小时啦,可签到")
         #获取验证码图片
-        captchaUrl="https://tly30.com/other/captcha.php"
-        signurl="https://tly30.com/modules/_checkin.php?captcha="
+        captchaUrl="https://tly.com/other/captcha.php"
+        signurl="https://tly.com/modules/_checkin.php?captcha="
         hearder={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36','Cookie':cookie}
         res1=requests.get(url=captchaUrl,headers=hearder)
         base64_data = base64.b64encode(res1.content)
