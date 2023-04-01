@@ -87,8 +87,8 @@ def get_session_id(device_id, token):
                             headers=headers)
     sessionId = response.json().get('data', {}).get('sessionId')
     itemList = response.json().get('data', {}).get('itemList', [])
-    print(itemList)
-    print('\n\n\n')
+    #print(itemList)
+    #print('\n\n\n')
     itemCodes = [item.get('itemCode') for item in itemList]
     return sessionId, itemCodes
 
@@ -118,13 +118,15 @@ def get_shop_item(sessionId, itemId, device_id, token, province, city):
     data = response.json().get('data', {})
     shops = data.get('shops', [])
     shop_id_ = p_c_map[province][city]
+    print(shops)
+    print("\n\n")
     shops.reverse()
     for shop in shops:
         if not shop.get('shopId') in shop_id_:
             continue
         if itemId in str(shop):
-            #print(shop)
-            #print('\n\n\n')
+            print(shop)
+            print('\n')
             return shop.get('shopId')
 
 
