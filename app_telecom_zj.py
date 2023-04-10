@@ -633,9 +633,9 @@ if __name__ == '__main__':
     
     for acc in accountArr.split('\n'):
         print(f'\n\n开始账号 {acc}\n\n')
-        zjdx = ZJDX()
+
         u.append(
-            threading.Thread(target=zjdx.main(acc))
+            threading.Thread(target=ZJDX().main(acc))
         )
     for thread in u:
         thread.start()
