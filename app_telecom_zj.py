@@ -33,9 +33,9 @@ from os import environ, path as os_path
 from re import findall
 from time import sleep, time, mktime, strptime, strftime
 
-account = environ.get("TELECOM_PHONE") if environ.get("TELECOM_PHONE") else ""
-pwd = environ.get("TELECOM_PASSWORD") if environ.get("TELECOM_PASSWORD") else ""
-if account == "" or pwd == "":
+accountArr = environ.get("TELECOM_ZJ") if environ.get("TELECOM_ZJ") else ""
+
+if accountArr == "" or '@' not in accountArr:
     print("请填写电信账号密码")
     # exit(0)
 """
@@ -46,7 +46,7 @@ pycryptdemo限制 同一个aes加密对象不能即加密又解密 所以当加�
 from Crypto.Cipher import AES, DES, DES3
 from binascii import b2a_hex, a2b_hex
 from base64 import b64encode, b64decode
-
+import threading
 
 class Crypt:
     def __init__(self, crypt_type: str, key, iv=None, mode="ECB"):
@@ -219,8 +219,8 @@ class TelecomLogin:
         self.token = data["responseData"]["data"]["loginSuccessResult"]["token"]
         self.userId = data["responseData"]["data"]["loginSuccessResult"]["userId"]
         userinfo = {"telecom_token": self.token, "telecom_userId": self.userId}
-        with open("./zjdx.json", "w") as f:
-            dump(userinfo, f)
+        #with open("./chinaTelecom_cache.json", "w") as f:
+            #dump(userinfo, f)
         return True
 
     def get_ticket(self):
@@ -245,14 +245,17 @@ class TelecomLogin:
         print("ticket: " + ticket)
         return ticket
     def main(self):
-        if os_path.exists("./zjdx.json"):
+        if os_path.exists("./chinaTelecom_cache.json"):
             try:
-                with open("./zjdx.json", "rb") as f:
+                with open("./chinaTelecom_cache.json", "rb") as f:
                     userinfo = load(f)
-                self.token = userinfo["telecom_token"]
-                self.userId = userinfo["telecom_userId"]
+                    #print(userinfo)
+                    
+                self.token = userinfo[str(self.account)]["token"]
+                print(self.token)
+                self.userId = userinfo[str(self.account)]["userId"]
             except:
-                print(f"读取 zjdx.json 文件异常 请删除该文件后重新执行")
+                print(f"读取 chinaTelecom_cache.json 文件异常 请删除该文件后重新执行")
         else:
             if self.login() is None:
                 return "10086"
@@ -558,8 +561,8 @@ class ZJDX:
             left_time = int(mktime(strptime(data["result"]["time"], "%Y-%m-%d %H:%M:%S"))) - int(round(time())) + (
                     9 - int(strftime("%z")[2])) * 3600
             if 0 < left_time <= 300:
-                print(f"等待{left_time + 5}秒后喂食")
-                sleep(left_time + 5)
+                print(f"等待{left_time + 65}秒后喂食")
+                sleep(left_time + 65)
                 data = post(url, headers=self.headers, json=body).json()
                 print(data)
             elif left_time > 300:
@@ -601,9 +604,9 @@ class ZJDX:
         print(data)
         findPrizes = self.get_findPrizes()
         push(f"浙江电信 - 云养猫小窝 - {findPrizes['result']['userPhone']}", f"{data['result']['message']}")
-    def main(self):
+    def main(self,account):
         self.getToken()
-        self.loginByTicket(TelecomLogin(account, pwd).main())
+        self.loginByTicket(TelecomLogin(account.split('@')[0], account.split('@')[1]).main())
         self.food()
         if datetime.now().hour == 0:
             self.check_in()
@@ -626,5 +629,17 @@ class ZJDX:
             
 
 if __name__ == '__main__':
-    zjdx = ZJDX()
-    zjdx.main()
+    u = []
+    
+    for acc in accountArr.split('\n'):
+        print(f'\n\n开始账号 {acc}\n\n')
+        zjdx = ZJDX()
+        u.append(
+            threading.Thread(target=zjdx.main(acc))
+        )
+    for thread in u:
+        thread.start()
+    for thread in u:
+        thread.join()
+        
+        
