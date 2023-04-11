@@ -86,6 +86,9 @@ class ShuoDao:
             self.print_now(f'今日play情况：{data["playLeftChance"]}/{data["playTotalchance"]}')
             toys = data['toys']
             playcishu = data["playLeftChance"]
+            
+            toys.reverse()
+            #self.print_now(toys)
             if playcishu > 0:
                 for toy in toys:
                     self.print_now(f'{toy["toyName"]}:{toy["toyNum"]}')
