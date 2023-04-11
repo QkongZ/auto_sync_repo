@@ -339,7 +339,8 @@ def push(title, content):
         tgpush(title, content)
 from requests import Session
 class ZJDX:
-    def __init__(self):
+    def __init__(self, acc):
+        self.account = acc
         self.session = Session()
     def getToken(self):
         url = "https://hdmf.k189.cn/actServ/userJoin/getToken"
@@ -604,9 +605,9 @@ class ZJDX:
         print(data)
         findPrizes = self.get_findPrizes()
         push(f"浙江电信 - 云养猫小窝 - {findPrizes['result']['userPhone']}", f"{data['result']['message']}")
-    def main(self,account):
+    def main(self):
         self.getToken()
-        self.loginByTicket(TelecomLogin(account.split('@')[0], account.split('@')[1]).main())
+        self.loginByTicket(TelecomLogin(self.account.split('@')[0], self.account.split('@')[1]).main())
         self.food()
         if datetime.now().hour == 0:
             self.check_in()
@@ -617,10 +618,10 @@ class ZJDX:
             for taskcode in taskcode_list:
                 finish_num = 1 if taskcode == "1657702206332" else 5
                 for i in range(finish_num):
-                    zjdx.task_login(taskcode)
-                    zjdx.finish_task(taskcode)
+                    self.task_login(taskcode)
+                    self.finish_task(taskcode)
                     sleep(15)
-                zjdx.share()
+                self.share()
         findPrizes = self.get_findPrizes()
         
         if findPrizes['result']['awardsNum'][0]['value'] >= 970:
@@ -635,11 +636,12 @@ if __name__ == '__main__':
         print(f'\n\n开始账号 {acc}\n\n')
 
         u.append(
-            threading.Thread(target=ZJDX().main(acc))
+            threading.Thread(target=ZJDX(acc).main)
         )
     for thread in u:
         thread.start()
     for thread in u:
         thread.join()
+
         
         
