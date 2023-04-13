@@ -26,4 +26,4 @@ jobs:
           source_branch: "master" # 拉取当前仓库的指定分支名——改动——
           destination_branch: "yml2213" # 自己仓库对应的分支名称——改动——
           github_token: ${{ secrets.PAT }} # 获取对应的secrets的密钥变量
-          exclude: "'.gitignore','README.md'"  # 拉取复刻仓库时，屏蔽一些文件，关键词——改动——
+          exclude: "'.gitignore','README.md'"  # 拉取复刻仓库时，屏蔽一些指定文件的关键词，如果要排除的文件名或路径名包含空格，请将其用引号括起来''——改动——
