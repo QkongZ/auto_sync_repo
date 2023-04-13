@@ -1,0 +1,30 @@
+name: XXX # yml工作流文件名称 XXX自定义英文名称——————————————————需要改动的地方
+on:
+  schedule:
+    - cron: '1 */6 * * *' # 自定义设置拉取时间——————————————————需要改动的地方
+  workflow_dispatch:
+  watch:
+    types: started
+  repository_dispatch:
+    types: sync-otherperson-theirrepo # 原仓库标签 'otherperson'为作者昵称 'theirrepo'为作者仓库名称——————————————————需要改动的地方
+jobs:
+  repo-sync:
+    env:
+      PAT: ${{ secrets.PAT }}  # GitHub自身的访问令牌，需要有“repo”和“workflow”授权，变量为PAT
+      #GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}  # gitee网站私有仓库的访问令牌，GitHub Secrets 中添加该访问令牌，变量为GITEE_TOKEN
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - uses: actions/checkout@v2 # GitHub Actions 中的预定义action，用于从您的代码仓库中检出代码并创建一个本地工作区
+        with:
+          persist-credentials: false # 此变量控制是否将 Git 凭证保留在运行工作流程的主机上
+
+      - name: sync otherperson-theirrepo # 仓库标签——————————————————需要改动的地方
+        uses: repo-sync/github-sync@v2
+        if: env.PAT
+        with:
+          source_repo: "https://github.com/otherperson/theirrepo.git" # 拉取作者github仓库的地址url （可以是gitee）——————————————————需要改动的地方
+          source_branch: "main" # 拉取当前仓库的指定分支名（一般是master或者main）——————————————————需要改动的地方
+          destination_branch: "XXX" # 自己仓库对应的分支名称，每个工作流文件设置不同的分支——————————————————需要改动的地方
+          github_token: ${{ secrets.PAT }} # 获取对应的secrets的密钥变量
+          exclude: "'test','README.md'"  # 拉取复刻仓库时，屏蔽一些指定文件的关键词，如果要排除的文件名或路径名包含空格，请将其用引号括起来''——————————————————需要改动的地方
