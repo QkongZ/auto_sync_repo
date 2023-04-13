@@ -1,0 +1,29 @@
+name: yml2213 # yml工作流文件名称
+on:
+  schedule:
+    - cron: '1 */6 * * *' # 自定义设置拉取时间
+  workflow_dispatch:
+  watch:
+    types: started
+  repository_dispatch:
+    types: sync-yml2213-javascript # 原仓库标签
+jobs:
+  repo-sync:
+    env:
+      PAT: ${{ secrets.PAT }} 
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: sync leafTheFish-DeathNote
+        uses: repo-sync/github-sync@v2
+        if: env.PAT
+        with:
+          source_repo: "https://github.com/yml2213/javascript.git" # 拉取作者github仓库的地址url
+          source_branch: "master" # 拉取当前仓库的指定分支名
+          destination_branch: "yml2213" # 自己仓库对应的分支名称
+          github_token: ${{ secrets.PAT }} # 获取对应的secrets的密钥变量
+          exclude: ".gitignore,README.md"  # 拉取复刻仓库时，屏蔽一些文件，关键词
