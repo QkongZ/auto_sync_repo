@@ -117,6 +117,7 @@ class qndxx:
 
         self.lesson()
         self.todayJob()
+        print('\n\n')
         self.todayJob()
          
 if __name__ == "__main__":
