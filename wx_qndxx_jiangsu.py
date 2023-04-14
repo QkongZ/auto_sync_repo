@@ -1,6 +1,7 @@
 import requests
 import re
 import os
+from sendNotify import send
 cookie=os.environ.get('laravel_session')
 class qndxx:
     def __init__(self, cookie):
@@ -111,6 +112,18 @@ class qndxx:
         else:
             print(res.text)
     
+    def giftList(self): 
+        url = "https://service.jiangsugqt.org/api/giftList"
+        json = {'page':1,'limit':10}
+        res =requests.post(url=url, headers=self.headers_post, json=json)
+        if res.json() and res.json()['status'] == 1:
+            data = res.json()['data']
+            print(data)
+            if data:
+                send('青年大学习', str(data))
+
+        else:
+            print(res.text)
     def main(self):
         
         self.my()
@@ -119,7 +132,7 @@ class qndxx:
         self.todayJob()
         print('\n\n')
         self.todayJob()
-         
+        self.giftList()
 if __name__ == "__main__":
     dxx = qndxx(cookie)
     dxx.main()
