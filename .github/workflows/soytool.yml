@@ -2,7 +2,7 @@
 name: soytool # 
 on:
   schedule:
-    - cron: '50 */23 * * *' # 
+   # - cron: '50 */23 * * *' # 
   workflow_dispatch:
   watch:
     types: started
