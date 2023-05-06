@@ -1,7 +1,7 @@
 name: wd210010 # yml工作流文件名称
 on:
   schedule:
-    - cron: '1 */6 * * *' # 自定义设置拉取时间
+    - cron: '15 */21 * * *' # 自定义设置拉取时间
   workflow_dispatch:
   watch:
     types: started
