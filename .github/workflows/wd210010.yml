@@ -26,4 +26,6 @@ jobs:
           source_branch: "main" # 拉取当前仓库的指定分支名 默认一般master或者main
           destination_branch: "wd210010" # 自己仓库对应的分支名称
           github_token: ${{ secrets.PAT }} # 获取对应的secrets的密钥变量
-          exclude: "'backup','README.md'"  # 拉取复刻仓库时，屏蔽一些文件，关键词
+          fetch-depth: 0
+          path: "."
+          exclude: "'backup/*','README.md'"  # 拉取复刻仓库时，屏蔽一些文件，关键词
