@@ -26,4 +26,6 @@ jobs:
           source_branch: "main" # 拉取当前仓库的指定分支名——改动——
           destination_branch: "LinYuanovo" # 自己仓库对应的分支名称——改动——
           github_token: ${{ secrets.PAT }} # 获取对应的secrets的密钥变量
-          exclude: "'test','README.md'"  # 拉取复刻仓库时，屏蔽一些文件，关键词——改动——
+          fetch-depth: 0
+          path: "."
+          exclude: "README.md"  # 拉取复刻仓库时，屏蔽一些文件，关键词——改动——
