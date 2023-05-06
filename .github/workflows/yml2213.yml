@@ -1,7 +1,7 @@
 name: yml2213 # yml工作流文件名称——改动——
 on:
   schedule:
-    - cron: '1 */6 * * *' # 自定义设置拉取时间——改动——
+    - cron: '20 */22 * * *' # 自定义设置拉取时间——改动——
   workflow_dispatch:
   watch:
     types: started
