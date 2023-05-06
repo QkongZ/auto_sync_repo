@@ -1,5 +1,5 @@
 #git@gitlab.com:acoolbook/ym.git
-name: sync-acoolbook-ym
+name: acoolbook
 on:
   schedule:
     - cron: '1 */23 * * *'
