@@ -1,0 +1,31 @@
+#git@gitlab.com:acoolbook/ym.git
+name: sync-acoolbook-ym
+on:
+  schedule:
+    - cron: '1 */23 * * *'
+  workflow_dispatch:
+  watch:
+    types: started
+  repository_dispatch:
+    types: sync-acoolbook-ym
+
+jobs:
+  repo-sync:
+    env:
+      PAT: ${{ secrets.PAT }}
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Sync GitHub and GitLab repos
+        uses: repo-sync/github-sync@v2
+        if: env.PAT
+        with:
+          source_repo: "https://gitlab.com/acoolbook/ym.git"
+          source_branch: "main"
+          destination_branch: "acoolbook"
+          github_token: ${{ secrets.PAT }}
+          exclude: "'backup/*','README.md','__pycache__/*'"
