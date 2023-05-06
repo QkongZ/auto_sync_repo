@@ -20,7 +20,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Sync GitHub and GitLab repos
+      - name: Sync-GitLab-repos-acoolbook
         uses: repo-sync/github-sync@v2
         if: env.PAT
         with:
@@ -28,4 +28,6 @@ jobs:
           source_branch: "main"
           destination_branch: "acoolbook"
           github_token: ${{ secrets.PAT }}
+          fetch-depth: 0
+          path: "."
           exclude: "'backup/*','README.md','__pycache__/*'"
