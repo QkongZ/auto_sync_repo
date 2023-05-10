@@ -316,7 +316,7 @@ class ShuoDao:
     def ad_roulette_chance_add(self):
         url = f"https://dt-apigatewayv2.dt-pn1.com/web/ad/roulette/chance/add?userId={self.userId}&deviceId=And.8b0355c263713b5301559b2a0c222859.dttalk"
         
-        for ad in range(10):
+        for ad in range(2):
             data = self.req(url)
             if data['Result'] == 1:
                 
