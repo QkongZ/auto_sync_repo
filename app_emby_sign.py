@@ -524,7 +524,7 @@ if __name__ == "__main__":
                 a = 1
             cishu = 0     #每个账号尝试签到次数
             is_signed = False
-            if j == '@Orange_Emby_Bot' or j == '@peach_emby_bot' or j == '@EmbyCc_bot':  
+            if j == '@Orange_Emby_Bot' or j == '@peach_emby_bot' or j == '@EmbyCc_bot' or j == '@mulgorebot':  
                 asyncio.run(main2(i, API_HASH[API_ID.index(i)], j))
             elif j == '@EmbyMistyBot':
                 asyncio.run(main3(i, API_HASH[API_ID.index(i)], j))
