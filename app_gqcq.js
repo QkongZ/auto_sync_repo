@@ -84,7 +84,7 @@ class UserInfo {
 
         this.host = "gsp.gacmotor.com"
         this.hostname = "https://" + this.host
-        this.salt = '17aaf8118ffb270b766c6d6774317a133.8.0'
+        this.salt = '17aaf8118ffb270b766c6d6774317a134.1.2'
         this.reqNonc = randomInt(100000, 999999)
         this.ts = utils.ts13()
         this.reqSign = MD5_Encrypt(`signature${this.reqNonc}${this.ts}${this.salt}`)
@@ -101,8 +101,8 @@ class UserInfo {
             'reqNonc': this.reqNonc,
             'channel': 'unknown',
             'platformNo': 'Android',
-            'osVersion': '10',
-            'version': '3.8.0',
+            'osVersion': '12',
+            'version': '4.1.2',
             'imei': 'a4dad7a1b1f865bc',
             'imsi': 'unknown',
             'deviceModel': 'MI 8',
