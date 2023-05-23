@@ -1,3 +1,4 @@
+#https://github.com/wd210010/only_for_happly.git
 name: wd210010 # yml工作流文件名称
 on:
   schedule:
@@ -6,7 +7,7 @@ on:
   watch:
     types: started
   repository_dispatch:
-    types: sync-wd210010-just_for_happy # 原仓库标签
+    types: sync-wd210010-only_for_happly # 原仓库标签
 jobs:
   repo-sync:
     env:
@@ -22,7 +23,7 @@ jobs:
         uses: repo-sync/github-sync@v2
         if: env.PAT
         with:
-          source_repo: "https://github.com/wd210010/just_for_happy.git" # 拉取作者github仓库的地址url
+          source_repo: "https://github.com/wd210010/only_for_happly.git" # 拉取作者github仓库的地址url
           source_branch: "main" # 拉取当前仓库的指定分支名 默认一般master或者main
           destination_branch: "wd210010" # 自己仓库对应的分支名称
           github_token: ${{ secrets.PAT }} # 获取对应的secrets的密钥变量
