@@ -29,7 +29,4 @@ jobs:
           github_token: ${{ secrets.PAT }} 
           fetch-depth: 0
           path: "."
-      - name: Copy .gitattributes to other branches
-        run: |
-          git checkout main
-          cp .gitattributes lekebo
+      
