@@ -28,4 +28,7 @@ jobs:
           github_token: ${{ secrets.PAT }} # 获取对应的secrets的密钥变量
           fetch-depth: 0
           path: "."
-          exclude: "test,README.md"  # 拉取复刻仓库时，屏蔽一些文件，关键词——改动——
+      - name: Copy .gitattributes to other branches
+        run: |
+         git checkout main
+         cp .gitattributes <other_branch>
