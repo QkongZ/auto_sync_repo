@@ -2,7 +2,7 @@
 name: Bidepanlong
 on:
   schedule:
-    - cron: '50 */23 * * *' 
+    - cron: '0 */23 * * *' 
   workflow_dispatch:
   watch:
     types: started
@@ -19,7 +19,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: sync Bidepanlong-ql  
+      - name: sync Bidepanlong-ql 
+        run: ls -la
         uses: repo-sync/github-sync@v2
         if: env.PAT
         with:
