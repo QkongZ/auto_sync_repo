@@ -29,7 +29,3 @@ jobs:
           github_token: ${{ secrets.PAT }} 
           fetch-depth: 0
           path: "."
-      - name: Remove unwanted files
-        run: |
-          rm -rf test
-          rm README.md
