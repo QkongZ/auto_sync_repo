@@ -21,6 +21,11 @@ jobs:
         with:
           persist-credentials: false
           
+      - name: Configure Git credentials
+        run: |
+          git config --global credential.helper store
+          git config --global credential.helper 'cache --timeout=3600'
+          
       - name: Set Git user identity
         run: |
           git config --global user.email "${{ env.GIT_USER_EMAIL }}"
