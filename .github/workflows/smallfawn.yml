@@ -18,6 +18,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           persist-credentials: false
+          
+      - name: Backup README.md
+        run: |
+          cp README.md README_BACKUP.md
+          git add README_BACKUP.md
+          git commit -m "Backup README.md"
+          git push
 
       - name: sync smallfawn-QLScriptPublic  
         uses: repo-sync/github-sync@v2
@@ -29,4 +36,10 @@ jobs:
           github_token: ${{ secrets.PAT }} 
           fetch-depth: 0
           path: "."
-          exclude: "'test','README.md'"  
+          
+      - name: Restore README.md
+        run: |
+          mv README_BACKUP.md README.md
+          git add README.md
+          git commit -m "Restore README.md"
+          git push
