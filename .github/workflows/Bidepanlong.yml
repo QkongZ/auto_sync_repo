@@ -4,8 +4,8 @@ on:
   schedule:
     - cron: '0 */23 * * *' 
   workflow_dispatch:
-  watch:
-    types: started
+  #watch:
+    #types: started
   repository_dispatch:
     types: sync-Bidepanlong-ql
 jobs:
@@ -21,7 +21,7 @@ jobs:
 
       - name: sync Bidepanlong-ql 
         uses: repo-sync/github-sync@v2
-        if: env.PAT
+        if: env.PAT && github.event_name == 'schedule'
         with:
           source_repo: "https://github.com/Bidepanlong/ql.git" 
           source_branch: "main" 
