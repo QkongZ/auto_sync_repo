@@ -12,8 +12,6 @@ jobs:
   repo-sync:
     env:
       PAT: ${{ secrets.PAT }} 
-      GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-      GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
@@ -21,23 +19,15 @@ jobs:
         with:
           persist-credentials: false
           
-      - name: Configure Git credentials
-        run: |
-          git config --global credential.helper store
-          git config --global credential.helper 'cache --timeout=3600'
+      
           
-      - name: Set Git user identity
-        run: |
-          git config --global user.email "${{ env.GIT_USER_EMAIL }}"
-          git config --global user.name "${{ env.GIT_USER_NAME }}"
+     
           
       - name: Backup README.md
+        if: env.PAT
         run: |
           cp README.md README_BACKUP.md
-          git add README_BACKUP.md
-          git commit -m "Backup README.md"
-          git push
-
+          
       - name: sync smallfawn-QLScriptPublic  
         uses: repo-sync/github-sync@v2
         if: env.PAT && github.event_name == 'schedule'
@@ -50,8 +40,11 @@ jobs:
           path: "."
           
       - name: Restore README.md
+        if: env.PAT
         run: |
           mv README_BACKUP.md README.md
           git add README.md
           git commit -m "Restore README.md"
           git push
+          
+      
