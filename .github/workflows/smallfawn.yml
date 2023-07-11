@@ -21,15 +21,6 @@ jobs:
         with:
           persist-credentials: false
           
-      
-          
-     
-          
-      - name: Backup README.md
-        if: env.PAT
-        run: |
-          cp README.md README_BACKUP.md
-          
       - name: sync smallfawn-QLScriptPublic  
         uses: repo-sync/github-sync@v2
         if: env.PAT && github.event_name == 'schedule'
@@ -41,17 +32,5 @@ jobs:
           fetch-depth: 0
           path: "."
           
-      - name: Set Git user identity
-        run: |
-          git config --global user.email "${{ env.GIT_USER_EMAIL }}"
-          git config --global user.name "${{ env.GIT_USER_NAME }}"
-          
-      - name: Restore README.md
-        if: env.PAT
-        run: |
-          mv README_BACKUP.md README.md
-          git add README.md
-          git commit -m "Restore README.md"
-          git push
           
       
