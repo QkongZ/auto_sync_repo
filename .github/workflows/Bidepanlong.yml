@@ -4,8 +4,8 @@ on:
   schedule:
     - cron: '0 */23 * * *' 
   workflow_dispatch:
-  #watch:
-    #types: started
+  watch:
+    types: started
   repository_dispatch:
     types: sync-Bidepanlong-ql
 jobs:
