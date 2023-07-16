@@ -23,7 +23,7 @@ jobs:
           
       - name: sync smallfawn-QLScriptPublic  
         uses: repo-sync/github-sync@v2
-        if: env.PAT && github.event_name == 'schedule'
+        if: env.PAT
         with:
           source_repo: "https://github.com/smallfawn/QLScriptPublic.git" 
           source_branch: "main" 
