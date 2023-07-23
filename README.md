@@ -14,6 +14,7 @@
     ```bash
     arcadia repo 慈善家 https://gitlab.com/SuperManito/cishanjia.git main --whiteList '^jd_'
     ```
+    详见官方文档：https://arcadia.cool
 
 - ### 青龙面板
 
