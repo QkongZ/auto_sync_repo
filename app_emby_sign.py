@@ -250,9 +250,9 @@ async def main2(api_id, api_hash, channel_id):
             time.sleep(sj(5,8))
 
             #尝试八次，失败退出
-            if cishu > 30:
-                print_now('尝试次数已达到30次仍未成功，退出')
-                msg.append('尝试次数已达到30仍未签到成功')
+            if cishu > 40:
+                print_now('尝试次数已达到10次仍未成功，退出')
+                msg.append('尝试次数已达到10仍未签到成功')
                 if channel_id == '@EmbyPublicBot':
                     await client.send_message(channel_id, '/cancel')
                 await client.send_read_acknowledge(channel_id)
@@ -305,8 +305,8 @@ async def main2(api_id, api_hash, channel_id):
                 buttons = event.message.reply_markup.rows[0].buttons
                 #print_now( event.message.reply_markup.rows[0])
                 if '选择您要使用的功能' in event.message.text:  #orange
-                    if channel_id == '@EmbyCc_bot' or channel_id == "@Orange_Emby_Bot":
-                        await event.message.click(3)
+                    if channel_id == '@EmbyCc_bot':
+                        await event.message.click(1)
                     else:
                         await event.message.click(3)  #签到按钮所在位置
                     time.sleep(3) 
