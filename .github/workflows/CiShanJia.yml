@@ -1,17 +1,18 @@
-#https://github.com/KingRan/KR.git
-name: KingRan
+#git@gitlab.com:SuperManito/cishanjia.git
+name: cishanjia
 on:
   schedule:
-    - cron: '0 */6 * * *' 
+    - cron: '10 */23 * * *'
   workflow_dispatch:
   watch:
     types: started
   repository_dispatch:
-    types: sync-KingRan-KR
+    types: sync-SuperManito-cishanjia
+
 jobs:
   repo-sync:
     env:
-      PAT: ${{ secrets.PAT }} 
+      PAT: ${{ secrets.PAT }}
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
@@ -19,14 +20,14 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: sync KingRan-KR 
+      - name: Sync-GitLab-repos-cishanjia
         uses: repo-sync/github-sync@v2
         if: env.PAT
         with:
-          source_repo: "https://github.com/KingRan/KR.git" 
-          source_branch: "main" 
-          destination_branch: "KingRan"  # #
-          github_token: ${{ secrets.PAT }} 
+          source_repo: "https://gitlab.com/SuperManito/cishanjia.git"
+          source_branch: "main"
+          destination_branch: "cishanjia"
+          github_token: ${{ secrets.PAT }}
           fetch-depth: 0
           path: "."
-          exclude: "'icon','README.md'" 
+          exclude: "'README.md'"
