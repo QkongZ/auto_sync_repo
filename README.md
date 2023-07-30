@@ -23,6 +23,7 @@ Tips：仓库内全部都是工具本没有常规本不需要默认设置定时�
     ```bash
     ql repo https://gitlab.com/SuperManito/cishanjia.git "jd_|jdCookie" "" "^jd[^_]|USER|function|sendNotify" "main"
     ```
+    外部项目用户不受本仓库开发者支持，请勿在 Arcadia 社区内提问，否则可能会被封禁！
 
 ## 功能配置
 
