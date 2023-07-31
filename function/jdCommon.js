@@ -1,5 +1,6 @@
 /*
 通用代码库
+new Env('jdCommon');
 */
 
 const SHA1 = require('crypto-js/sha1')
