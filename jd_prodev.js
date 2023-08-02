@@ -1,7 +1,7 @@
 /*
 活动名称：邀请好友入会得好礼
 活动链接：https://prodev.m.jd.com/mall/active/dVF7gQUVKyUcuSsVhuya5d2XD4F/index.html?code=<活动id>
-环境变量：jd_prodev_actCode // 活动链接
+环境变量：jd_prodev_actCode // 活动ID
         jd_prodev_invitePin // 需要助力的默认用户名，不填默认CK1
         jd_prodev_Address // 用户登记收货地址，按照顺序依次填写 收件人@手机号@省份@城市@区县@详细地址，多个用管道符分开
         jd_prodev_needPhysicalPrize // 是否领取实物奖品（true/false），默认领取（只会助力到需要领取奖品的档位）
