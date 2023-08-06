@@ -12,7 +12,7 @@
 */
 
 const $ = new Env('店铺抽奖（超级无线/超级会员）')
-const jdCookie = require('../jdCookie')
+const jdCookie = require('./jdCookie')
 const notify = require('./function/sendJDNotify')
 const getH5st = require('./function/getH5st3_0')
 const getToken = require('./function/getToken')
