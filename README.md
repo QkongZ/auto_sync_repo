@@ -42,6 +42,7 @@ npm install -g ds crypto-js jsdom got@11
   ```bash
   export JD_SIGN_API="" # 杂货铺格式
   ```
+  > 默认提供杂货铺公益API，不自定义签名API也能正常使用脚本
 
 - ### 自动登记实物奖品收货地址
 
