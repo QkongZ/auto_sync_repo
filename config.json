@@ -1,14 +1,14 @@
 {
     "repositories": [
       {
-        "source_repo": "https://github.com/user1/repo1.git",
+        "source_repo": "https://github.com:smallfawn/QLScriptPublic.git",
         "source_branch": "main",
-        "destination_branch": "user1-main"
+        "destination_branch": "smallfawn"
       },
       {
-        "source_repo": "https://github.com/user2/repo2.git",
-        "source_branch": "dev",
-        "destination_branch": "user2-dev"
+        "source_repo": "https://github.com/qq274023/lekebo.git",
+        "source_branch": "master",
+        "destination_branch": "lekebo"
       }
     ]
   }
