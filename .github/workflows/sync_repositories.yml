@@ -34,8 +34,8 @@ jobs:
 
       - name: 'Working'
         timeout-minutes: 350
-        run: bash ./main.sh
-        #run: python sync_repositories.py
+        #run: bash ./main.sh
+        run: python sync_repositories.py
         working-directory: .
 
       - name: Commit files
