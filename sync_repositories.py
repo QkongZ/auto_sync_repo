@@ -4,35 +4,17 @@ import subprocess
 # 从配置文件中读取仓库信息  
 with open('config.json', 'r') as config_file:  
     config = json.load(config_file)  
+    repositories = config['repositories']  
+    source_branch = config['source_branch']  
+    destination_branch = config['destination_branch']  
   
-for repo_info in config['repositories']:  
-    source_repo = repo_info['source_repo']  
-    source_branch = repo_info['source_branch']  
-    destination_branch = repo_info['destination_branch']  
-      
-    try:  
-        # 克隆仓库  
-        subprocess.run(['git', 'clone', source_repo])  
-        print(f"Cloned repository: {source_repo}")  
-    except subprocess.CalledProcessError as e:  
-        print(f"Failed to clone repository: {source_repo}")  
-        print(f"Error message: {e.output}")  
-        continue  
-      
-    try:  
-        # 切换到源分支  
-        subprocess.run(['git', 'checkout', source_branch])  
-        print(f"Switched to source branch: {source_branch}")  
-    except subprocess.CalledProcessError as e:  
-        print(f"Failed to switch to source branch: {source_branch}")  
-        print(f"Error message: {e.output}")  
-        continue  
-      
-    try:  
-        # 推送分支到目标分支  
-        subprocess.run(['git', 'push', 'origin', f'{source_branch}:{destination_branch}'])  
-        print(f"Pushed {source_branch} to {destination_branch}")  
-    except subprocess.CalledProcessError as e:  
-        print(f"Failed to push {source_branch} to {destination_branch}")  
-        print(f"Error message: {e.output}")  
-        continue
+# 执行仓库同步操作  
+for repo in repositories:  
+    repo_url = repo['source_repo']  
+    print(f"Cloning repository: {repo_url}")  
+    subprocess.run(['git', 'clone', repo_url])  
+    print(f"Switched to source branch: {source_branch}")  
+    subprocess.run(['git', 'checkout', source_branch])  
+    print(f"Pushing {source_branch} to {destination_branch}")  
+    subprocess.run(['git', 'push', 'origin', f'{source_branch}:{destination_branch}'])  
+    print("--------------------------------------------------------")
