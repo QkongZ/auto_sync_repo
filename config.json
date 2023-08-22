@@ -1,7 +1,7 @@
 {
     "repositories": [
       {
-        "source_repo": "https://github.com:smallfawn/QLScriptPublic.git",
+        "source_repo": "https://github.com/smallfawn/QLScriptPublic.git",
         "source_branch": "main",
         "destination_branch": "smallfawn"
       },
