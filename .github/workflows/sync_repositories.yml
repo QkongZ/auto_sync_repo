@@ -2,7 +2,10 @@ name: sync_repositories
   
 on:  
   schedule:  
-    - cron: '0 16 * * *' # 每天的16点执行  
+    - cron: '0 16 * * *' # 每天的16点执行
+  workflow_dispatch:
+  watch:
+    types: started
   
 jobs:  
   sync:  
