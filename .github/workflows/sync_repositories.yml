@@ -1,0 +1,54 @@
+name: 'GitHub Actions sync'
+
+on:
+  push:
+    branches: 
+      - main
+  schedule:
+    - cron: '0 16 * * *'
+jobs:
+  sync:
+    env:
+      PAT: ${{ secrets.PAT }} 
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: 'Set up Python'
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: 'Install dependencies'
+        run: python -m pip install --upgrade pip
+        working-directory: .
+
+      - name: 'Install requirements'
+        run: pip install -r ./requirements.txt
+
+      - name: 'Working'
+        timeout-minutes: 350
+        run: bash ./main.sh
+        #run: python sync_repositories.py
+        working-directory: .
+
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "✅ Sync repositories" -a
+
+      - name: 'Push changes'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT }} 
+
+      - name: 'Create a Release'
+        uses: elgohr/Github-Release-Action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }} 
+        with:
+          args: sync_repositories
