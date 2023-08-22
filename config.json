@@ -1,0 +1,14 @@
+{
+    "repositories": [
+      {
+        "source_repo": "https://github.com/user1/repo1.git",
+        "source_branch": "main",
+        "destination_branch": "user1-main"
+      },
+      {
+        "source_repo": "https://github.com/user2/repo2.git",
+        "source_branch": "dev",
+        "destination_branch": "user2-dev"
+      }
+    ]
+  }
