@@ -11,6 +11,7 @@ jobs:
   sync:  
     env:  
       PAT: ${{ secrets.PAT }}  
+      PYTHON: python3  
   
     runs-on: ubuntu-latest  
     steps:  
@@ -23,7 +24,7 @@ jobs:
           python-version: 3.7  
   
       - name: Install dependencies  
-        run: python -m pip install --upgrade pip  
+        run: pip install --upgrade pip  
         working-directory: .  
   
       - name: Install requirements  
@@ -32,12 +33,4 @@ jobs:
       - name: Working  
         timeout-minutes: 350  
         run: |  
-          for repo in "${repositories[@]}"  
-          do  
-            echo "Syncing repository: $repo"  
-            git clone "$repo"  
-            cd "$repo"  
-            git checkout "$source_branch"  
-            git push origin "$source_branch:$destination_branch"  
-            cd ..  
-          done
+          $PYTHON sync_repositories.py
