@@ -4,8 +4,8 @@
         https://lzkj-isv.isvjd.com/wxDrawActivity/activity/activity?activityId=<活动id>
         https://cjhy-isv.isvjcloud.com/wxDrawActivity/activity/activity?activityId=<活动id>
 环境变量：LUCK_DRAW_URL // 活动链接
-        LUCK_DRAW_NOTIFY // 是否推送通知，默认不推送
-        LUCK_DRAW_OPENCARD // 是否开卡，默认不开卡
+        LUCK_DRAW_NOTIFY // 是否推送通知（true/false），默认不推送
+        LUCK_DRAW_OPENCARD // 是否入会（true/false），默认不入会
         LUCK_DRAW_INTERVAL // 自定义抽奖间隔（正整数），默认1秒
 
 注：只有在没有抽奖次数的情况下才会去做任务获取
