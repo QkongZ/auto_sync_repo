@@ -43,6 +43,6 @@ jobs:
           
 
       - name: 'Push changes'
-        uses: ad-m/github-push-action@main
+        uses: ad-m/github-push-action@v1
         with:
           github_token: ${{ secrets.PAT }} 
