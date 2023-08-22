@@ -1,9 +1,6 @@
 name: 'GitHub Actions sync'
 
 on:
-  push:
-    branches: 
-      - main
   schedule:
     - cron: '0 16 * * *'
   workflow_dispatch:
