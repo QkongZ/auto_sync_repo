@@ -31,12 +31,12 @@ for repo_info in config['repositories']:
         print(f"Failed to switch to source branch: {source_branch}")
         print(f"Error message: {e.output}")
         continue
-
+    source_repo_parts = source_repo.split("github.com/")[1]
     try:
         # 推送分支到目标分支
         subprocess.run(['git', 'config', 'user.name', 'GitHub Actions'], check=True)
         subprocess.run(['git', 'config', 'user.email', 'actions@github.com'], check=True)
-        subprocess.run(['git', 'push', f'{source_repo}', f'{source_branch}:{destination_branch}'], check=True, env={"GITHUB_TOKEN": github_token})
+        subprocess.run(['git', 'push', f'https://{github_token}@github.com/{source_repo_parts}', f'{source_branch}:{destination_branch}'], check=True)
         print(f"Pushed {source_branch} to {destination_branch}")
     except subprocess.CalledProcessError as e:
         print(f"Failed to push {source_branch} to {destination_branch}")
