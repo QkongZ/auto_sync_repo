@@ -36,7 +36,7 @@ for repo_info in config['repositories']:
         # 推送分支到目标分支
         subprocess.run(['git', 'config', 'user.name', 'GitHub Actions'], check=True)
         subprocess.run(['git', 'config', 'user.email', 'actions@github.com'], check=True)
-        subprocess.run(['git', 'push', f'https://{github_token}@github.com/{source_repo}', f'{source_branch}:{destination_branch}'], check=True)
+        subprocess.run(['git', 'push', f'{source_repo}', f'{source_branch}:{destination_branch}'], check=True, env={"GITHUB_TOKEN": github_token})
         print(f"Pushed {source_branch} to {destination_branch}")
     except subprocess.CalledProcessError as e:
         print(f"Failed to push {source_branch} to {destination_branch}")
