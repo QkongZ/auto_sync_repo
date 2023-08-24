@@ -1,14 +1,19 @@
 {
-    "repositories": [
-      {
-        "source_repo": "https://github.com/smallfawn/QLScriptPublic.git",
-        "source_branch": "main",
-        "destination_branch": "smallfawn"
-      },
-      {
-        "source_repo": "https://github.com/qq274023/lekebo.git",
-        "source_branch": "master",
-        "destination_branch": "lekebo"
-      }
-    ]
+  "your_repository": {
+  "username": "QkongZ",
+  "repository": "script-repo"
   }
+  "repositories": [
+    {
+      "source_repo": "https://github.com/smallfawn/QLScriptPublic.git",
+      "source_branch": "main",
+      "destination_branch": "smallfawn"
+    },
+    {
+      "source_repo": "https://github.com/qq274023/lekebo.git",
+      "source_branch": "master",
+      "destination_branch": "lekebo"
+    }
+  ],
+  
+}
