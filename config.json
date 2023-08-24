@@ -8,6 +8,7 @@
       "source_repo": "https://github.com/smallfawn/QLScriptPublic.git",
       "source_branch": "main",
       "destination_branch": "smallfawn"
+      "excludes": ["README.md"]
     },
     {
       "source_repo": "https://github.com/qq274023/lekebo.git",
