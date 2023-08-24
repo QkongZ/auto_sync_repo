@@ -36,6 +36,12 @@ for repo_info in config['repositories']:
         repo.create_remote('destination', your_repo_url)
 
         # 拉取目标分支并合并，排除指定的文件或文件夹
+        if destination_branch not in repo.remotes['destination'].refs:
+            # 目标分支不存在，创建它
+            repo.git.branch(destination_branch)
+            repo.remotes['destination'].push(destination_branch)
+            print(f"Created and pushed destination branch {destination_branch}")
+
         repo.remotes['destination'].fetch(destination_branch)
         repo.git.checkout(destination_branch)
         merge_message = f"Merged {source_branch} from {source_repo} into {destination_branch}"
@@ -50,7 +56,7 @@ for repo_info in config['repositories']:
         repo.index.commit(merge_message)
 
         # 推送源分支到目标分支
-        repo.git.push('destination', source_branch)
+        repo.git.push('destination', destination_branch)
         print(f"Pushed {source_branch} from {source_repo} to {destination_branch} in your repository")
     except Exception as e:
         print(f"Error occurred while processing repository {source_repo} and branch {source_branch}")
