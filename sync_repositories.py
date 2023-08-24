@@ -18,7 +18,7 @@ for repo_info in config['repositories']:
 
     try:
         # 克隆仓库并切换到源分支
-        repo = Repo.clone_from(source_repo, source_repo)  # 直接使用源仓库名
+        repo = Repo.clone_from(source_repo, source_repo.split('/')[-1].split('.git')[0])  
         repo.git.checkout(source_branch)
         print(f"Cloned repository {source_repo} and switched to source branch {source_branch}")
     except Exception as e:
