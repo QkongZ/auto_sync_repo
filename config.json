@@ -7,7 +7,7 @@
     {
       "source_repo": "https://github.com/smallfawn/QLScriptPublic.git",
       "source_branch": "main",
-      "destination_branch": "smallfawn"
+      "destination_branch": "smallfawn",
       "excludes": ["README.md"]
     },
     {
