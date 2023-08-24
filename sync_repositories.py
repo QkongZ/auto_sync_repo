@@ -36,8 +36,17 @@ for repo_info in config['repositories']:
         your_repo_url = f"https://{github_token}@github.com/{your_repo_info['username']}/{your_repo_info['repository']}.git"
         repo.create_remote('destination', your_repo_url)
 
+        # 拉取目标分支并合并，排除 README.md 文件
+        repo.remotes['destination'].fetch(destination_branch)
+        repo.git.checkout(destination_branch)
+        repo.git.merge(f"destination/{destination_branch}")
+        repo.git.rm('--cached', 'README.md')  # 排除 README.md 文件
+
+        # 提交合并的更改
+        repo.index.commit(f"Merged {source_branch} from {source_repo} into {destination_branch} (excluding README.md)")
+
         # 推送源分支到目标分支
-        repo.git.push('destination', f'{source_branch}:{destination_branch}')
+        repo.git.push('destination', destination_branch)
         print(f"Pushed {source_branch} from {source_repo} to {destination_branch} in your repository")
     except Exception as e:
         print(f"Failed to push {source_branch} from {source_repo} to {destination_branch} in your repository")
