@@ -35,6 +35,12 @@
         "excludes": ["README.md"]
       },
       {
+        "source_repo": "https://github.com/wd210010/only_for_happly.git",
+        "source_branch": "main",
+        "destination_branch": "wd210010",
+        "excludes": ["README.md"]
+      },
+      {
         "source_repo": "https://github.com/qq274023/lekebo.git",
         "source_branch": "master",
         "destination_branch": "lekebo"
