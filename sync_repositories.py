@@ -50,7 +50,7 @@ for repo_info in config['repositories']:
             merge_message += f" (excluding {excludes_string})"
         repo.git.merge(f"destination/{destination_branch}", message=merge_message)
         for exclude in excludes:
-            repo.git.rm('--cached', exclude)  # 排除指定的文件或文件夹
+            repo.git.rm('-r', '--cached', exclude)  # 排除指定的文件夹及其子文件或排除文件
 
         # 提交合并的更改
         repo.index.commit(merge_message)
