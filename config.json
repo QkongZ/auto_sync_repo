@@ -2,7 +2,7 @@
   "your_repository": {
   "username": "QkongZ",
   "repository": "script-repo"
-  }
+  },
   "repositories": [
     {
       "source_repo": "https://github.com/smallfawn/QLScriptPublic.git",
@@ -14,6 +14,6 @@
       "source_branch": "master",
       "destination_branch": "lekebo"
     }
-  ],
+  ]
   
 }
