@@ -62,7 +62,7 @@ for repo_info in config['repositories']:
         repo.index.commit(merge_message)
 
         # 推送源分支到目标分支
-        repo.git.push('destination', source_branch)
+        repo.git.push('destination', destination_branch)
         logging.info(f"Pushed {source_branch} from {source_repo} to {destination_branch} in your repository")
     except Exception as e:
         logging.error(f"Error occurred while processing repository {source_repo} and branch {source_branch}")
