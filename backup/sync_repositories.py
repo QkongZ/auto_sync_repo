@@ -45,6 +45,10 @@ for repo_info in config['repositories']:
         repo.remotes['destination'].fetch(destination_branch)
         repo.git.checkout(destination_branch)
         merge_message = f"Merged {source_branch} from {source_repo} into {destination_branch}"
+        if excludes:
+            excludes_string = ', '.join(excludes)
+            merge_message += f" (excluding {excludes_string})"
+        repo.git.merge(f"destination/{destination_branch}", message=merge_message)
         for exclude in excludes:
             if os.path.exists(os.path.join(repo.working_dir, exclude)):
                 if os.path.isdir(exclude):
