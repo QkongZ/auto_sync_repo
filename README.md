@@ -1,4 +1,4 @@
-# scripts-repo
+# auto_sync_repo
 ## 复刻各个🐉 🦿📖整合到一起
 
 ### GitHub工作流 workflows.yml 文件拉取变量
