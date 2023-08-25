@@ -1,49 +1,78 @@
 {
-    "your_repository": {
-      "username": "QkongZ",
-      "repository": "auto_sync_repo"
+  "your_repository": {
+    "username": "QkongZ",
+    "repository": "auto_sync_repo"
+  },
+  "repositories": [
+    {
+      "source_repo": "https://github.com/smallfawn/QLScriptPublic.git",
+      "source_branch": "main",
+      "destination_branch": "smallfawn",
+      "excludes": ["README.md"]
     },
-    "repositories": [
-      {
-        "source_repo": "https://github.com/smallfawn/QLScriptPublic.git",
-        "source_branch": "main",
-        "destination_branch": "smallfawn",
-        "excludes": ["README.md"]
-      },
-      {
-        "source_repo": "https://github.com/leafTheFish/DeathNote.git",
-        "source_branch": "main",
-        "destination_branch": "leafTheFish",
-        "excludes": ["README.md"]
-      },
-      {
-        "source_repo": "https://github.com/lu0b0/Script.git",
-        "source_branch": "main",
-        "destination_branch": "lu0b0",
-        "excludes": ["README.md"]
-      },
-      {
-        "source_repo": "https://github.com/yml2213/javascript.git",
-        "source_branch": "master",
-        "destination_branch": "yml2213",
-        "excludes": ["README.md", "invalid"]
-      },
-      {
-        "source_repo": "https://github.com/LinYuanovo/scripts.git",
-        "source_branch": "main",
-        "destination_branch": "LinYuanovo",
-        "excludes": ["README.md"]
-      },
-      {
-        "source_repo": "https://github.com/wd210010/only_for_happly.git",
-        "source_branch": "main",
-        "destination_branch": "wd210010",
-        "excludes": ["README.md"]
-      },
-      {
-        "source_repo": "https://github.com/qq274023/lekebo.git",
-        "source_branch": "master",
-        "destination_branch": "lekebo"
-      }
-    ]
-  }
+    {
+      "source_repo": "https://github.com/leafTheFish/DeathNote.git",
+      "source_branch": "main",
+      "destination_branch": "leafTheFish",
+      "excludes": ["README.md"]
+    },
+    {
+      "source_repo": "https://github.com/lu0b0/Script.git",
+      "source_branch": "main",
+      "destination_branch": "lu0b0",
+      "excludes": ["README.md"]
+    },
+    {
+      "source_repo": "https://github.com/yml2213/javascript.git",
+      "source_branch": "master",
+      "destination_branch": "yml2213",
+      "excludes": ["README.md", "invalid"]
+    },
+    {
+      "source_repo": "https://github.com/LinYuanovo/scripts.git",
+      "source_branch": "main",
+      "destination_branch": "LinYuanovo",
+      "excludes": ["README.md"]
+    },
+    {
+      "source_repo": "https://github.com/wd210010/only_for_happly.git",
+      "source_branch": "main",
+      "destination_branch": "wd210010",
+      "excludes": ["README.md"]
+    },
+    {
+      "source_repo": "https://github.com/Bidepanlong/ql.git",
+      "source_branch": "main",
+      "destination_branch": "Bidepanlong",
+      "excludes": ["README.md"]
+    },
+    {
+      "source_repo": "https://github.com/KingRan/KR.git",
+      "source_branch": "main",
+      "destination_branch": "KR",
+      "excludes": ["README.md", "backUp", "docker"]
+    },
+    {
+      "source_repo": "https://gitlab.com/SuperManito/cishanjia.git",
+      "source_branch": "main",
+      "destination_branch": "cishanjia"
+    },
+    {
+      "source_repo": "https://gitlab.com/acoolbook/ym.git",
+      "source_branch": "main",
+      "destination_branch": "acoolbook",
+      "excludes": ["backup", "__pycache__"]
+    },
+    {
+      "source_repo": "https://gitlab.com/soytool/script.git",
+      "source_branch": "main",
+      "destination_branch": "soytool",
+      "excludes": ["README.md", "image"]
+    },
+    {
+      "source_repo": "https://github.com/qq274023/lekebo.git",
+      "source_branch": "master",
+      "destination_branch": "lekebo"
+    }
+  ]
+}
