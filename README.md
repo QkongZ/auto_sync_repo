@@ -55,7 +55,7 @@ npm install -g ds crypto-js jsdom got@11
 - ### 账号消息推送通知过滤
 
   ```bash
-  epxort JD_NOTIFY_FILTER_KEYWORDS="空气" # 过滤关键词，多个用@分开
+  export JD_NOTIFY_FILTER_KEYWORDS="空气" # 过滤关键词，多个用@分开
   ```
   只对定义了推送通知开关独特环境变量的部分脚本有效，且默认均为不推送通知，如果你在启用这些脚本的推送通知后不想看见一直抽空气啥的你可以试试它
 

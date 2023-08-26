@@ -1,7 +1,6 @@
 #!/bin/bash
 ## 一键领取关注有礼奖励 - 辅助工具脚本
 ## Version: 3.1
-## Author: SuperManito
 ## Modified: 2023-08-22
 
 ## 运行模式，1为输出命令，2为直接执行
