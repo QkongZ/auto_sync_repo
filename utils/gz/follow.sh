@@ -1,7 +1,7 @@
 #!/bin/bash
 ## 一键领取关注有礼奖励 - 辅助工具脚本
-## Version: 3.1
-## Modified: 2023-08-22
+## Version: 3.2
+## Modified: 2023-08-28
 
 ## 运行模式，1为输出命令，2为直接执行
 RUNMOD="2"
@@ -114,7 +114,9 @@ function get_id_with_ids() {
 
     ## 判断是否为纯id格式（shopId或venderId）
     elif [[ "${IdContent}" =~ ^[0-9]{1,10}$ ]]; then
-        local ShopData="$(curl -sL "https://api.m.jd.com/client.action?functionId=whx_getMShopDetail&body=%7B%22shopId%22%3A%22${IdContent}%22%2C%20%22venderId%22%3A%22${IdContent}%22%2C%20%22source%22%3A%22m-shop%22%7D&t=${LocalTimeStr}000&appid=shop_m_jd_com&clientVersion=11.0.0&client=wh5&area=1_72_2799_0&uuid=167100205425019231810$((${RANDOM} % 10))$((${RANDOM} % 10))" \
+        local bodyTmp ShopData result
+        bodyTmp="%7B%22venderId%22%3A%22${IdContent}%22%2C%20%22source%22%3A%22m-shop%22%7D"
+        ShopData="$(curl -sL "https://api.m.jd.com/client.action?functionId=whx_getMShopDetail&body=${bodyTmp}&t=${LocalTimeStr}000&appid=shop_m_jd_com&clientVersion=11.0.0&client=wh5&area=1_72_2799_0&uuid=167100205425019231810$((${RANDOM} % 10))$((${RANDOM} % 10))" \
             -H 'origin: https://shop.m.jd.com' \
             -H 'sec-fetch-dest: empty' \
             -H 'sec-fetch-mode: cors' \
@@ -122,12 +124,27 @@ function get_id_with_ids() {
             -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36' \
             -H 'x-referer-page: https://shop.m.jd.com/shop/introduce' \
             --compressed)"
-        local result=$(echo "${ShopData}" | jq -r ".success")
+        result=$(echo "${ShopData}" | jq -r ".success")
         if [[ $result == "true" ]]; then
             VENDER_ID=$(echo "${ShopData}" | jq -r ".data.shopBaseInfo.venderId")
             SHOP_ID=$(echo "${ShopData}" | jq -r ".data.shopBaseInfo.shopId")
         else
-            output_error "未能获取到店铺信息，请检查原因后重试！"
+            bodyTmp="%7B%22shopId%22%3A%22${IdContent}%22%2C%20%22source%22%3A%22m-shop%22%7D"
+            ShopData="$(curl -sL "https://api.m.jd.com/client.action?functionId=whx_getMShopDetail&body=${bodyTmp}&t=${LocalTimeStr}000&appid=shop_m_jd_com&clientVersion=11.0.0&client=wh5&area=1_72_2799_0&uuid=167100205425019231810$((${RANDOM} % 10))$((${RANDOM} % 10))" \
+                -H 'origin: https://shop.m.jd.com' \
+                -H 'sec-fetch-dest: empty' \
+                -H 'sec-fetch-mode: cors' \
+                -H 'sec-fetch-site: same-site' \
+                -H 'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36' \
+                -H 'x-referer-page: https://shop.m.jd.com/shop/introduce' \
+                --compressed)"
+            result=$(echo "${ShopData}" | jq -r ".success")
+            if [[ $result == "true" ]]; then
+                VENDER_ID=$(echo "${ShopData}" | jq -r ".data.shopBaseInfo.venderId")
+                SHOP_ID=$(echo "${ShopData}" | jq -r ".data.shopBaseInfo.shopId")
+            else
+                output_error "未能获取到店铺信息，请检查原因后重试！"
+            fi
         fi
 
     else
