@@ -11,19 +11,19 @@ Tips：仓库内全部都是工具本没有常规本不需要默认设置定时�
 
 ## 拉库
 
-- ### Arcadia 面板（推荐使用）
+- ### Arcadia 面板（推荐使用⭐）
 
     ```bash
     arcadia repo 慈善家 https://gitlab.com/SuperManito/cishanjia.git main --whiteList '^jd_'
     ```
-    详见官方文档：https://arcadia.cool
+    详见官方文档：[arcadia.cool](https://arcadia.cool)
 
 - ### 青龙面板
 
     ```bash
     ql repo https://gitlab.com/SuperManito/cishanjia.git "jd_|jdCookie" "" "^jd[^_]|USER|function|sendNotify" "main"
     ```
-    外部项目用户请勿在 Arcadia 社区内提问！
+    ⚠ 外部项目用户请勿在 Arcadia 社区内提问！
 
 - ### 其它
 
@@ -55,7 +55,7 @@ npm install -g ds crypto-js jsdom got@11
 - ### 账号消息推送通知过滤
 
   ```bash
-  epxort JD_NOTIFY_FILTER_KEYWORDS="空气" # 过滤关键词，多个用@分开
+  export JD_NOTIFY_FILTER_KEYWORDS="空气" # 过滤关键词，多个用@分割
   ```
   只对定义了推送通知开关独特环境变量的部分脚本有效，且默认均为不推送通知，如果你在启用这些脚本的推送通知后不想看见一直抽空气啥的你可以试试它
 
@@ -71,7 +71,7 @@ npm install -g ds crypto-js jsdom got@11
       ```bash
       gz <店铺链接/单一店铺ID/组合ID变量> [--options]
       ```
-      > [!NOTE|label:注释]
+      > 注释  
       > 1. 链接：支持解析ujd短链，只要链接的传递参数中包含 shopId、venderId、vendorId 其中一个任意完整参数即可，例：gz https://u.jd.com/1234567  
       > 2. 纯数字单一店铺ID：shopId、venderId、vendorId 任意一个参数的ID值，例：gz 1234567890  
       > 3. 市面常见id组合变量（格式为 shopId_vendorId），例：gz 1234567890_0987654321
