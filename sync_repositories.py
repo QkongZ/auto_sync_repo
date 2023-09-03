@@ -39,9 +39,12 @@ for repo_info in config['repositories']:
         your_repo_url = f"https://{github_token}@github.com/{your_repo_info['username']}/{your_repo_info['repository']}.git"
         repo.create_remote('destination', your_repo_url)
 
-        # 拉取目标分支并合并，排除指定的文件或文件夹
+        # 拉取目标分支的最新代码
         repo.remotes['destination'].fetch(destination_branch)
         repo.git.checkout(destination_branch)
+        repo.git.pull('destination', destination_branch)
+
+        # 合并源分支的代码，排除指定的文件或文件夹
         merge_message = f"Merged {source_branch} from {source_repo} into {destination_branch}"
         if excludes:
             excludes_string = ', '.join(excludes)
@@ -59,6 +62,7 @@ for repo_info in config['repositories']:
                 logging.warning(f"Path does not exist: {exclude}")
 
 
+        # 提交合并的更改
         repo.index.commit(merge_message)
 
         # 推送源分支到目标分支
