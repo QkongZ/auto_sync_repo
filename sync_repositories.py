@@ -58,7 +58,7 @@ for repo_info in config['repositories']:
             else:
                 logging.warning(f"Path does not exist: {exclude}")
 
-        # 提交合并的更改
+
         repo.index.commit(merge_message)
 
         # 推送源分支到目标分支
