@@ -39,6 +39,9 @@ for repo_info in config['repositories']:
         your_repo_url = f"https://{github_token}@github.com/{your_repo_info['username']}/{your_repo_info['repository']}.git"
         repo.create_remote('destination', your_repo_url)
 
+        # 拉取源分支的最新代码
+        repo.git.pull('origin', source_branch)
+
         # 拉取目标分支的最新代码
         repo.remotes['destination'].fetch(destination_branch)
         repo.git.checkout(destination_branch)
@@ -49,7 +52,7 @@ for repo_info in config['repositories']:
         if excludes:
             excludes_string = ', '.join(excludes)
             merge_message += f" (excluding {excludes_string})"
-        repo.git.merge(f"destination/{destination_branch}", message=merge_message)
+        repo.git.merge(f"origin/{source_branch}", message=merge_message)
         for exclude in excludes:
             if os.path.exists(os.path.join(repo.working_dir, exclude)):
                 if os.path.isdir(exclude):
