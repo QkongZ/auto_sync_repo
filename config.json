@@ -53,6 +53,12 @@
       "excludes": ["README.md", "backUp", "docker"]
     },
     {
+      "source_repo": "https://github.com/meetclover/JavaScript.git",
+      "source_branch": "main",
+      "destination_branch": "meetclover",
+      "excludes": ["README.md", "LICENSE"]
+    },
+    {
       "source_repo": "https://gitlab.com/SuperManito/cishanjia.git",
       "source_branch": "main",
       "destination_branch": "cishanjia"
@@ -68,12 +74,6 @@
       "source_branch": "main",
       "destination_branch": "soytool",
       "excludes": ["README.md", "image"]
-    },
-    {
-      "source_repo": "https://github.com/meetclover/JavaScript.git",
-      "source_branch": "main",
-      "destination_branch": "meetclover",
-      "excludes": ["README.md"]
     },
     {
       "source_repo": "https://github.com/qq274023/lekebo.git",
