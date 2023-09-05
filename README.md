@@ -14,7 +14,7 @@ Tips：仓库内全部都是工具本没有常规本不需要默认设置定时�
 - ### Arcadia 面板（推荐使用⭐）
 
     ```bash
-    arcadia repo 慈善家 https://gitlab.com/SuperManito/cishanjia.git main --whiteList '^jd_'
+    arcadia repo 慈善家 https://gitlab.com/SuperManito/cishanjia.git main --updateTaskList true --autoDisable true --whiteList '^jd_'
     ```
     详见官方文档：[arcadia.cool](https://arcadia.cool)
 
