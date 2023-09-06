@@ -57,6 +57,22 @@ def merge_and_exclude(repo, repo_info):
             logging.warning(f"Path does not exist: {exclude}")
     repo.index.commit(merge_message)
 
+def reset_and_merge(repo, repo_info):
+    try:
+        # 重置目标分支到源分支的状态
+        repo.git.reset('--hard', f"origin/{repo_info['source_branch']}")
+        # 合并源分支的代码
+        merge_message = f"Merged {repo_info['source_branch']} from {repo_info['source_repo']} into {repo_info['destination_branch']}"
+        if repo_info['excludes']:
+            excludes_string = ', '.join(repo_info['excludes'])
+            merge_message += f" (excluding {excludes_string})"
+        repo.git.merge(f"origin/{repo_info['source_branch']}", message=merge_message)
+    except Exception as e:
+        logging.error(f"Failed to reset and merge source branch {repo_info['source_branch']} into destination branch {repo_info['destination_branch']}")
+        logging.error(f"Error message: {str(e)}")
+        return False
+    return True
+
 def push(repo, repo_info):
     repo.git.push('destination', repo_info['destination_branch'])
     logging.info(f"Pushed {repo_info['source_branch']} from {repo_info['source_repo']} to {repo_info['destination_branch']} in your repository")
@@ -75,6 +91,8 @@ def main():
         add_remote(repo, your_repo_info, github_token)
         fetch_and_checkout(repo, repo_info['destination_branch'])
         pull(repo, repo_info['destination_branch'])
+        if not reset_and_merge(repo, repo_info):
+            continue
         merge_and_exclude(repo, repo_info)
         push(repo, repo_info)
 
