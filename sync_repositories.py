@@ -39,12 +39,14 @@ for repo_info in config['repositories']:
         your_repo_url = f"https://{github_token}@github.com/{your_repo_info['username']}/{your_repo_info['repository']}.git"
         repo.create_remote('destination', your_repo_url)
 
-        # 拉取源分支的最新代码
-        repo.git.pull('origin', source_branch)
-
         # 拉取目标分支的最新代码
-        repo.remotes['destination'].fetch(destination_branch)
-        repo.git.checkout(destination_branch)
+        try:
+            repo.remotes['destination'].fetch(destination_branch)
+            repo.git.checkout(destination_branch)
+        except Exception:
+            # 如果目标分支不存在，创建新的分支
+            repo.git.checkout('HEAD', b=destination_branch)
+
         repo.git.pull('destination', destination_branch)
 
         # 合并源分支的代码，排除指定的文件或文件夹
