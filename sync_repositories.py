@@ -46,8 +46,9 @@ def merge_and_exclude(repo, repo_info):
         merge_message += f" (excluding {excludes_string})"
     repo.git.merge(f"origin/{repo_info['source_branch']}", message=merge_message)
     for exclude in repo_info['excludes']:
-        if os.path.exists(os.path.join(repo.working_dir, exclude)):
-            if os.path.isdir(exclude):
+        exclude_path = os.path.join(repo.working_dir, exclude)
+        if os.path.exists(exclude_path):
+            if os.path.isdir(exclude_path):
                 logging.info(f"Excluding directory: {exclude}")
                 repo.git.rm('-r', '--cached', exclude)
             else:
