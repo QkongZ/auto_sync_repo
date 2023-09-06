@@ -40,11 +40,15 @@ def fetch_and_checkout(repo, repo_info):
             repo = Repo(repo_info['destination_repo'])
             repo.git.checkout(repo_info['destination_branch'])
         
+        # 检查目标分支是否存在
+        if repo_info['destination_branch'] not in repo.branches:
+            # 如果目标分支不存在，则创建一个新的目标分支
+            repo.git.checkout('-b', repo_info['destination_branch'])
+        
         # 拉取远程仓库的源分支
         repo.remotes['destination'].fetch(repo_info['source_branch'])
     except Exception:
-        # 如果目标分支不存在，就创建一个新的目标分支
-        repo.git.checkout('-b', repo_info['destination_branch'])
+        logging.error(f"Failed to fetch and checkout source branch {repo_info['source_branch']} into destination branch {repo_info['destination_branch']}")
 
 
 def pull(repo, repo_info):
