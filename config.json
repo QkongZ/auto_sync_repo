@@ -61,7 +61,7 @@
     {
       "source_repo": "https://gitlab.com/SuperManito/cishanjia.git",
       "source_branch": "main",
-      "destination_branch": "cishanjia"
+      "destination_branch": "cishanjia",
       "excludes": ["README.md"]
     },
     {
