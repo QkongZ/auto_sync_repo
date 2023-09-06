@@ -74,9 +74,15 @@ def reset_and_merge(repo, repo_info):
     return True
 
 def push(repo, repo_info):
-    repo.git.push('destination', repo_info['destination_branch'])
-    logging.info(f"Pushed {repo_info['source_branch']} from {repo_info['source_repo']} to {repo_info['destination_branch']} in your repository")
-
+    try:
+        # 先拉取远程仓库的更改
+        repo.git.pull('destination', repo_info['destination_branch'])
+        # 然后进行推送
+        repo.git.push('destination', repo_info['destination_branch'])
+        logging.info(f"Pushed {repo_info['source_branch']} from {repo_info['source_repo']} to {repo_info['destination_branch']} in your repository")
+    except Exception as e:
+        logging.error(f"Failed to push source branch {repo_info['source_branch']} to destination branch {repo_info['destination_branch']}")
+        logging.error(f"Error message: {str(e)}")
 def main():
     setup_logging()
     config = load_config()
