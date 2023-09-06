@@ -29,15 +29,25 @@ def add_remote(repo, your_repo_info, github_token):
     your_repo_url = f"https://{github_token}@github.com/{your_repo_info['username']}/{your_repo_info['repository']}.git"
     repo.create_remote('destination', your_repo_url)
 
-def fetch_and_checkout(repo, destination_branch):
+def fetch_and_checkout(repo, repo_info):
     try:
-        repo.remotes['destination'].fetch(destination_branch)
-        repo.git.checkout(destination_branch)
+        # 先拉取远程仓库的源分支
+        repo.remotes['destination'].fetch(repo_info['source_branch'])
+        # 然后切换到目标分支
+        repo.git.checkout(repo_info['destination_branch'])
     except Exception:
-        repo.git.checkout('HEAD', b=destination_branch)
+        # 如果目标分支不存在，就创建一个新的目标分支
+        repo.git.checkout('-b', repo_info['destination_branch'])
 
-def pull(repo, destination_branch):
-    repo.git.pull('destination', destination_branch)
+def pull(repo, repo_info):
+    try:
+        # 先切换到目标分支
+        repo.git.checkout(repo_info['destination_branch'])
+        # 然后拉取远程仓库的源分支的更改
+        repo.git.pull('destination', repo_info['source_branch'])
+    except Exception as e:
+        logging.error(f"Failed to pull source branch {repo_info['source_branch']} into destination branch {repo_info['destination_branch']}")
+        logging.error(f"Error message: {str(e)}")
 
 def merge_and_exclude(repo, repo_info):
     merge_message = f"Merged {repo_info['source_branch']} from {repo_info['source_repo']} into {repo_info['destination_branch']}"
