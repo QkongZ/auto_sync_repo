@@ -31,13 +31,21 @@ def add_remote(repo, your_repo_info, github_token):
 
 def fetch_and_checkout(repo, repo_info):
     try:
-        # 先拉取远程仓库的源分支
+        # 检查本地仓库是否存在
+        if not os.path.exists(repo_info['destination_repo']):
+            # 如果本地仓库不存在，则进行克隆操作
+            repo = Repo.clone_from(repo_info['source_repo'], repo_info['destination_repo'])
+        else:
+            # 如果本地仓库已存在，则切换到目标分支
+            repo = Repo(repo_info['destination_repo'])
+            repo.git.checkout(repo_info['destination_branch'])
+        
+        # 拉取远程仓库的源分支
         repo.remotes['destination'].fetch(repo_info['source_branch'])
-        # 然后切换到目标分支
-        repo.git.checkout(repo_info['destination_branch'])
     except Exception:
         # 如果目标分支不存在，就创建一个新的目标分支
         repo.git.checkout('-b', repo_info['destination_branch'])
+
 
 def pull(repo, repo_info):
     try:
