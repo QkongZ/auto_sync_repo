@@ -62,6 +62,7 @@
       "source_repo": "https://gitlab.com/SuperManito/cishanjia.git",
       "source_branch": "main",
       "destination_branch": "cishanjia"
+      "excludes": ["README.md"]
     },
     {
       "source_repo": "https://gitlab.com/acoolbook/ym.git",
