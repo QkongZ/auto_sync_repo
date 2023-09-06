@@ -94,6 +94,8 @@ def push(repo, repo_info):
     except Exception as e:
         logging.error(f"Failed to push source branch {repo_info['source_branch']} to destination branch {repo_info['destination_branch']}")
         logging.error(f"Error message: {str(e)}")
+
+
 def main():
     setup_logging()
     config = load_config()
@@ -106,8 +108,8 @@ def main():
             continue
         setup_git_config(repo)
         add_remote(repo, your_repo_info, github_token)
-        fetch_and_checkout(repo, repo_info['destination_branch'])
-        pull(repo, repo_info['destination_branch'])
+        fetch_and_checkout(repo, repo_info)  # 修改这里
+        pull(repo, repo_info)  # 修改这里
         if not reset_and_merge(repo, repo_info):
             continue
         merge_and_exclude(repo, repo_info)
