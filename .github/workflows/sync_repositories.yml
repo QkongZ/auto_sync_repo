@@ -38,3 +38,9 @@ jobs:
         timeout-minutes: 350
         #run: bash ./main.sh
         run: python sync_repositories.py
+        
+      - name: 'Clean up cache'
+        run: |
+          git rm -r --cached .
+          git reset --hard
+        working-directory: ${{ github.workspace }}
