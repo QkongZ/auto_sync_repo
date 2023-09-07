@@ -68,7 +68,7 @@
       "source_repo": "https://gitlab.com/acoolbook/ym.git",
       "source_branch": "main",
       "destination_branch": "acoolbook",
-      "excludes": ["backup", "__pycache__"]
+      "excludes": ["backup", "__pycache__", ".github"]
     },
     {
       "source_repo": "https://gitlab.com/soytool/script.git",
