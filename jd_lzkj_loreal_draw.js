@@ -14,7 +14,7 @@
 */
 
 const $ = new Env('幸运抽奖（超级无线）')
-const jdCookieNode = $.isNode() ? require('./jdCookie') : ''
+const jdCookie = $.isNode() ? require('./jdCookie') : ''
 const common = require('./function/jdCommon')
 const notify = $.isNode() ? require('./sendNotify') : ''
 const getH5st = require('./function/getH5st3_0')
