@@ -1,11 +1,11 @@
 /*
-活动名称：关注商品有礼（超级无线欧莱雅）
+活动名称：关注商品有礼（超级无线）
 活动链接：https://lzkj-isv.isvjcloud.com/prod/cc/interactsaas/index?activityType=10053&templateId=<模板id>&activityId=<活动id>&nodeId=<nodeid>&prd=cjwx
 环境变量：jd_lzkj_loreal_followGoods_url // 活动链接
 
 */
 
-const $ = new Env('关注商品有礼（超级无线欧莱雅）')
+const $ = new Env('关注商品有礼（超级无线）')
 const notify = $.isNode() ? require('./sendNotify') : ''
 const jdCookieNode = $.isNode() ? require('./jdCookie') : ''
 const getH5st = require('./function/getH5st3_0')

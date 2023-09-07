@@ -1,12 +1,12 @@
 /*
-活动名称：签到有礼（超级无线欧莱雅）
+活动名称：签到有礼（超级无线）
 活动链接：https://lzkj-isv.isvjcloud.com/prod/cc/interactsaas/index?activityType=<10023/10040>&templateId=<模板id>&activityId=<活动id>&nodeId=<nodeid>&prd=cjwx
 环境变量：jd_lzkj_loreal_daySign_url // 活动链接
          jd_lzkj_loreal_daySign_openCard // 是否开卡，默认不开卡
 
 */
 
-const $ = new Env('签到有礼（超级无线欧莱雅）')
+const $ = new Env('签到有礼（超级无线）')
 const notify = $.isNode() ? require('./sendNotify') : ''
 const jdCookieNode = $.isNode() ? require('./jdCookie') : ''
 const getH5st = require('./function/getH5st3_0')
