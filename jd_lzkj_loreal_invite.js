@@ -1,5 +1,5 @@
 /*
-活动名称：邀请入会有礼（超级无线欧莱雅）
+活动名称：邀请入会有礼（超级无线）
 活动链接：https://lzkj-isv.isvjcloud.com/prod/cc/interactsaas/index?activityType=<10006/10070>&templateId=<模板id>&activityId=<活动id>&nodeId=<nodeid>&prd=cjwx
 环境变量：jd_lzkj_loreal_invite_url // 活动链接
 		 jd_lzkj_loreal_address // 用户登记收货地址，按照顺序依次填写 收件人@手机号@省份@城市@区县@详细地址，多个用管道符分开
@@ -7,7 +7,7 @@
 
 */
 
-const $ = new Env('邀请入会有礼（超级无线欧莱雅）')
+const $ = new Env('邀请入会有礼（超级无线）')
 const notify = $.isNode() ? require('./sendNotify') : ''
 const jdCookieNode = $.isNode() ? require('./jdCookie') : ''
 const getH5st = require('./function/getH5st3_0')

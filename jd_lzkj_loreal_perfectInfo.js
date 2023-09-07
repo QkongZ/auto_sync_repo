@@ -1,12 +1,12 @@
 /*
-活动名称：完善有礼（超级无线欧莱雅）
+活动名称：完善有礼（超级无线）
 活动链接：https://lzkj-isv.isvjcloud.com/prod/cc/interactsaas/index?activityType=10049&templateId=<模板id>&activityId=<活动id>&nodeId=<nodeid>&prd=cjwx
 		https://lorealjdcampaign-rc.isvjcloud.com/interact/index?activityType=10049&templateId=<模板id>&activityId=<活动id>&nodeId=<nodeid>&prd=cjwx
 环境变量：jd_lzkj_loreal_perfectInfo_url // 活动链接
 
 */
 
-const $ = new Env('完善有礼（超级无线欧莱雅）')
+const $ = new Env('完善有礼（超级无线）')
 const notify = $.isNode() ? require('./sendNotify') : ''
 const jdCookieNode = $.isNode() ? require('./jdCookie') : ''
 const common = require('./function/jdCommon.js')
