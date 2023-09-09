@@ -7,7 +7,7 @@ const getSign = require('./getSign')
 const Cache = require('./cache/index')
 
 // 定义缓存 token 有效时间
-const cacheDefaultTTL = 15 * 60 * 1000
+const cacheDefaultTTL = 30 * 60 * 1000
 // 定义缓存文件路径
 const cacheFile = new Cache(cacheDefaultTTL, __dirname + '/cache/token.json')
 
