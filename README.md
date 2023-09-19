@@ -63,3 +63,9 @@
 配置后，fork走的仓库也会跟着我的更新而更新代码，然后再自动拉取新增的仓库，属于无限套娃
 
 ```
+# README.md
+<!--more-->
+## Config File Content
+<!--begin-config-->
+```json
+
