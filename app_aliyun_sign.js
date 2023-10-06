@@ -1,184 +1,238 @@
-//阿里云盘连续签到活动
-//https://alist.nn.ci/zh/guide/drivers/aliyundrive.html 打开页面扫码获取refresh_token
-//环境变量:ALI_TOKEN,多账号用换行或@或&分隔
-//https://github.com/passerby-b/jscript/blob/main/aliyun_sign.js
-const $ = API();
-let refresh_token = [];
-let msg = '';
-!(async () => {
+/*
+https://github.com/mrabit/aliyundriveDailyCheck/blob/master/autoSignin.js
+cron "0 9 * * *" autoSignin.js, tag=阿里云盘签到
+*/
 
-    if ($.env.isNode) {
-        if (process.env.ALI_TOKEN) {
-            if (process.env.ALI_TOKEN.indexOf('&') > -1) {
-                refresh_token = process.env.ALI_TOKEN.split('&');
-            } else if (process.env.ALI_TOKEN.indexOf('\n') > -1) {
-                refresh_token = process.env.ALI_TOKEN.split('\n');
-            } else if (process.env.ALI_TOKEN.indexOf('@') > -1) {
-                refresh_token = process.env.ALI_TOKEN.split('@');
-            } else {
-                refresh_token = [process.env.ALI_TOKEN];
+const axios = require('axios')
+const {
+    initInstance,
+    getEnv,
+    updateCkEnv
+} = require('./qlApi.js')
+const notify = require('./sendNotify')
+
+const updateAccesssTokenURL = 'https://auth.aliyundrive.com/v2/account/token'
+const signinURL = 'https://member.aliyundrive.com/v1/activity/sign_in_list?_rx-s=mobile'
+const rewardURL = 'https://member.aliyundrive.com/v1/activity/sign_in_reward?_rx-s=mobile'
+
+// 使用 refresh_token 更新 access_token
+function updateAccesssToken(queryBody, remarks) {
+    const errorMessage = [remarks, '更新 access_token 失败']
+    return axios(updateAccesssTokenURL, {
+            method: 'POST',
+            data: queryBody,
+            headers: {
+                'Content-Type': 'application/json'
             }
-        }
-    }
+        })
+        .then(d => d.data)
+        .then(d => {
+            const {
+                code,
+                message,
+                nick_name,
+                refresh_token,
+                access_token
+            } = d
+            if (code) {
+                if (
+                    code === 'RefreshTokenExpired' ||
+                    code === 'InvalidParameter.RefreshToken'
+                )
+                    errorMessage.push('refresh_token 已过期或无效')
+                else errorMessage.push(message)
+                return Promise.reject(errorMessage.join(', '))
+            }
+            return {
+                nick_name,
+                refresh_token,
+                access_token
+            }
+        })
+        .catch(e => {
+            errorMessage.push(e.message)
+            return Promise.reject(errorMessage.join(', '))
+        })
+}
 
-    if (!refresh_token || refresh_token.length == 0) {
-        console.log('先填写refresh_token!');
-        return;
-    }
-    for (const tk of refresh_token) {
-        await main(tk);
-        await $.wait(1000);
-        msg += '\n\n';
-    }
+//签到列表
+function sign_in(access_token, remarks) {
+    const sendMessage = [remarks]
+    return axios(signinURL, {
+            method: 'POST',
+            data: {
+                isReward: false
+            },
+            headers: {
+                Authorization: access_token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(d => d.data)
+        .then(async json => {
+            if (!json.success) {
+                sendMessage.push('签到失败', json.message)
+                return Promise.reject(sendMessage.join(', '))
+            }
 
+            sendMessage.push('签到成功')
+
+            const {
+                signInLogs,
+                signInCount
+            } = json.result
+            const currentSignInfo = signInLogs[signInCount - 1] // 当天签到信息
+
+            sendMessage.push(`本月累计签到 ${signInCount} 天`)
+
+            // 未领取奖励列表
+            const rewards = signInLogs.filter(
+                v => v.status === 'normal' && !v.isReward
+            )
+            //console.log(rewards)
+            if (rewards.length) {
+                for await (reward of rewards) {
+                    
+                    if (reward.type == 'svip8t') {
+                        console.log('SVIP,需要时自行领取')
+                        sendMessage.push('SVIP,需要时自行领取')
+                        continue
+                    }
+                    console.log(reward)
+                    const signInDay = reward.day
+                    try {
+                        const rewardInfo = await getReward(access_token, signInDay)
+                        sendMessage.push(
+                            `第${signInDay}天奖励领取成功: 获得${rewardInfo.name || ''}${rewardInfo.description || ''}`
+                        )
+                    } catch (e) {
+                        sendMessage.push(`第${signInDay}天奖励领取失败:`, e)
+                    }
+                }
+            } else if (currentSignInfo.isReward) {
+                sendMessage.push(
+                    `今日签到获得${currentSignInfo.reward.name || ''}${currentSignInfo.reward.description || ''}`
+                )
+            }
+
+            return sendMessage.join(', ')
+        })
+        .catch(e => {
+            sendMessage.push('签到失败')
+            sendMessage.push(e.message)
+            return Promise.reject(sendMessage.join(', '))
+        })
+}
+
+// 领取奖励
+function getReward(access_token, signInDay) {
+    return axios(rewardURL, {
+            method: 'POST',
+            data: {
+                signInDay
+            },
+            headers: {
+                authorization: access_token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(d => d.data)
+        .then(json => {
+            if (!json.success) {
+                return Promise.reject(json.message)
+            }
+
+            return json.result
+        })
+}
+
+// 获取环境变量
+async function getRefreshToken() {
+    let instance = null
     try {
-        if ($.env.isNode) {
-            const notify = require('./sendNotify');
-            notify.sendNotify('【阿里云盘】', msg);
-        }
-        else {
-            $.notify('【阿里云盘】', msg);
-        }
-    } catch (error) {
-        console.log('通知发送失败', error);
+        instance = await initInstance()
+    } catch (e) {}
+    
+    let refreshToken = process.env.refreshToken || []
+    
+    try {
+        if (instance) refreshToken = await getEnv(instance, 'refreshToken')
+    } catch (e) {}
+    
+    //console.log(refreshToken)
+    let refreshTokenArray = []
+
+    if (Array.isArray(refreshToken)) refreshTokenArray = refreshToken
+    else if (refreshToken.indexOf('&') > -1)
+        refreshTokenArray = refreshToken.split('&')
+    else if (refreshToken.indexOf('\n') > -1)
+        refreshTokenArray = refreshToken.split('\n')
+    else refreshTokenArray = [refreshToken]
+
+    if (!refreshTokenArray.length) {
+        console.log('未获取到refreshToken, 程序终止')
+        process.exit(1)
     }
 
-})().catch(async (e) => {
-    console.log('', '❌失败! 原因:' + e + '!', '');
-}).finally(() => {
-    $.done();
-});
-
-async function main(tk) {
-    try {
-        const url = `https://auth.aliyundrive.com/v2/account/token`;
-        const method = `POST`;
-        const headers = {
-            'Connection': `keep-alive`,
-            'Content-Type': `application/json; charset=UTF-8`,
-            'X-Canary': `client=iOS,app=adrive,version=v4.1.3`,
-            'User-Agent': `AliApp(AYSD/4.1.3) com.alicloud.smartdrive/4.1.3 Version/16.3 Channel/201200 Language/zh-Hans-CN /iOS Mobile/iPhone15,2`,
-            'Host': `auth.aliyundrive.com`,
-            'Accept-Language': `zh-CN,zh-Hans;q=0.9`,
-            'Accept': `*/*`
-        };
-        const body = `{"grant_type":"refresh_token","app_id":"pJZInNHN2dZWk8qg","refresh_token":"${tk}"}`;
-
-        const myRequest = {
-            url: url,
-            method: method,
-            headers: headers,
-            body: body
-        };
-
-        let a = await $.http.post(myRequest);
-        let data = JSON.parse(a.body);
-        if (data.code == 'InvalidParameter.RefreshToken') {
-            //{"code":"InvalidParameter.RefreshToken","message":"The input parameter refresh_token is not valid. ","requestId":null}
-            console.log(`【❌】token刷新失败,${data.message}`);
-            msg += `【❌】token刷新失败,${data.message}`;
-        }
-        else {
-            console.log(`【${data.nick_name}】`);
-            let token = data.access_token;
-            msg += `【${data.nick_name}】`;
-            await sign(token);
-        }
-
-    } catch (error) {
-        console.log('error:' + error);
+    return {
+        instance,
+        refreshTokenArray
     }
 }
 
-async function sign(token) {
-    try {
-        const url = `https://member.aliyundrive.com/v1/activity/sign_in_list`;
-        const method = `POST`;
-        const headers = {
-            'Connection': `keep-alive`,
-            'Content-Type': `application/json`,
-            'Origin': `https://pages.aliyundrive.com`,
-            'X-Canary': `client=web,app=other,version=v0.1.0`,
-            'User-Agent': `Mozilla/5.0 (iPhone; CPU iPhone OS 16_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/20D5024e iOS16.3 (iPhone15,2;zh-Hans-CN) App/4.1.3 AliApp(yunpan/4.1.3) com.alicloud.smartdrive/28278449  Channel/201200 AliApp(AYSD/4.1.3) com.alicloud.smartdrive/4.1.3 Version/16.3 Channel/201200 Language/zh-Hans-CN /iOS Mobile/iPhone15,2 language/zh-Hans-CN`,
-            'Authorization': `Bearer ${token}`,
-            'Host': `member.aliyundrive.com`,
-            'Referer': `https://pages.aliyundrive.com/`,
-            'Accept-Language': `zh-CN,zh-Hans;q=0.9`,
-            'Accept': `application/json, text/plain, */*`
-        };
-        const body = `{"isReward":false}`;
+!(async() => {
+    const {
+        instance,
+        refreshTokenArray
+    } = await getRefreshToken()
 
-        const myRequest = {
-            url: url,
-            method: method,
-            headers: headers,
-            body: body
-        };
-        let a = await $.http.post(myRequest);
-        let data = JSON.parse(a.body);
-        if (data.success) {
-            console.log(`已连续签到${data.result.signInCount}天!`);
-            msg += `已连续签到${data.result.signInCount}天!`
-            await sign_in_reward(token, data.result.signInCount);
-        }
-        else {
-            console.log(`签到失败,${data.message}!`);
-            msg += `签到失败,${data.message}!`;
+    const message = []
+    let index = 1
+    for await (refreshToken of refreshTokenArray) {
+        let remarks = refreshToken.remarks || `账号${index}`
+        const queryBody = {
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken.value || refreshToken
         }
 
-    } catch (error) {
-        console.log(error);
-    }
-}
+        try {
+            const {
+                nick_name,
+                refresh_token,
+                access_token
+            } = await updateAccesssToken(queryBody, remarks)
 
-async function sign_in_reward(token, day) {
-    try {
-        const url = `https://member.aliyundrive.com/v1/activity/sign_in_reward`;
-        const method = `POST`;
-        const headers = {
-            'Connection': `keep-alive`,
-            'Content-Type': `application/json`,
-            'Origin': `https://pages.aliyundrive.com`,
-            'X-Canary': `client=web,app=other,version=v0.1.0`,
-            'User-Agent': `Mozilla/5.0 (iPhone; CPU iPhone OS 16_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/20D5024e iOS16.3 (iPhone15,2;zh-Hans-CN) App/4.1.3 AliApp(yunpan/4.1.3) com.alicloud.smartdrive/28278449  Channel/201200 AliApp(AYSD/4.1.3) com.alicloud.smartdrive/4.1.3 Version/16.3 Channel/201200 Language/zh-Hans-CN /iOS Mobile/iPhone15,2 language/zh-Hans-CN`,
-            'Authorization': `Bearer ${token}`,
-            'Host': `member.aliyundrive.com`,
-            'Referer': `https://pages.aliyundrive.com/`,
-            'Accept-Language': `zh-CN,zh-Hans;q=0.9`,
-            'Accept': `application/json, text/plain, */*`
-        };
-        const body = `{"signInDay":${day}}`;
+            if (nick_name && nick_name !== remarks)
+                remarks = `${nick_name}(${remarks})`
 
-        const myRequest = {
-            url: url,
-            method: method,
-            headers: headers,
-            body: body
-        };
-
-        let a = await $.http.post(myRequest);
-        let data = JSON.parse(a.body);
-        if (data.success) {
-            if (data?.result?.name) {
-                console.log(`🎁奖励:${data?.result?.name},${data?.result?.description},${data?.result?.notice}!`);
-                msg += `🎁奖励:${data?.result?.name},${data?.result?.description},${data?.result?.notice}!`;
+            // 更新环境变量
+            if (instance) {
+                let params = {
+                    name: refreshToken.name,
+                    value: refresh_token,
+                    remarks: refreshToken.remarks || nick_name // 优先存储原有备注信息
+                }
+                // 新版青龙api
+                if (refreshToken.id) {
+                    params.id = refreshToken.id
+                }
+                // 旧版青龙api
+                if (refreshToken._id) {
+                    params._id = refreshToken._id
+                }
+                await updateCkEnv(instance, params)
             }
-            else {
-                console.log(`🎁奖励:领了个寂寞!`);
-                msg += `🎁奖励:领了个寂寞!`;
-            }
-        }
-        else {
-            console.log(`🎁奖励获取失败:${data.message}!`);
-            msg += `🎁奖励获取失败:${data.message}!`;
-        }
 
-    } catch (error) {
-        console.log(error);
+            const sendMessage = await sign_in(access_token, remarks)
+            console.log(sendMessage)
+            console.log('\n')
+            message.push(sendMessage)
+        } catch (e) {
+            console.log(e)
+            console.log('\n')
+            message.push(e)
+        }
+        index++
     }
-}
-
-
-/*********************************** API *************************************/
-function ENV() { const e = "undefined" != typeof $task, t = "undefined" != typeof $loon, s = "undefined" != typeof $httpClient && !t, i = "function" == typeof require && "undefined" != typeof $jsbox; return { isQX: e, isLoon: t, isSurge: s, isNode: "function" == typeof require && !i, isJSBox: i, isRequest: "undefined" != typeof $request, isScriptable: "undefined" != typeof importModule } } function HTTP(e = { baseURL: "" }) { const { isQX: t, isLoon: s, isSurge: i, isScriptable: n, isNode: o } = ENV(), r = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/; const u = {}; return ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH"].forEach(l => u[l.toLowerCase()] = (u => (function (u, l) { l = "string" == typeof l ? { url: l } : l; const h = e.baseURL; h && !r.test(l.url || "") && (l.url = h ? h + l.url : l.url); const a = (l = { ...e, ...l }).timeout, c = { onRequest: () => { }, onResponse: e => e, onTimeout: () => { }, ...l.events }; let f, d; if (c.onRequest(u, l), t) f = $task.fetch({ method: u, ...l }); else if (s || i || o) f = new Promise((e, t) => { (o ? require("request") : $httpClient)[u.toLowerCase()](l, (s, i, n) => { s ? t(s) : e({ statusCode: i.status || i.statusCode, headers: i.headers, body: n }) }) }); else if (n) { const e = new Request(l.url); e.method = u, e.headers = l.headers, e.body = l.body, f = new Promise((t, s) => { e.loadString().then(s => { t({ statusCode: e.response.statusCode, headers: e.response.headers, body: s }) }).catch(e => s(e)) }) } const p = a ? new Promise((e, t) => { d = setTimeout(() => (c.onTimeout(), t(`${u} URL: ${l.url} exceeds the timeout ${a} ms`)), a) }) : null; return (p ? Promise.race([p, f]).then(e => (clearTimeout(d), e)) : f).then(e => c.onResponse(e)) })(l, u))), u } function API(e = "untitled", t = !1) { const { isQX: s, isLoon: i, isSurge: n, isNode: o, isJSBox: r, isScriptable: u } = ENV(); return new class { constructor(e, t) { this.name = e, this.debug = t, this.http = HTTP(), this.env = ENV(), this.node = (() => { if (o) { return { fs: require("fs") } } return null })(), this.initCache(); Promise.prototype.delay = function (e) { return this.then(function (t) { return ((e, t) => new Promise(function (s) { setTimeout(s.bind(null, t), e) }))(e, t) }) } } initCache() { if (s && (this.cache = JSON.parse($prefs.valueForKey(this.name) || "{}")), (i || n) && (this.cache = JSON.parse($persistentStore.read(this.name) || "{}")), o) { let e = "root.json"; this.node.fs.existsSync(e) || this.node.fs.writeFileSync(e, JSON.stringify({}), { flag: "wx" }, e => console.log(e)), this.root = {}, e = `${this.name}.json`, this.node.fs.existsSync(e) ? this.cache = JSON.parse(this.node.fs.readFileSync(`${this.name}.json`)) : (this.node.fs.writeFileSync(e, JSON.stringify({}), { flag: "wx" }, e => console.log(e)), this.cache = {}) } } persistCache() { const e = JSON.stringify(this.cache, null, 2); s && $prefs.setValueForKey(e, this.name), (i || n) && $persistentStore.write(e, this.name), o && (this.node.fs.writeFileSync(`${this.name}.json`, e, { flag: "w" }, e => console.log(e)), this.node.fs.writeFileSync("root.json", JSON.stringify(this.root, null, 2), { flag: "w" }, e => console.log(e))) } write(e, t) { if (this.log(`SET ${t}`), -1 !== t.indexOf("#")) { if (t = t.substr(1), n || i) return $persistentStore.write(e, t); if (s) return $prefs.setValueForKey(e, t); o && (this.root[t] = e) } else this.cache[t] = e; this.persistCache() } read(e) { return this.log(`READ ${e}`), -1 === e.indexOf("#") ? this.cache[e] : (e = e.substr(1), n || i ? $persistentStore.read(e) : s ? $prefs.valueForKey(e) : o ? this.root[e] : void 0) } delete(e) { if (this.log(`DELETE ${e}`), -1 !== e.indexOf("#")) { if (e = e.substr(1), n || i) return $persistentStore.write(null, e); if (s) return $prefs.removeValueForKey(e); o && delete this.root[e] } else delete this.cache[e]; this.persistCache() } notify(e, t = "", l = "", h = {}) { const a = h["open-url"], c = h["media-url"]; if (s && $notify(e, t, l, h), n && $notification.post(e, t, l + `${c ? "\n多媒体:" + c : ""}`, { url: a }), i) { let s = {}; a && (s.openUrl = a), c && (s.mediaUrl = c), "{}" === JSON.stringify(s) ? $notification.post(e, t, l) : $notification.post(e, t, l, s) } if (o || u) { const s = l + (a ? `\n点击跳转: ${a}` : "") + (c ? `\n多媒体: ${c}` : ""); if (r) { require("push").schedule({ title: e, body: (t ? t + "\n" : "") + s }) } else console.log(`${e}\n${t}\n${s}\n\n`) } } log(e) { this.debug && console.log(`[${this.name}] LOG: ${this.stringify(e)}`) } info(e) { console.log(`[${this.name}] INFO: ${this.stringify(e)}`) } error(e) { console.log(`[${this.name}] ERROR: ${this.stringify(e)}`) } wait(e) { return new Promise(t => setTimeout(t, e)) } done(e = {}) { s || i || n ? $done(e) : o && !r && "undefined" != typeof $context && ($context.headers = e.headers, $context.statusCode = e.statusCode, $context.body = e.body) } stringify(e) { if ("string" == typeof e || e instanceof String) return e; try { return JSON.stringify(e, null, 2) } catch (e) { return "[object Object]" } } }(e, t) }
-/*****************************************************************************/
+    await notify.sendNotify(`阿里云盘签到`, message.join('\n'))
+})()
