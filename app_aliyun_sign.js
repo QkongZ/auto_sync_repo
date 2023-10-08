@@ -72,7 +72,7 @@ function sign_in(access_token, remarks) {
         .then(async json => {
             if (!json.success) {
                 sendMessage.push('签到失败', json.message)
-                return Promise.reject(sendMessage.join(', '))
+                return Promise.reject(sendMessage.join('\n'))
             }
 
             sendMessage.push('签到成功')
@@ -115,12 +115,12 @@ function sign_in(access_token, remarks) {
                 )
             }
 
-            return sendMessage.join(', ')
+            return sendMessage.join('\n')
         })
         .catch(e => {
             sendMessage.push('签到失败')
             sendMessage.push(e.message)
-            return Promise.reject(sendMessage.join(', '))
+            return Promise.reject(sendMessage.join('\n'))
         })
 }
 
@@ -234,5 +234,5 @@ async function getRefreshToken() {
         }
         index++
     }
-    await notify.sendNotify(`阿里云盘签到`, message.join('\n'))
+    await notify.sendNotify(`阿里云盘签到`, message.join('\n\n'))
 })()
