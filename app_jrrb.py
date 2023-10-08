@@ -89,7 +89,10 @@ class jrrb:
         res = post(url, headers = self.headers, data = body).json()
         if res['status'] == 200 and res['error'] == False:
             res = res['data']
-            print_now(f"签到获得金币：{res['coins']}\n{res['msg']}")
+            if res["coins"] > 0:
+                print_now(f"签到获得金币：{res['coins']}")
+            else:
+                print_now(res["msg"])
         else:
             print_now(res)
     def read(self):
