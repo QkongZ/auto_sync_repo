@@ -28,7 +28,7 @@ parent_catalogid = '1311jDUUg10T07620231009112702mzy'  # 上传文件的父文�
 draw = 1  # 抽奖次数，首次麻烦
 num = 10  # 摇一摇戳一戳次数
 
-
+code = ['508953235', '383592940','639949467' '231308045']
 class YP:
     def __init__(self, cookie):
         self.token = None
@@ -42,6 +42,7 @@ class YP:
         self.Authorization = cookie.split("#")[0]
         self.account = cookie.split("#")[1]
         self.auth_token = cookie.split("#")[2]
+        self.parent_catalogid = cookie.split("#")[3]
         self.fruit_url = 'https://happy.mail.10086.cn/jsp/cn/garden/'
 
         self.jwtHeaders = {
@@ -290,7 +291,7 @@ class YP:
                             <pcUploadFileRequest>
                                 <ownerMSISDN>{phone}</ownerMSISDN>
                                 <fileCount>1</fileCount>
-                                <totalSize>1</totalSize>
+                                <totalSize>100000</totalSize>
                                 <uploadContentList length="1">
                                     <uploadContentInfo>
                                         <comlexFlag>0</comlexFlag>
@@ -314,7 +315,7 @@ class YP:
                                 <tagID></tagID>
                                 <tagType></tagType>
                             </pcUploadFileRequest>
-                        '''.format(phone = self.account, parent_catalogid = parent_catalogid)
+                        '''.format(phone = self.account, parent_catalogid = self.parent_catalogid)
 
         response = requests.post(url = url, headers = headers, data = payload)
         if response is None:
@@ -326,7 +327,7 @@ class YP:
     def create_note(self, headers):
         note_id = self.get_note_id(32)  # 获取随机笔记id
         createtime = str(int(round(time.time() * 1000)))
-        time.sleep(3)
+        time.sleep(2)
         updatetime = str(int(round(time.time() * 1000)))
         note_url = 'http://mnote.caiyun.feixin.10086.cn/noteServer/api/createNote.do'
         payload = {
@@ -529,6 +530,13 @@ class YP:
                     self.do_fruit_task(task_name, task_id, water_num)
 
             # 果树信息
+            mycode = self.get_invitecode()
+            for c in code:
+                #print(c, mycode)
+                if c == str(mycode):
+                    continue
+                self.invitefriend(c)
+                time.sleep(15)
             self.tree_info()
 
         except Exception as e:
@@ -549,6 +557,38 @@ class YP:
                     print(f'已完成任务获得水滴: {water_num}')
                 else:
                     print(f'领取失败: {get_water_data.get("msg", "")}')
+            else:
+                print(f'参与任务失败: {do_task_data.get("msg", "")}')
+        except Exception as e:
+            print(f"发生错误：{e}")
+    # 获取邀请码
+    def get_invitecode(self):
+        try:
+           # print(f'')
+            do_task_url = f'{self.fruit_url}friend/inviteCode.do'
+            do_task_data = self.send_request(do_task_url, headers = self.treeHeaders)
+
+            if do_task_data.get('success'):
+                print(f'邀请码：{do_task_data.get("result")}')
+                if str(do_task_data["result"]) not in code:
+                    code.append(do_task_data["result"])
+                return do_task_data["result"]
+                
+            else:
+                print(f'参与任务失败: {do_task_data.get("msg", "")}')
+                return ''
+        except Exception as e:
+            print(f"发生错误：{e}")
+    # 助力
+    def invitefriend(self, code):
+        try:
+           # print(f'')
+            do_task_url = f'{self.fruit_url}wx/inviteFriend.do?inviteCode={code}&inviteType=backup&clientName=HCY'
+            do_task_data = self.send_request(do_task_url, headers = self.treeHeaders)
+
+            if do_task_data.get('success'):
+                
+                print(do_task_data["result"]['msg'])
             else:
                 print(f'参与任务失败: {do_task_data.get("msg", "")}')
         except Exception as e:
@@ -586,6 +626,7 @@ class YP:
         end_url = 'https://caiyun.feixin.10086.cn/market/signin/hecheng1T/finish?flag=true'
         try:
             game_info_data = self.send_request(game_info_url, headers = self.jwtHeaders, cookies = self.cookies)
+            #print(self.cookies)
             if game_info_data and game_info_data.get('code', -1) == 0:
                 currnum = game_info_data.get('result', {}).get('info', {}).get('curr', 0)
                 count = game_info_data.get('result', {}).get('history', {}).get('0', {}).get('count', '')
@@ -619,12 +660,13 @@ class YP:
 
 
 if __name__ == "__main__":
-    cookies = cookies.split("@")
-    ydypqd = f"移动硬盘共获取到{len(cookies)}个账号"
+    #cookies = cookies.split("\n")
+    cookies = [cookie for cookie in cookies.split("\n") if len(cookie) > 0]
+    ydypqd = f"移动云盘共获取到{len(cookies)}个账号"
     print(ydypqd)
 
     for i, cookie in enumerate(cookies, start = 1):
-        print(f"\n======== ▷ 第 {i} 个账号 ◁ ========")
+        print(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
         YP(cookie).run()
         print("\n随机等待5-10s进行下一个账号")
         time.sleep(random.randint(5, 10))
