@@ -4,14 +4,13 @@
 # Draw = 1 抽奖次数，每天首次免费， 每天可抽次数50，draw=1，只会抽奖一次
 # num = 15 摇一摇，戳一戳次数
 # ------------------------------
-# const $ = new Env('美团');
+# const $ = new Env('移动云盘');
 # 每日任务
 # 先自行上传一个文件，抓/richlifeApp/devapp/IUploadAndDownload请求体中parentCatalogID的值，这是上传到哪个磁盘的id，不填默认根目录
 # 先开抓包，进app，mnote.caiyun.feixin.10086.cn/noteServer/api/authTokenRefresh.do，抓这个，，请求体中authToken的值
 # --------------新增任务-----------------
 # 果园任务
 # 水滴收取，签到，浇水，任务列表上传图片和视频暂时不做
-
 # 云朵大作战，每月首次获得50云朵，每天3次免费次数，每月前2000名获得奖励
 # 格式 ydypCk = Authorization值#手机号#authToken的值
 # 定时：0 0 0 * * *
@@ -20,15 +19,14 @@ import os
 import random
 import re
 import time
-
 import requests
 
 cookies = os.getenv("ydypCk")
 ua = 'Mozilla/5.0 (Linux; Android 11; M2012K10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.210 Mobile Safari/537.36 MCloudApp/10.0.1'
-parent_catalogid = ''  # 上传文件的父文件夹id，不填默认根目录
+parent_catalogid = '1311jDUUg10T07620231009112702mzy'  # 上传文件的父文件夹id，不填默认根目录
 
 draw = 1  # 抽奖次数，首次麻烦
-num = 15  # 摇一摇戳一戳次数
+num = 10  # 摇一摇戳一戳次数
 
 
 class YP:
