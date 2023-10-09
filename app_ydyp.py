@@ -7,6 +7,7 @@
 # 先自行上传一个文件，抓/richlifeApp/devapp/IUploadAndDownload请求体中parentCatalogID的值，这是上传到哪个磁盘的id，不填默认根目录
 # 先开抓包，进app，mnote.caiyun.feixin.10086.cn/noteServer/api/authTokenRefresh.do，抓这个，，请求体中authToken的值
 # 格式 ydypCk = Authorization值#手机号#authToken的值
+#const $ = new Env('移动云盘');
 # 定时：一天两三次
 import os
 import random
@@ -16,7 +17,7 @@ import requests
 
 cookies = os.getenv("ydypCk")
 ua = 'Mozilla/5.0 (Linux; Android 13; 2304FPN6DC Build/TKQ1.220829.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/115.0.5790.40 Mobile Safari/537.36 MCloudApp/10.1.0'
-parent_catalogid = '1R11qDyyeCLC29620230716211052n1d'  # 上传文件的父文件夹id，不填默认根目录
+parent_catalogid = '1311jDUUg10T07620231009112702mzy'  # 上传文件的父文件夹id，不填默认根目录
 
 
 class YP:
