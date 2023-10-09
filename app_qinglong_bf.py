@@ -47,7 +47,7 @@ if env("QLBK_UPLOAD_PATH"):
     QLBK_UPLOAD_PATH = str(env("QLBK_UPLOAD_PATH"))
     logger.info(f'检测到设置变量 QLBK_UPLOAD_PATH = {QLBK_UPLOAD_PATH}')
 
-QLBK_MAX_FLIES = 5  # 最大备份保留数量默认5个
+QLBK_MAX_FLIES = 15  # 最大备份保留数量默认5个
 if env("QLBK_MAX_FLIES"):
     QLBK_MAX_FLIES = int(env("QLBK_MAX_FLIES"))
     logger.info(f'检测到设置变量 QLBK_MAX_FLIES = {QLBK_MAX_FLIES}')
