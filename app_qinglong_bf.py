@@ -7,6 +7,7 @@ Author: AKA-Cigma
 Date: 2023/08/29 重构代码支持单独指定云盘上传路径&始终保持备份数量小于等于设定值
 2023/09/06 新增阿里云盘签到
 2023/09/07 新增自动创建备份路径
+https://github.com/AKA-Cigma/qinglong-backup
 cron: 0 2 * * *
 new Env('青龙备份与阿里云盘签到');
 '''
