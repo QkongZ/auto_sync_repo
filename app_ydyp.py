@@ -28,7 +28,7 @@ parent_catalogid = '1311jDUUg10T07620231009112702mzy'  # 上传文件的父文�
 draw = 1  # 抽奖次数，首次麻烦
 num = 10  # 摇一摇戳一戳次数
 
-code = ['508953235', '383592940','639949467' '231308045']
+code = ['508953235', '383592940','639949467', '231308045']
 class YP:
     def __init__(self, cookie):
         self.token = None
@@ -291,13 +291,13 @@ class YP:
                             <pcUploadFileRequest>
                                 <ownerMSISDN>{phone}</ownerMSISDN>
                                 <fileCount>1</fileCount>
-                                <totalSize>100000</totalSize>
+                                <totalSize>159830194</totalSize>
                                 <uploadContentList length="1">
                                     <uploadContentInfo>
                                         <comlexFlag>0</comlexFlag>
                                         <contentDesc><![CDATA[]]></contentDesc>
-                                        <contentName><![CDATA[000000.txt]]></contentName>
-                                        <contentSize>1</contentSize>
+                                        <contentName><![CDATA[ceshi.txt]]></contentName>
+                                        <contentSize>159830194</contentSize>
                                         <contentTAGList></contentTAGList>
                                         <digest>C4CA4238A0B923820DCC509A6F75849B</digest>
                                         <exif/>
@@ -578,7 +578,7 @@ class YP:
                 print(f'参与任务失败: {do_task_data.get("msg", "")}')
                 return ''
         except Exception as e:
-            print(f"发生错误：{e}")
+            print(f"获取邀请码发生错误：{e}")
     # 助力
     def invitefriend(self, code):
         try:
@@ -590,9 +590,9 @@ class YP:
                 
                 print(do_task_data["result"]['msg'])
             else:
-                print(f'参与任务失败: {do_task_data.get("msg", "")}')
+                print(f'助力失败: {do_task_data.get("msg", "")}')
         except Exception as e:
-            print(f"发生错误：{e}")
+            print(f"助力发生错误：{e}")
 
     # 果树信息
     def tree_info(self):
