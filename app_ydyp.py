@@ -291,13 +291,13 @@ class YP:
                             <pcUploadFileRequest>
                                 <ownerMSISDN>{phone}</ownerMSISDN>
                                 <fileCount>1</fileCount>
-                                <totalSize>100000</totalSize>
+                                <totalSize>159830194</totalSize>
                                 <uploadContentList length="1">
                                     <uploadContentInfo>
                                         <comlexFlag>0</comlexFlag>
                                         <contentDesc><![CDATA[]]></contentDesc>
-                                        <contentName><![CDATA[000000.txt]]></contentName>
-                                        <contentSize>1</contentSize>
+                                        <contentName><![CDATA[ceshi.txt]]></contentName>
+                                        <contentSize>159830194</contentSize>
                                         <contentTAGList></contentTAGList>
                                         <digest>C4CA4238A0B923820DCC509A6F75849B</digest>
                                         <exif/>
