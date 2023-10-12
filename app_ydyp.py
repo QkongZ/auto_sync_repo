@@ -25,7 +25,7 @@ cookies = os.getenv("ydypCk")
 ua = 'Mozilla/5.0 (Linux; Android 11; M2012K10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.210 Mobile Safari/537.36 MCloudApp/10.0.1'
 parent_catalogid = '1311jDUUg10T07620231009112702mzy'  # 上传文件的父文件夹id，不填默认根目录
 
-draw = 1  # 抽奖次数，首次麻烦
+draw = 1  # 抽奖次数，首次免费
 num = 10  # 摇一摇戳一戳次数
 
 code = ['508953235', '383592940','639949467', '231308045']
@@ -202,7 +202,6 @@ class YP:
         except requests.exceptions.RequestException as e:
             print('出错了:', e)
             return
-
         self.note_token = response.headers.get('NOTE_TOKEN')
         self.note_auth = response.headers.get('APP_AUTH')
 
@@ -245,7 +244,7 @@ class YP:
                 'Connection': 'Keep-Alive',
                 'User-Agent': 'mobile',
                 'APP_CP': 'android',
-                'CP_VERSION': '3.2.0',
+                'CP_VERSION': '3.4.0',
                 'x-huawei-channelsrc': '10001400',
                 'APP_NUMBER': self.account,
                 'APP_AUTH': self.note_auth,
@@ -260,8 +259,7 @@ class YP:
                 "notebookRefs": [],
                 "updateNotebooks": []
             }
-            return_data = self.send_request(url = note_url, headers = headers, data = payload,
-                                            method = 'POST')
+            return_data = self.send_request(url = note_url, headers = headers, data = payload, method = 'POST')
             if return_data is None:
                 return print('出错了')
             self.notebook_id = return_data['notebooks'][0]['notebookId']
@@ -291,13 +289,13 @@ class YP:
                             <pcUploadFileRequest>
                                 <ownerMSISDN>{phone}</ownerMSISDN>
                                 <fileCount>1</fileCount>
-                                <totalSize>159830194</totalSize>
+                                <totalSize>1</totalSize>
                                 <uploadContentList length="1">
                                     <uploadContentInfo>
                                         <comlexFlag>0</comlexFlag>
                                         <contentDesc><![CDATA[]]></contentDesc>
                                         <contentName><![CDATA[ceshi.txt]]></contentName>
-                                        <contentSize>159830194</contentSize>
+                                        <contentSize>1</contentSize>
                                         <contentTAGList></contentTAGList>
                                         <digest>C4CA4238A0B923820DCC509A6F75849B</digest>
                                         <exif/>
@@ -666,6 +664,7 @@ if __name__ == "__main__":
     print(ydypqd)
 
     for i, cookie in enumerate(cookies, start = 1):
+
         print(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
         YP(cookie).run()
         print("\n随机等待5-10s进行下一个账号")
