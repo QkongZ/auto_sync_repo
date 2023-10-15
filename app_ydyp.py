@@ -232,12 +232,15 @@ class YP:
         if '答案错误' in str(return_data):
             return ''
         if '答案正确' in str(return_data):
-            self.awarding()
+            self.awarding(d)
             return '1'
         return ''
-    def awarding(self):
+    def awarding(self, d):
         url = f'https://caiyun.feixin.10086.cn/market/lanternriddles/answeredPuzzles/awarding'
-        return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
+        payload = {
+            'puzzleId': d
+        }
+        return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies, json = payload, method = 'POST')
         print(return_data['msg'])
 
     # 戳一下
