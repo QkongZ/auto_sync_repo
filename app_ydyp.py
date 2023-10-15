@@ -218,16 +218,25 @@ class YP:
                 i += 1
                 res = chatgpt_answer_question(x['puzzleTitleContext'], x['puzzleTipContext'])
                 if len(res) > 0:
-                    self.submitAnswered(x['id'], res)
+                    a = self.submitAnswered(x['id'], res)
                 if i > 8:
                     break
-                time.sleep(10)
+                time.sleep(3)
 
     def submitAnswered(self, d, r):
         url = f'https://caiyun.feixin.10086.cn/market/lanternriddles/answeredPuzzles/submitAnswered?puzzleId={d}&answered={r}'
         return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
-        print(return_data)
-
+        print(return_data['msg'])
+        if '答案错误' in str(return_data):
+            return ''
+        if '答案正确' in str(return_data):
+            self.awarding()
+            return '1'
+        return ''
+    def awarding(self):
+        url = f'https://caiyun.feixin.10086.cn/market/lanternriddles/answeredPuzzles/awarding'
+        return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
+        print(return_data['msg'])
 
     # 戳一下
     def click(self):
