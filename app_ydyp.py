@@ -20,6 +20,7 @@ import random
 import re
 import time
 import requests
+from retrying import retry
 
 cookies = os.getenv("ydypCk")
 ua = 'Mozilla/5.0 (Linux; Android 11; M2012K10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.210 Mobile Safari/537.36 MCloudApp/10.0.1'
@@ -29,6 +30,45 @@ draw = 1  # 抽奖次数，首次免费
 num = 10  # 摇一摇戳一戳次数
 
 code = ['508953235', '383592940','639949467', '231308045']
+
+def chatgpt_answer_question(question_name, answer_str, chatgpt_index=0, knowledge_points='', tips=''):
+    tips = f'提示：{tips} ' if tips else ''
+    answer_str = answer_str.strip()
+    question_str = (f'{knowledge_points}回答以下问题，保证相对正确，仅需要回复答案，不需要包含其他内容！ {tips}'
+                    f'问题：{question_name} ,提示：{answer_str}')
+    print(question_str)
+
+    # 重试发送requests请求
+    @retry(stop_max_attempt_number=3, wait_random_min=3000, wait_random_max=5000)  # 重试3次，重试等待时间3s到5s随机
+    def requests_post_0(question):
+        try:
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + os.getenv('wfgptapi')
+            }
+            _json = {
+                "model": "gpt-3.5-turbo",
+                "messages": [{"role": "user", "content": question}],
+                "temperature": 0.7
+            }
+            # 连接超时时间为3s，读取超时时间为3s
+            data = requests.post(url='https://gpt.wf/v1/chat/completions', headers=headers, json=_json, timeout=(4, 4)).json()
+            #print(data)
+            if "choices" in data and len(data["choices"]) > 0:
+                #print('12')
+                print(f'本次消耗 {data["usage"]["total_tokens"]} tokens')
+                print(data["choices"][0]["message"]['content'])
+                return data["choices"][0]["message"]['content']
+            else:
+
+                print(data)
+                return ''
+
+        except Exception as e:
+            if e:
+                return ''
+    return requests_post_0(question_str)
+    
 class YP:
     def __init__(self, cookie):
         self.token = None
@@ -66,6 +106,8 @@ class YP:
             self.click()
             print(f'\n---每日任务---')
             self.get_tasklist()
+            print(f'\n---猜灯谜---')
+            self.get_card()
             print(f'\n---云朵大作战---')
             self.cloud_game()
             print(f'\n---果园任务---')
@@ -164,6 +206,28 @@ class YP:
                     print(config_data['msg'])
         else:
             print(return_data['msg'])
+    
+    def get_card(self):
+        url = 'https://caiyun.feixin.10086.cn/market/lanternriddles/answeredPuzzles/getIndexPuzzleCard'
+        return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
+
+        if return_data['msg'] == 'success':
+            return_data = return_data['result']
+            i = 0
+            for x in return_data:
+                i += 1
+                res = chatgpt_answer_question(x['puzzleTitleContext'], x['puzzleTipContext'])
+                if len(res) > 0:
+                    self.submitAnswered(x['id'], res)
+                if i > 8:
+                    break
+                time.sleep(10)
+
+    def submitAnswered(self, d, r):
+        url = f'https://caiyun.feixin.10086.cn/market/lanternriddles/answeredPuzzles/submitAnswered?puzzleId={d}&answered={r}'
+        return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
+        print(return_data)
+
 
     # 戳一下
     def click(self):
