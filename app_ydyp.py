@@ -219,6 +219,8 @@ class YP:
                 res = chatgpt_answer_question(x['puzzleTitleContext'], x['puzzleTipContext'])
                 if len(res) > 0:
                     a = self.submitAnswered(x['id'], res)
+                    if a == '1':
+                        break
                 if i > 8:
                     break
                 time.sleep(3)
