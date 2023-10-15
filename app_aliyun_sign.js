@@ -1,6 +1,10 @@
 /*
 https://github.com/mrabit/aliyundriveDailyCheck/blob/master/autoSignin.js
 cron "0 9 * * *" autoSignin.js, tag=阿里云盘签到
+refreshToken	阿里云盘 refresh_token, 添加多个可支持多账户签到
+CLIENT_ID	可选项, 用于青龙面板 API 更新 refreshToken 字段
+CLIENT_SECRET	可选项, 用于青龙面板 API 更新 refreshToken 字段
+QL_PATH	可选项, 青龙面板path
 */
 
 const axios = require('axios')
@@ -96,6 +100,11 @@ function sign_in(access_token, remarks) {
                     if (reward.type == 'svip8t') {
                         console.log('SVIP,需要时自行领取')
                         sendMessage.push('SVIP,需要时自行领取')
+                        continue
+                    }
+                    if (reward.type == 'svipVideo') {
+                        console.log('影音播放特权,需要时自行领取')
+                        sendMessage.push('影音播放特权,需要时自行领取')
                         continue
                     }
                     console.log(reward)
