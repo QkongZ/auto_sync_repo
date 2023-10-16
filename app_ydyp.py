@@ -103,9 +103,12 @@ class YP:
             self.sso()
             self.jwt()
             self.signin_status()
+
             self.click()
+            
             print(f'\n---每日任务---')
             self.get_tasklist()
+ 
             print(f'\n---猜灯谜---')
             self.get_card()
             print(f'\n---云朵大作战---')
@@ -240,7 +243,10 @@ class YP:
         payload = {
             'puzzleId': d
         }
-        return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies, json = payload, method = 'POST')
+        h = self.jwtHeaders
+        #print(h)
+
+        return_data = requests.post(url, headers = h, json = payload).json()
         print(return_data['msg'])
 
     # 戳一下
