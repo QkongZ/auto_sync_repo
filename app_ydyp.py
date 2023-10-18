@@ -109,8 +109,8 @@ class YP:
             print(f'\n---每日任务---')
             self.get_tasklist()
  
-            print(f'\n---猜灯谜---')
-            self.get_card()
+            #print(f'\n---猜灯谜---')
+            #self.get_card()
             print(f'\n---云朵大作战---')
             self.cloud_game()
             print(f'\n---果园任务---')
