@@ -109,8 +109,8 @@ class YP:
             print(f'\n---每日任务---')
             self.get_tasklist()
  
-            print(f'\n---猜灯谜---')
-            self.get_card()
+            #print(f'\n---猜灯谜---')
+            #self.get_card()
             print(f'\n---云朵大作战---')
             self.cloud_game()
             print(f'\n---果园任务---')
@@ -693,11 +693,14 @@ class YP:
                 watering_amount = collect_water // 20  # 计算需要浇水的次数
                 watering_url = f'{self.fruit_url}user/watering.do?isFast=0'
                 if watering_amount > 0:
+                    print(f'浇水{watering_amount}次')
                     for _ in range(watering_amount):
                         watering_data = self.send_request(watering_url, headers = self.treeHeaders)
                         if watering_data.get('success'):
                             print('浇水成功')
-                            self.sleep()
+                            time.sleep(5)
+                        else:
+                            print(watering_data)
         except Exception as e:
             print(f"发生错误：{e}")
 
