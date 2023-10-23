@@ -104,11 +104,11 @@ async def main1(api_id, api_hash, channel_id):
                 await client.send_read_acknowledge(channel_id)
                 await client.disconnect()
             # 根据button count 区分消息类型
-            if "已经签到过" in event.message.text or "距离下次可签到" in event.message.text or '当前积分' in event.message.text or "已签过到" in event.message.text or "You have checkined today" in event.message.text:
+            if "签到成功" in event.message.text or "今日排名" in event.message.text or '当前积分' in event.message.text or "已签过到" in event.message.text or "You have checkined today" in event.message.text:
                 # 结束循环
                 print_now('已签到，终止')
                 
-                if '积分' in event.message.text or '余额总计' in event.message.text or "your point" in event.message.text:
+                if '连续签到' in event.message.text or '累计签到' in event.message.text or "your point" in event.message.text:
                     msg.append('已签到:')
                     print_now(event.message.text)
                     msg.append(event.message.text)
@@ -325,8 +325,9 @@ if __name__ == "__main__":
 
         cishu = 0
         #if i == '9421323' or i == '4524860':
-
+        asyncio.run(main1(i, API_HASH[API_ID.index(i)], 'https://t.me/sosdbot')) #签到
         asyncio.run(main2(i, API_HASH[API_ID.index(i)], 'https://t.me/PronembyTGBot2_bot')) #签到
+        
 
             #break
     
