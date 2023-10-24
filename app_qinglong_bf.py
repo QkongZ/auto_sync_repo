@@ -17,7 +17,7 @@ import sys
 import tarfile
 import time
 
-from aligo import Aligo
+from aligo import set_config_folder, Aligo
 
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger(__name__)
@@ -212,6 +212,7 @@ def sign_in():
 if __name__ == '__main__':
     logger.info('---------登录阿里云盘------------')
     try:
+        set_config_folder('/ql/data/aligo')
         ali = Aligo(level=logging.INFO, show=show)
     except:
         logger.info('！！！登录失败！！！')
