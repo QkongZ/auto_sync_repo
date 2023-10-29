@@ -706,6 +706,7 @@ class YP:
 
     # 云朵大作战
     def cloud_game(self):
+        invite_url = ''
         game_info_url = 'https://caiyun.feixin.10086.cn/market/signin/hecheng1T/info?op=info'
         bigin_url = 'https://caiyun.feixin.10086.cn/market/signin/hecheng1T/beinvite'
         end_url = 'https://caiyun.feixin.10086.cn/market/signin/hecheng1T/finish?flag=true'
@@ -720,7 +721,14 @@ class YP:
                 print(f'今日剩余游戏次数: {currnum}\n本月排名: {rank}    合成次数: {count}')
 
                 for _ in range(currnum):
-                    self.send_request(bigin_url, headers = self.jwtHeaders, cookies = self.cookies)
+                    i_phone = phoneArr[_]
+                    if i_phone == str(self.account):
+                        t = _ + 1
+                        if t < len(phoneArr):
+                            i_phone = phoneArr[t]
+                    print(f'本次帮助{i_phone}')
+                    return_data = self.send_request(bigin_url + '?inviter=' + i_phone, headers = self.jwtHeaders, cookies = self.cookies)
+                    print(return_data)
                     print('开始游戏,等待2分钟完成游戏')
                     time.sleep(120)
                     end_data = self.send_request(end_url, headers = self.jwtHeaders, cookies = self.cookies)
@@ -749,7 +757,10 @@ if __name__ == "__main__":
     cookies = [cookie for cookie in cookies.split("\n") if len(cookie) > 0]
     ydypqd = f"移动云盘共获取到{len(cookies)}个账号"
     print(ydypqd)
-
+    phoneArr = []
+    for x in cookies:
+        phoneArr.append(x.split('#')[1])
+    print(phoneArr)
     for i, cookie in enumerate(cookies, start = 1):
 
         print(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
