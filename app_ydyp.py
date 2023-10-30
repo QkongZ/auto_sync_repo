@@ -721,10 +721,18 @@ class YP:
                 print(f'今日剩余游戏次数: {currnum}\n本月排名: {rank}    合成次数: {count}')
 
                 for _ in range(currnum):
+                    
                     i_phone = phoneArr[_]
+                    if _ >= len(phoneArr):
+                        a = len(phoneArr) - 1
+                        i_phone = phoneArr[a]
                     if i_phone == str(self.account):
                         t = _ + 1
+
                         if t < len(phoneArr):
+                            i_phone = phoneArr[t]
+                        else:
+                            t = len(phoneArr) - 1
                             i_phone = phoneArr[t]
                     print(f'本次帮助{i_phone}')
                     return_data = self.send_request(bigin_url + '?inviter=' + i_phone, headers = self.jwtHeaders, cookies = self.cookies)
