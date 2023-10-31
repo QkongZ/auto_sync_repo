@@ -20,6 +20,7 @@ import random
 import re
 import time
 import requests
+from datetime import datetime
 from retrying import retry
 
 cookies = os.getenv("ydypCk")
@@ -721,19 +722,15 @@ class YP:
                 print(f'今日剩余游戏次数: {currnum}\n本月排名: {rank}    合成次数: {count}')
 
                 for _ in range(currnum):
-                    
-                    i_phone = phoneArr[_]
-                    if _ >= len(phoneArr):
-                        a = len(phoneArr) - 1
-                        i_phone = phoneArr[a]
-                    if i_phone == str(self.account):
-                        t = _ + 1
-
-                        if t < len(phoneArr):
-                            i_phone = phoneArr[t]
-                        else:
-                            t = len(phoneArr) - 1
-                            i_phone = phoneArr[t]
+                    t = _
+                    if t < len(phoneArr) -1 : 
+                        i_phone = phoneArr[t]
+                        if i_phone == str(self.account):
+                            a = t + 1
+                            i_phone = phoneArr[a]
+                    else:
+                        t = len(phoneArr) - 1
+                        i_phone = phoneArr(t)
                     print(f'本次帮助{i_phone}')
                     return_data = self.send_request(bigin_url + '?inviter=' + i_phone, headers = self.jwtHeaders, cookies = self.cookies)
                     print(return_data)
@@ -768,6 +765,9 @@ if __name__ == "__main__":
     phoneArr = []
     for x in cookies:
         phoneArr.append(x.split('#')[1])
+    now = datetime.now()
+    if now.hour > 11:
+        phoneArr = phoneArr[::-1]
     print(phoneArr)
     for i, cookie in enumerate(cookies, start = 1):
 
