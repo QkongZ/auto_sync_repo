@@ -59,6 +59,26 @@ function updateAccesssToken(queryBody, remarks) {
         })
 }
 
+function today_is_last() {
+    // 创建一个Date对象
+    var today = new Date();
+
+    // 获取当前日期和月份
+    var currentDate = today.getDate();
+    var currentMonth = today.getMonth() + 1; // 月份是从0开始的，所以要加1
+
+    // 获取本月最后一天的日期
+    var lastDayOfMonth = new Date(today.getFullYear(), currentMonth, 0).getDate();
+
+    // 判断是否是本月最后一天
+    if (currentDate === lastDayOfMonth) {
+        console.log("今天是本月最后一天");
+        return true 
+    } else {
+        console.log("今天不是本月最后一天");
+        return false
+    }
+}
 //签到列表
 function sign_in(access_token, remarks) {
     const sendMessage = [remarks]
@@ -95,14 +115,15 @@ function sign_in(access_token, remarks) {
             )
             //console.log(rewards)
             if (rewards.length) {
+                var toady_is = today_is_last()
                 for await (reward of rewards) {
                     
-                    if (reward.type == 'svip8t') {
+                    if (reward.type == 'svip8t' && !toady_is) {
                         console.log('SVIP,需要时自行领取')
                         sendMessage.push('SVIP,需要时自行领取')
                         continue
                     }
-                    if (reward.type == 'svipVideo') {
+                    if (reward.type == 'svipVideo' && !toady_is) {
                         console.log('影音播放特权,需要时自行领取')
                         sendMessage.push('影音播放特权,需要时自行领取')
                         continue
