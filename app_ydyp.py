@@ -766,7 +766,7 @@ if __name__ == "__main__":
     for x in cookies:
         phoneArr.append(x.split('#')[1])
     now = datetime.now()
-    if now.hour > 11:
+    if now.hour > 1:
         phoneArr = phoneArr[::-1]
     print(phoneArr)
     for i, cookie in enumerate(cookies, start = 1):
