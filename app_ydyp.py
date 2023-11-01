@@ -730,7 +730,7 @@ class YP:
                             i_phone = phoneArr[a]
                     else:
                         t = len(phoneArr) - 1
-                        i_phone = phoneArr(t)
+                        i_phone = phoneArr[t]
                     print(f'本次帮助{i_phone}')
                     return_data = self.send_request(bigin_url + '?inviter=' + i_phone, headers = self.jwtHeaders, cookies = self.cookies)
                     print(return_data)
