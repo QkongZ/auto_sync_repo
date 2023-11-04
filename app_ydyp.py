@@ -711,6 +711,7 @@ class YP:
         game_info_url = 'https://caiyun.feixin.10086.cn/market/signin/hecheng1T/info?op=info'
         bigin_url = 'https://caiyun.feixin.10086.cn/market/signin/hecheng1T/beinvite'
         end_url = 'https://caiyun.feixin.10086.cn/market/signin/hecheng1T/finish?flag=true'
+        exchange_url = 'https://caiyun.feixin.10086.cn/market/signin/hecheng1T/exchange'
         try:
             game_info_data = self.send_request(game_info_url, headers = self.jwtHeaders, cookies = self.cookies)
             #print(self.cookies)
@@ -718,9 +719,12 @@ class YP:
                 currnum = game_info_data.get('result', {}).get('info', {}).get('curr', 0)
                 count = game_info_data.get('result', {}).get('history', {}).get('0', {}).get('count', '')
                 rank = game_info_data.get('result', {}).get('history', {}).get('0', {}).get('rank', '')
-
+                exchange_times = game_info_data.get('result', {}).get('info', {}).get('exchange', 0)
                 print(f'今日剩余游戏次数: {currnum}\n本月排名: {rank}    合成次数: {count}')
-
+                if now.hour > 6 and int(rank) > 99 and exchange_times > 0:
+                    res = self.send_request(f'{exchange_url}?num=1', headers = self.jwtHeaders, cookies = self.cookies)
+                    print(res.get('result', {}).get('curr', 0))
+                    currnum = res.get('result', {}).get('curr', 0)
                 for _ in range(currnum):
                     t = _
                     if t < len(phoneArr) -1 : 
@@ -733,7 +737,7 @@ class YP:
                         i_phone = phoneArr[t]
                     print(f'本次帮助{i_phone}')
                     return_data = self.send_request(bigin_url + '?inviter=' + i_phone, headers = self.jwtHeaders, cookies = self.cookies)
-                    print(return_data)
+                    #print(return_data)
                     print('开始游戏,等待2分钟完成游戏')
                     time.sleep(120)
                     end_data = self.send_request(end_url, headers = self.jwtHeaders, cookies = self.cookies)
