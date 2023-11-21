@@ -721,7 +721,7 @@ class YP:
                 rank = game_info_data.get('result', {}).get('history', {}).get('0', {}).get('rank', '')
                 exchange_times = game_info_data.get('result', {}).get('info', {}).get('exchange', 0)
                 print(f'今日剩余游戏次数: {currnum}\n本月排名: {rank}    合成次数: {count}')
-                if now.hour > 6 and int(rank) > 99 and exchange_times > 0:
+                if now.hour > 6 and int(rank) > 94 and exchange_times > 0:
                     res = self.send_request(f'{exchange_url}?num=1', headers = self.jwtHeaders, cookies = self.cookies)
                     print(res.get('result', {}).get('curr', 0))
                     currnum = res.get('result', {}).get('curr', 0)
