@@ -30,7 +30,7 @@ parent_catalogid = '1311jDUUg10T07620231009112702mzy'  # 上传文件的父文�
 draw = 1  # 抽奖次数，首次免费
 num = 10  # 摇一摇戳一戳次数
 
-code = ['508953235', '383592940','639949467', '231308045']
+code = ['508953235', '383592940','639949467', '231308045', '235930135']
 
 def chatgpt_answer_question(question_name, answer_str, chatgpt_index=0, knowledge_points='', tips=''):
     tips = f'提示：{tips} ' if tips else ''
