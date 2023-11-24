@@ -69,11 +69,11 @@ async def captcha_solver(dealcap):
         if response.json()["result"]:
             solved_result = response.json()["result"]
         else:
-            solved_result = '2b'
+            solved_result = '2ba'
             print_now('识别图片验证码失败，输入2b尝试')
-        if len(solved_result) != 2 and dealcap:
-            print_now('识别结果过长，取最后两位尝试')
-            solved_result = solved_result[-2:]
+        if len(solved_result) != 3 and dealcap:
+            print_now('识别结果过长，取最后三位尝试')
+            solved_result = solved_result[-3:]
         return solved_result
         #return base64data
     except:
@@ -182,10 +182,10 @@ async def main1(api_id, api_hash, channel_id):
                 await client.download_media(event.message.photo, "captcha.jpg")
                 # 使用 TRUECAPTCHA 模块解析验证码
                 if "输入验证码" in event.message.text or "Please input the captcha code" in event.message.text:
-                    print_now('非两位验证码')
+                    print_now('非三位验证码')
                     solved_result = await captcha_solver(0)  
                 else:
-                    print_now('两位验证码')
+                    print_now('三位验证码')
                     solved_result = await captcha_solver(1)
                 time.sleep(sj(4,10))
                 print_now('输入验证码为：' + solved_result)
