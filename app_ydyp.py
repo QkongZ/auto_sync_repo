@@ -22,7 +22,8 @@ import time
 import requests
 from datetime import datetime
 from retrying import retry
-
+from sendNotify import send
+title = "移动云盘通知"
 cookies = os.getenv("ydypCk")
 ua = 'Mozilla/5.0 (Linux; Android 11; M2012K10C Build/RP1A.200720.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.210 Mobile Safari/537.36 MCloudApp/10.0.1'
 parent_catalogid = '1311jDUUg10T07620231009112702mzy'  # 上传文件的父文件夹id，不填默认根目录
@@ -31,7 +32,7 @@ draw = 1  # 抽奖次数，首次免费
 num = 10  # 摇一摇戳一戳次数
 
 code = ['508953235', '383592940','639949467', '231308045', '235930135']
-
+msg = []
 def chatgpt_answer_question(question_name, answer_str, chatgpt_index=0, knowledge_points='', tips=''):
     tips = f'提示：{tips} ' if tips else ''
     answer_str = answer_str.strip()
@@ -108,13 +109,16 @@ class YP:
             self.click()
             
             print(f'\n---每日任务---')
+            msg.append(f'\n---每日任务---')
             self.get_tasklist()
  
             #print(f'\n---猜灯谜---')
             #self.get_card()
             print(f'\n---云朵大作战---')
+            msg.append(f'\n---云朵大作战---')
             self.cloud_game()
             print(f'\n---果园任务---')
+            msg.append(f'\n---果园任务---')
             self.fruitLogin()
             print(f'\n---公众号任务---')
             self.wxsign()
@@ -123,6 +127,8 @@ class YP:
             self.receive()
         except Exception as e:
             print(f"出现异常: {e}")
+            msg.append(f'账号 {self.account} 疑似失效')
+            send(title, f'账号 {self.account} 疑似失效')
             # 处理其他异常
 
     def send_request(self, url, headers, data=None, method='GET', cookies=None):
@@ -198,6 +204,7 @@ class YP:
             today_sign_in = return_data['result'].get('todaySignIn', False)
 
             if today_sign_in:
+                msg.append('已经签到了')
                 return print('已经签到了')
             else:
                 print('未签到，去签到')
@@ -205,10 +212,13 @@ class YP:
                 config_data = self.send_request(config_url, headers = self.jwtHeaders, cookies = self.cookies)
 
                 if config_data['msg'] == 'success':
+                    msg.append('签到成功')
                     print('签到成功')
                 else:
                     print(config_data['msg'])
+                    msg.append(config_data['msg'])
         else:
+            msg.append(return_data['msg'])
             print(return_data['msg'])
     
     def get_card(self):
@@ -257,6 +267,7 @@ class YP:
             return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
             time.sleep(0.2)
             if 'result' in return_data:
+                msg.append(f'{return_data["result"]}')
                 print(f'{return_data["result"]}')
             elif return_data.get('msg') == 'success':
                 print('未获得')
@@ -490,10 +501,12 @@ class YP:
             time.sleep(1)
             shake_prize_config = return_data["result"].get("shakePrizeconfig")
             if shake_prize_config is not None:
+                msg.append("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
                 print("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
             elif shake_prize_config is None:
                 print("未摇中")
             else:
+                msg.append("出错了")
                 print("出错了")
 
     # 查询剩余抽奖次数
@@ -512,6 +525,7 @@ class YP:
                     self.sleep()
                     if draw_data.get("code") == 0:
                         prize_name = draw_data["result"].get("prizeName", "")
+                        msg.append("⭕ 抽奖成功，获得：" + prize_name)
                         print("⭕ 抽奖成功，获得：" + prize_name)
                     else:
                         print("❌ 抽奖失败")
@@ -564,6 +578,7 @@ class YP:
                 # 去做果园任务
                 self.fruitTask()
             else:
+                msg.append("果园专区token刷新失败")
                 print("果园专区token刷新失败")
         except requests.RequestException as e:
             print("发生网络请求错误:", e)
@@ -689,6 +704,7 @@ class YP:
             else:
                 collect_water = treeinfo_data.get('result', {}).get('collectWater', 0)
                 tree_level = treeinfo_data.get('result', {}).get('treeLevel', 0)
+                msg.append(f'当前小树等级: {tree_level} 剩余水滴: {collect_water}')
                 print(f'当前小树等级: {tree_level} 剩余水滴: {collect_water}')
 
                 watering_amount = collect_water // 20  # 计算需要浇水的次数
@@ -721,6 +737,7 @@ class YP:
                 rank = game_info_data.get('result', {}).get('history', {}).get('0', {}).get('rank', '')
                 exchange_times = game_info_data.get('result', {}).get('info', {}).get('exchange', 0)
                 print(f'今日剩余游戏次数: {currnum}\n本月排名: {rank}    合成次数: {count}')
+                msg.append(f'今日剩余游戏次数: {currnum}\n本月排名: {rank}    合成次数: {count}')
                 if now.hour > 6 and int(rank) > 94 and exchange_times > 0:
                     res = self.send_request(f'{exchange_url}?num=1', headers = self.jwtHeaders, cookies = self.cookies)
                     print(res.get('result', {}).get('curr', 0))
@@ -756,8 +773,10 @@ class YP:
             receive_amount = return_data["result"].get("receive", "")
             total_amount = return_data["result"].get("total", "")
             print(f'当前待领取:{receive_amount}云朵')
+            msg.append(f'当前云朵数量:{total_amount}云朵')
             print(f'当前云朵数量:{total_amount}云朵')
         else:
+            msg.append(return_data['msg'])
             print(return_data['msg'])
 
 
@@ -776,6 +795,10 @@ if __name__ == "__main__":
     for i, cookie in enumerate(cookies, start = 1):
 
         print(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
+        msg.append(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
         YP(cookie).run()
-        print("\n随机等待5-10s进行下一个账号")
-        time.sleep(random.randint(5, 10))
+        if i < len(cookies):
+            print("\n随机等待5-10s进行下一个账号")
+            time.sleep(random.randint(5, 10))
+    send(title, '\n'.join(msg))
+    

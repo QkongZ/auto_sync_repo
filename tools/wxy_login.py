@@ -20,7 +20,7 @@ wyx_account_infos = get_environ("WXY_ACCOUNT_PWD").split("\n")
 if wyx_account_infos == "":
     exit(0) 
 '''
-account_info = "13032999940&zxcvbnm130%"  #wyx_account_info.split("&")
+account_info = wyx_account_info.split("&")
 account = account_info.split("&")[0]
 password = account_info.split("&")[1]
 '''
