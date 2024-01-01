@@ -31,7 +31,7 @@ parent_catalogid = '1311jDUUg10T07620231009112702mzy'  # 上传文件的父文�
 draw = 1  # 抽奖次数，首次免费
 num = 10  # 摇一摇戳一戳次数
 
-code = ['508953235', '383592940','639949467', '166158087', '235930135']
+code = ['508953235', '383592940','639949467', '231308045', '235930135']
 msg = []
 def chatgpt_answer_question(question_name, answer_str, chatgpt_index=0, knowledge_points='', tips=''):
     tips = f'提示：{tips} ' if tips else ''
@@ -271,6 +271,30 @@ class YP:
                 print(f'{return_data["result"]}')
             elif return_data.get('msg') == 'success':
                 print('未获得')
+        self.fragmentPack()
+
+    def fragmentPack(self):
+        url = 'https://caiyun.feixin.10086.cn/market/shake-server/shake/fragmentPack'
+        return_data = self.send_request(url, headers = self.jwtHeaders, method='POST', cookies = self.cookies)
+        if 'result' in return_data:
+            print('集碎片进程。。。')
+            result = return_data["result"]
+            #print(result)
+            for r in result:
+
+                print(f"{r['shakePrizeconfig']['name']}：{r['fragmentNum']}/{r['shakePrizeconfig']['totalCount']}")
+        self.prizeList()
+
+    def prizeList(self):
+        url = 'https://caiyun.feixin.10086.cn/market/shake-server/shake/prizeList'
+        return_data = self.send_request(url, headers = self.jwtHeaders, method='POST', cookies = self.cookies)
+        if 'result' in return_data:
+            print('奖品列表。。。')
+            result = return_data["result"]
+            for r in result:
+                print(f"{r['shakePrize']['prizeName']} {r['shakePrize']['insertTime']}")
+                msg.append(f"{r['shakePrize']['prizeName']} {r['shakePrize']['insertTime']}")
+            
 
     # 刷新笔记token
     def refresh_notetoken(self):
