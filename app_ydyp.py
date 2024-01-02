@@ -70,7 +70,12 @@ def chatgpt_answer_question(question_name, answer_str, chatgpt_index=0, knowledg
             if e:
                 return ''
     return requests_post_0(question_str)
-    
+
+def get_formatted_date():
+    current_date = datetime.now()
+    formatted_date = current_date.strftime("%Y%m")
+    return formatted_date
+
 class YP:
     def __init__(self, cookie):
         self.token = None
@@ -104,8 +109,10 @@ class YP:
         try:
             self.sso()
             self.jwt()
-            self.signin_status()
 
+            self.accept()
+
+            self.signin_status()
             self.click()
             
             print(f'\n---每日任务---')
@@ -195,6 +202,60 @@ class YP:
         self.jwtHeaders['jwtToken'] = self.jwtToken
         self.cookies['jwtToken'] = self.jwtToken
 
+    def accept(self):
+        url = 'https://caiyun.feixin.10086.cn/market/invite/accept'
+        data = {"marketName":"rafflecode","isAppPort":0,"inviter":"NU91Q3hrNFhOdTBOQSoleFFTME8xWVZtbEpRMndZVU9aMkRaYnZDakFTSDk3d09QWGJCZXlQZUJTNHM9"}
+        return_data = self.send_request(url = url, headers = self.jwtHeaders, data = data, method = 'POST')
+        print(return_data)
+        self.click_task()
+        self.redDot()
+    
+    def redDot(self):
+        url = 'https://caiyun.feixin.10086.cn/market/rafflecode/redDot'
+        
+        return_data = self.send_request(url = url, headers = self.jwtHeaders, method = 'POST')
+        #print(return_data)
+        self.info()
+
+    def info(self):
+        url = 'https://caiyun.feixin.10086.cn/market/rafflecode/info'
+        
+        return_data = self.send_request(url = url, headers = self.jwtHeaders, method = 'POST')
+        #print(return_data)
+        self.list_rafflecode()
+    
+    def list_rafflecode(self):
+        url = 'https://caiyun.feixin.10086.cn/market/rafflecode/list'
+        data = {'month':get_formatted_date}
+        return_data = self.send_request(url = url, headers = self.jwtHeaders, method = 'POST')
+        
+        if return_data['msg'] == 'success' and return_data['result']:
+
+            for r in return_data['result']:
+                print(f"抽奖码：{r['rafflecode']}，来自{r['memo']}")
+        else:
+            print(return_data)
+
+
+    def click_task(self):
+        url = 'https://caiyun.feixin.10086.cn/market/task/task/click?key=rafflecodeTask&id=402'
+        
+        return_data = self.send_request(url = url, headers = self.jwtHeaders)
+        #print(return_data)
+        self.notice()
+
+    def notice(self):
+        url = 'https://caiyun.feixin.10086.cn/market/manager/util/notice?marketName=rafflecode'
+        
+        return_data = self.send_request(url = url, headers = self.jwtHeaders)
+        #print(return_data)
+        self.isMaintain()
+
+    def isMaintain(self):
+        url = 'https://caiyun.feixin.10086.cn/market/manager/commonMaintain/isMaintain?marketName=rafflecode'
+        
+        return_data = self.send_request(url = url, headers = self.jwtHeaders)
+        #print(return_data)
     # 签到查询
     def signin_status(self):
         url = 'https://caiyun.feixin.10086.cn/market/signin/page/info?client=app'
@@ -264,13 +325,16 @@ class YP:
     def click(self):
         url = "https://caiyun.feixin.10086.cn/market/signin/task/click?key=task&id=319"
         for _ in range(num):
-            return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
-            time.sleep(0.2)
-            if 'result' in return_data:
-                msg.append(f'{return_data["result"]}')
-                print(f'{return_data["result"]}')
-            elif return_data.get('msg') == 'success':
-                print('未获得')
+            try:
+                return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
+                time.sleep(0.4)
+                if 'result' in return_data:
+                    msg.append(f'{return_data["result"]}')
+                    print(f'{return_data["result"]}')
+                elif return_data.get('msg') == 'success':
+                    print('未获得')
+            except Exception as e:
+                print(f"出现异常: {e}")
         
             
 
@@ -488,28 +552,37 @@ class YP:
         url = 'https://caiyun.feixin.10086.cn/market/playoffic/followSignInfo?isWx=true'
         return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
         self.sleep()
+        
         if return_data['msg'] != 'success':
             return print(return_data['msg'])
         if not return_data['result'].get('todaySignIn'):
-            return print('签到失败')
-        return print('签到成功')
+            if not return_data['result'].get('isFollow'):
+                print('未关注公众号，签到失败')
+            else:
+                print(return_data)
+                return print('签到失败')
+        return print(f'签到成功，当前云朵{return_data["result"]["total"]}')
 
     # 摇一摇
     def shake(self):
         url = "https://caiyun.feixin.10086.cn:7071/market/shake-server/shake/shakeIt?flag=1"
         for _ in range(num):
-            return_data = self.send_request(url = url, cookies = self.cookies, headers = self.jwtHeaders,
-                                            method = 'POST')
-            time.sleep(1)
-            shake_prize_config = return_data["result"].get("shakePrizeconfig")
-            if shake_prize_config is not None:
-                msg.append("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
-                print("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
-            elif shake_prize_config is None:
-                print("未摇中")
-            else:
-                msg.append("出错了")
-                print("出错了")
+            try:
+
+                return_data = self.send_request(url = url, cookies = self.cookies, headers = self.jwtHeaders,
+                                                method = 'POST')
+                time.sleep(1)
+                shake_prize_config = return_data["result"].get("shakePrizeconfig")
+                if shake_prize_config is not None:
+                    msg.append("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
+                    print("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
+                elif shake_prize_config is None:
+                    print("未摇中")
+                else:
+                    msg.append("出错了")
+                    print("出错了")
+            except Exception as e:
+                print(f"出现异常: {e}")
         self.fragmentPack()
 
     def fragmentPack(self):
@@ -657,7 +730,9 @@ class YP:
                 #print(c, mycode)
                 if c == str(mycode):
                     continue
-                self.invitefriend(c)
+                r = self.invitefriend(c)
+                if not r:
+                    break
                 time.sleep(15)
             self.tree_info()
 
@@ -707,14 +782,18 @@ class YP:
            # print(f'')
             do_task_url = f'{self.fruit_url}wx/inviteFriend.do?inviteCode={code}&inviteType=backup&clientName=HCY'
             do_task_data = self.send_request(do_task_url, headers = self.treeHeaders)
-
+            #print(do_task_data)
             if do_task_data.get('success'):
                 
                 print(do_task_data["result"]['msg'])
+                if do_task_data["result"]['msg'] == '助力次数已达上限':
+                    return False
             else:
                 print(f'助力失败: {do_task_data.get("msg", "")}')
+            return True
         except Exception as e:
             print(f"助力发生错误：{e}")
+            return False
 
     # 果树信息
     def tree_info(self):
@@ -780,10 +859,11 @@ class YP:
                     return_data = self.send_request(bigin_url + '?inviter=' + i_phone, headers = self.jwtHeaders, cookies = self.cookies)
                     #print(return_data)
                     print('开始游戏,等待2分钟完成游戏')
-                    time.sleep(120)
+                    time.sleep(60)
                     end_data = self.send_request(end_url, headers = self.jwtHeaders, cookies = self.cookies)
                     if end_data and end_data.get('code', -1) == 0:
-                        print('游戏成功')
+                        #print(end_data)
+                        print(f'游戏成功，当前合成/剩余兑换次数：{end_data["result"]["succ"]}/{end_data["result"]["exchange"]}')
             else:
                 print("获取游戏信息失败")
         except Exception as e:
@@ -818,7 +898,7 @@ if __name__ == "__main__":
     print(phoneArr)
     for i, cookie in enumerate(cookies, start = 1):
 
-        print(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
+        print(f"\n==== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ====")
         msg.append(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
         YP(cookie).run()
         if i < len(cookies):
