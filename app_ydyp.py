@@ -664,7 +664,9 @@ class YP:
                 #print(c, mycode)
                 if c == str(mycode):
                     continue
-                self.invitefriend(c)
+                r = self.invitefriend(c)
+                if not r:
+                    break
                 time.sleep(15)
             self.tree_info()
 
@@ -714,14 +716,18 @@ class YP:
            # print(f'')
             do_task_url = f'{self.fruit_url}wx/inviteFriend.do?inviteCode={code}&inviteType=backup&clientName=HCY'
             do_task_data = self.send_request(do_task_url, headers = self.treeHeaders)
-
+            #print(do_task_data)
             if do_task_data.get('success'):
                 
                 print(do_task_data["result"]['msg'])
+                if do_task_data["result"]['msg'] == '助力次数已达上限':
+                    return False
             else:
                 print(f'助力失败: {do_task_data.get("msg", "")}')
+            return True
         except Exception as e:
             print(f"助力发生错误：{e}")
+            return False
 
     # 果树信息
     def tree_info(self):
