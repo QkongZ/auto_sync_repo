@@ -264,13 +264,16 @@ class YP:
     def click(self):
         url = "https://caiyun.feixin.10086.cn/market/signin/task/click?key=task&id=319"
         for _ in range(num):
-            return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
-            time.sleep(0.2)
-            if 'result' in return_data:
-                msg.append(f'{return_data["result"]}')
-                print(f'{return_data["result"]}')
-            elif return_data.get('msg') == 'success':
-                print('未获得')
+            try:
+                return_data = self.send_request(url, headers = self.jwtHeaders, cookies = self.cookies)
+                time.sleep(0.4)
+                if 'result' in return_data:
+                    msg.append(f'{return_data["result"]}')
+                    print(f'{return_data["result"]}')
+                elif return_data.get('msg') == 'success':
+                    print('未获得')
+            except Exception as e:
+                print(f"出现异常: {e}")
         
             
 
@@ -498,18 +501,22 @@ class YP:
     def shake(self):
         url = "https://caiyun.feixin.10086.cn:7071/market/shake-server/shake/shakeIt?flag=1"
         for _ in range(num):
-            return_data = self.send_request(url = url, cookies = self.cookies, headers = self.jwtHeaders,
-                                            method = 'POST')
-            time.sleep(1)
-            shake_prize_config = return_data["result"].get("shakePrizeconfig")
-            if shake_prize_config is not None:
-                msg.append("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
-                print("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
-            elif shake_prize_config is None:
-                print("未摇中")
-            else:
-                msg.append("出错了")
-                print("出错了")
+            try:
+
+                return_data = self.send_request(url = url, cookies = self.cookies, headers = self.jwtHeaders,
+                                                method = 'POST')
+                time.sleep(1)
+                shake_prize_config = return_data["result"].get("shakePrizeconfig")
+                if shake_prize_config is not None:
+                    msg.append("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
+                    print("⭕摇一摇成功，获得：" + str(shake_prize_config["name"]))
+                elif shake_prize_config is None:
+                    print("未摇中")
+                else:
+                    msg.append("出错了")
+                    print("出错了")
+            except Exception as e:
+                print(f"出现异常: {e}")
         self.fragmentPack()
 
     def fragmentPack(self):
@@ -780,9 +787,10 @@ class YP:
                     return_data = self.send_request(bigin_url + '?inviter=' + i_phone, headers = self.jwtHeaders, cookies = self.cookies)
                     #print(return_data)
                     print('开始游戏,等待2分钟完成游戏')
-                    time.sleep(120)
+                    time.sleep(60)
                     end_data = self.send_request(end_url, headers = self.jwtHeaders, cookies = self.cookies)
                     if end_data and end_data.get('code', -1) == 0:
+                        print(end_data)
                         print('游戏成功')
             else:
                 print("获取游戏信息失败")
