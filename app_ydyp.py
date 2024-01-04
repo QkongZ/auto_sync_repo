@@ -862,7 +862,7 @@ class YP:
                     time.sleep(60)
                     end_data = self.send_request(end_url, headers = self.jwtHeaders, cookies = self.cookies)
                     if end_data and end_data.get('code', -1) == 0:
-                        #print(end_data)
+                        print(end_data["result"])
                         print(f'游戏成功，当前合成/剩余兑换次数：{end_data["result"]["succ"]}/{end_data["result"]["exchange"]}')
             else:
                 print("获取游戏信息失败")
