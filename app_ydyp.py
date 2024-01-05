@@ -603,9 +603,13 @@ class YP:
         if 'result' in return_data:
             print('奖品列表。。。')
             result = return_data["result"]
+            #print(result)
             for r in result:
-                print(f"{r['shakePrize']['prizeName']} {r['shakePrize']['insertTime']}")
-                msg.append(f"{r['shakePrize']['prizeName']} {r['shakePrize']['insertTime']}")
+                m = '未领取'
+                if r['shakePrize']['flag'] == '2':
+                    m = '已领取'
+                print(f"{r['shakePrize']['prizeName']} {r['shakePrize']['insertTime'].split('T')[0]} {m}")
+                msg.append(f"{r['shakePrize']['prizeName']} {r['shakePrize']['insertTime'].split('T')[0]} {m}")
     # 查询剩余抽奖次数
     def surplus_num(self):
         draw_info_url = 'https://caiyun.feixin.10086.cn/market/playoffic/drawInfo'
@@ -843,7 +847,7 @@ class YP:
                 msg.append(f'今日剩余游戏次数: {currnum}\n本月排名: {rank}    合成次数: {count}')
                 if now.hour > 6 and int(rank.replace('+', '')) > 94 and exchange_times > 0:
                     res = self.send_request(f'{exchange_url}?num=1', headers = self.jwtHeaders, cookies = self.cookies)
-                    print(res.get('result', {}).get('curr', 0))
+                    print('兑换',res.get('result', {}).get('curr', 0), '次')
                     currnum = res.get('result', {}).get('curr', 0)
                 for _ in range(currnum):
                     t = _
@@ -858,12 +862,12 @@ class YP:
                     print(f'本次帮助{i_phone}')
                     return_data = self.send_request(bigin_url + '?inviter=' + i_phone, headers = self.jwtHeaders, cookies = self.cookies)
                     #print(return_data)
-                    print('开始游戏,等待2分钟完成游戏')
-                    time.sleep(60)
+                    print('开始游戏,等待半分钟')
+                    time.sleep(30)
                     end_data = self.send_request(end_url, headers = self.jwtHeaders, cookies = self.cookies)
                     if end_data and end_data.get('code', -1) == 0:
-                        print(end_data["result"])
-                        print(f'游戏成功，当前合成/剩余兑换次数：{end_data["result"]["succ"]}/{end_data["result"]["exchange"]}')
+                        print('今日邀请情况：', end_data["result"]['inviteds'])
+                        print(f'成功，当前合成/剩余兑换次数：{end_data["result"]["succ"]}/{end_data["result"]["exchange"]}')
             else:
                 print("获取游戏信息失败")
         except Exception as e:
@@ -898,8 +902,8 @@ if __name__ == "__main__":
     print(phoneArr)
     for i, cookie in enumerate(cookies, start = 1):
 
-        print(f"\n==== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ====")
-        msg.append(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
+        print(f"\n======== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ========")
+        msg.append(f"\n==== ▷ 第 {i} 个账号：{cookie.split('#')[1]} ◁ ====")
         YP(cookie).run()
         if i < len(cookies):
             print("\n随机等待5-10s进行下一个账号")
