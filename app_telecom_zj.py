@@ -161,7 +161,7 @@ class RSA_Encrypt:
 """
 营业厅登录获取token loginAuthCipherAsymmertric参数解密参考自 github@QGCliveDavis https://github.com/QGCliveDavis 感谢大佬
 """
-from requests import post
+from requests import post, get
 from datetime import datetime
 from xml.etree.ElementTree import XML
 from uuid import uuid4
@@ -217,6 +217,7 @@ class TelecomLogin:
             print("登陆失败, 接口日志" + str(data))
             return None
         self.token = data["responseData"]["data"]["loginSuccessResult"]["token"]
+        print(self.token)
         self.userId = data["responseData"]["data"]["loginSuccessResult"]["userId"]
         userinfo = {"telecom_token": self.token, "telecom_userId": self.userId}
         #with open("./chinaTelecom_cache.json", "w") as f:
@@ -225,7 +226,7 @@ class TelecomLogin:
 
     def get_ticket(self):
         url = "https://appgologin.189.cn:9031/map/clientXML"
-        body = f"<Request>\n<HeaderInfos>\n		<Code>getSingle</Code>\n		<Timestamp>{datetime.now().__format__('%Y%m%d%H%M%S')}</Timestamp>\n		<BroadAccount></BroadAccount>\n		<BroadToken></BroadToken>\n		<ClientType>#9.6.1#channel50#iPhone 14 Pro Max#</ClientType>\n		<ShopId>20002</ShopId>\n		<Source>110003</Source>\n		<SourcePassword>Sid98s</SourcePassword>\n		<Token>{self.token}</Token>\n		<UserLoginName>{self.account}</UserLoginName>\n	</HeaderInfos>\n	<Content>\n		<Attach>test</Attach>\n		<FieldData>\n			<TargetId>{self.encrypt_userid(self.userId)}</TargetId>\n			<Url>4a6862274835b451</Url>\n		</FieldData>\n	</Content>\n</Request>"
+        body = f"<Request>\n<HeaderInfos>\n		<Code>getSingle</Code>\n		<Timestamp>{datetime.now().__format__('%Y%m%d%H%M%S')}</Timestamp>\n		<BroadAccount></BroadAccount>\n		<BroadToken></BroadToken>\n		<ClientType>#10.4.1#channel38#iPhone 14 Pro Max#</ClientType>\n		<ShopId>20002</ShopId>\n		<Source>110003</Source>\n		<SourcePassword>Sid98s</SourcePassword>\n		<Token>{self.token}</Token>\n		<UserLoginName>{self.account}</UserLoginName>\n	</HeaderInfos>\n	<Content>\n		<Attach>test</Attach>\n		<FieldData>\n			<TargetId>{self.encrypt_userid(self.userId)}</TargetId>\n			<Url>4a6862274835b451</Url>\n		</FieldData>\n	</Content>\n</Request>"
         headers = {
             "User-Agent": "samsung SM-G9750/9.4.0",
             "Content-Type": "text/xml; charset=utf-8",
@@ -237,17 +238,22 @@ class TelecomLogin:
             "Cache-Control": "no-cache"
         }
         xml_data = post(url, headers=headers, data=body).text
-        print(xml_data)
-        doc = XML(xml_data)
-        secret_ticket = doc.find("ResponseData/Data/Ticket").text
-        print("secret: " + secret_ticket)
-        ticket = self.decrypt_ticket(secret_ticket)
-        print("ticket: " + ticket)
-        return ticket
+        if '成功' in str(xml_data):
+            
+            doc = XML(xml_data)
+            secret_ticket = doc.find("ResponseData/Data/Ticket").text
+            print("secret: " + secret_ticket)
+            ticket = self.decrypt_ticket(secret_ticket)
+            print("ticket: " + ticket)
+            return ticket
+        else:
+            print('获取ticket出错')
+            print(xml_data)
+            return self.decrypt_ticket(secret_ticket)
     def main(self):
-        if os_path.exists("./chinaTelecom_cache.json"):
+        if os_path.exists("../chinaTelecom_cache.json"):
             try:
-                with open("./chinaTelecom_cache.json", "rb") as f:
+                with open("../chinaTelecom_cache.json", "rb") as f:
                     userinfo = load(f)
                     #print(userinfo)
                     
@@ -338,6 +344,7 @@ def push(title, content):
     if tgbot_token != "" and tgbot_token != "no" and tg_userId != "":
         tgpush(title, content)
 from requests import Session
+
 class ZJDX:
     def __init__(self, acc):
         self.account = acc
@@ -349,6 +356,7 @@ class ZJDX:
         }
         req = self.session.post(url, headers=headers)
         self.cookie = findall(r"HttpOnly, (.*?) ", req.headers["Set-Cookie"])[0]
+        print(self.cookie)
         self.csrf_token = req.headers["csrf_token"]
     def loginByTicket(self, ticket):
         url = "https://hdmf.k189.cn/actServ/userJoin/loginByTicket"
@@ -368,7 +376,7 @@ class ZJDX:
             "Host": "hdmf.k189.cn",
             "Origin": "https://hdmf.k189.cn",
             "Pragma": "no-cache",
-            "Referer": f"https://hdmf.k189.cn/signinHd/?aid=20EE858C181122D40228E7B020C944ED&channelId=69&posId=68607-65077-69&posName=805E4CA4E8E4775E84327D22047F0BD8&channelName=D23F21F5710593990D72A94F16F7D351&ticket={ticket}",
+            "Referer": f"https://hdmf.k189.cn/signinHd/?aid=478AF5C72927AA8150CE42A033C0C0A8&channelId=69&posId=68607-65077-69&posName=805E4CA4E8E4775E84327D22047F0BD8&channelName=D23F21F5710593990D72A94F16F7D351&ticket={ticket}",
             "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": "\"Windows\"",
@@ -381,10 +389,11 @@ class ZJDX:
         req = self.session.post(url, headers=headers, json=body)
         self.ticket = ticket
         # print(self.session.cookies)
-        # print(self.csrf_token)
+        #print(self.csrf_token)
+        #print('qqqqqq',req.json())
     def check_in(self):
         url = "https://hdmf.k189.cn/actServ/userActivity/querySignInData"
-        body = {"aid":"20EE858C181122D40228E7B020C944ED"}
+        body = {"aid":"478AF5C72927AA8150CE42A033C0C0A8"}
         headers = {
             "Accept": "application/json, text/plain, */*",
             "Accept-Encoding": "gzip, deflate, br",
@@ -398,7 +407,7 @@ class ZJDX:
             "Host": "hdmf.k189.cn",
             "Origin": "https://hdmf.k189.cn",
             "Pragma": "no-cache",
-            "Referer": f"https://hdmf.k189.cn/signinHd/?aid=20EE858C181122D40228E7B020C944ED&channelId=69&posId=68607-65077-69&posName=805E4CA4E8E4775E84327D22047F0BD8&channelName=D23F21F5710593990D72A94F16F7D351&ticket={self.ticket}",
+            "Referer": f"https://hdmf.k189.cn/signinHd/?aid=478AF5C72927AA8150CE42A033C0C0A8&channelId=69&posId=68607-65077-69&posName=805E4CA4E8E4775E84327D22047F0BD8&channelName=D23F21F5710593990D72A94F16F7D351&ticket={self.ticket}",
             "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": "\"Windows\"",
@@ -455,6 +464,7 @@ class ZJDX:
         print(self.session.post(url, headers=self.headers, json=body).json())
         # print(self.session.cookies)
         # print(self.csrf_token)
+        print('11111')
         url = "https://hdmf.k189.cn/actServ/userActivity/signIn"
         data = self.session.post(url, headers=self.headers, json=body).json()
         print(data)
@@ -605,6 +615,27 @@ class ZJDX:
         print(data)
         findPrizes = self.get_findPrizes()
         push(f"浙江电信 - 云养猫小窝 - {findPrizes['result']['userPhone']}", f"{data['result']['message']}")
+    def sendPrize(self):
+        url = 'https://wapzj.189.cn/shop/mallapi/order/sendPrize'
+        headers = {
+            "Host": "wapzj.189.cn",
+            "Connection": "keep-alive",
+            "User-Agent": "CtClient;10.4.1;Android;13;M2012K11AC;NzQ5NDE1!#!MTczMDY",
+            "Content-Type": "application/json",
+            "tenant-id": "1",
+            "client-type": "H5",
+            #"token": self.token,
+            "sec-ch-ua-platform": "Android",
+            "Accept": "*/*",
+            "X-Requested-With": "com.ct.client",
+            "Referer": "https://wapzj.189.cn/shop/pages/activities/cunliang/index?bizCode=DLCPMBE1663146006931&channel=raisegame&channelCode=HUANGOAPP",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Cookie": self.cookie,
+        }
+        print(self.cookie)
+        data = get(url, headers=headers).json()
+        print(data)
     def main(self):
         self.getToken()
         self.loginByTicket(TelecomLogin(self.account.split('@')[0], self.account.split('@')[1]).main())
@@ -612,14 +643,15 @@ class ZJDX:
         if datetime.now().hour == 0:
             self.check_in()
             self.check_in1()
-            if datetime.now().day == 1:
-                self.exchange()
-            taskcode_list = ["1657702206332", "1657683473029"]  # 1657702206332 体验服务 1次  1657683473029 旅行 5次
+            #if datetime.now().day == 1:
+            self.exchange()
+            taskcode_list = ["1657702206332", "1657682963913"]  # 1657702206332 体验服务 1次  1657682963913 旅行 5次
             for taskcode in taskcode_list:
                 finish_num = 1 if taskcode == "1657702206332" else 5
                 for i in range(finish_num):
-                    self.task_login(taskcode)
-                    self.finish_task(taskcode)
+                    self.sendPrize()
+                    #self.task_login(taskcode)
+                    #self.finish_task(taskcode)
                     sleep(15)
                 self.share()
         findPrizes = self.get_findPrizes()
@@ -634,7 +666,8 @@ if __name__ == '__main__':
     
     for acc in accountArr.split('\n'):
         print(f'\n\n开始账号 {acc}\n\n')
-
+        ZJDX(acc).main()
+'''
         u.append(
             threading.Thread(target=ZJDX(acc).main)
         )
@@ -642,6 +675,7 @@ if __name__ == '__main__':
         thread.start()
     for thread in u:
         thread.join()
+        '''
 
         
         
