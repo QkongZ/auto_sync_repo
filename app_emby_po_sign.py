@@ -26,7 +26,7 @@ captcha_username = environ.get('captcha_username') if environ.get('captcha_usern
 captcha_pwd = environ.get('captcha_pwd') if environ.get('captcha_pwd') else ''
 
 #session_name = API_ID[:]
-CHANNEL_ID = ['https://t.me/PronembyTGBot2_bot']#, '@EmbyPublicBot','@blueseamusic_bot', '@Orange_Emby_Bot','@EmbyMistyBot']  #, 
+CHANNEL_ID = ['@Porn_Emby_Bot']#, '@EmbyPublicBot','@blueseamusic_bot', '@Orange_Emby_Bot','@EmbyMistyBot']  #, 
 if len(API_HASH1) == 0 or len(API_ID1) == 0:
     print('未填api_id或api_hash，退出')
     exit(0)
@@ -326,7 +326,7 @@ if __name__ == "__main__":
         cishu = 0
         #if i == '9421323' or i == '4524860':
         asyncio.run(main1(i, API_HASH[API_ID.index(i)], 'https://t.me/sosdbot')) #签到
-        asyncio.run(main2(i, API_HASH[API_ID.index(i)], 'https://t.me/PronembyTGBot2_bot')) #签到
+        asyncio.run(main2(i, API_HASH[API_ID.index(i)], '@Porn_Emby_Bot')) #签到
         
 
             #break
