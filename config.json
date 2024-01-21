@@ -59,6 +59,12 @@
       "excludes": ["README.md", "LICENSE"]
     },
     {
+      "source_repo": "https://github.com/Huansheng1/my-qinglong-js.git",
+      "source_branch": "main",
+      "destination_branch": "Huansheng1",
+      "excludes": ["README.md"]
+    },
+    {
       "source_repo": "https://gitlab.com/SuperManito/cishanjia.git",
       "source_branch": "main",
       "destination_branch": "cishanjia",
