@@ -370,7 +370,7 @@ async def main3(api_id, api_hash, channel_id):
                 # 删除临时文件
                 os.remove("captcha.jpg")
             # 是否成功签到
-            elif '用户ID' in event.message.text or '你回答正确' in event.message.text or "Checkin successful" in event.message.text:
+            elif '用户ID' in event.message.text or '抽奖中赢得' in event.message.text or "Checkin successful" in event.message.text:
                 msg.append(event.message.text)
                 print_now(event.message.text)
                 await client.send_read_acknowledge(channel_id)
@@ -433,7 +433,7 @@ if __name__ == "__main__":
 
             #break
     
-    if int(now.strftime('%H')) > 12:
+    if int(now.strftime('%H')) >0:
         print_now('当前小时为' + now.strftime('%H') + '发送通知。。。')
         send('Pornbot 签到', '\n'.join(msg))  
     else:
