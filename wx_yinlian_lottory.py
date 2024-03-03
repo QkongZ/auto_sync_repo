@@ -6,7 +6,7 @@ d_url = "https://members.95516.com/wxxcx/club/lottery/drawLottery"
 
 f_url = 'https://members.95516.com/wxxcx/club/user/findBaseUserInfo'
 
-ckArr = ['by0tNFowVGIwMkk1NWZFeXFDUmN0c1Y0TEhrcw==', 'by0tNFowVGpqVk1ndDdVN2xoYmZzdUJ2MkdRcw==', 'by0tNFowYjJvNFpyNGFoTjlsR2VKeFpZeHJERQ==','by0tNFowZmZkb2dJX0M2RlNxQ3dUSHN2OUhUUQ==']
+ckArr = []
 
 data = {"activityId": "4881"}
 
