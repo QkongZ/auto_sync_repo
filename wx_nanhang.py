@@ -28,7 +28,7 @@ def csairSign():
     json_data = {"activityType": "sign", "channel": "app", "entrance": None}
     headers = {
         "Content-Type": "application/json",
-        
+    }
     cookies = {
         "sign_user_token": token,
         "TOKEN": token,
