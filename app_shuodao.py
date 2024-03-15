@@ -169,11 +169,9 @@ class ShuoDao:
                     self.print_now(f'{data}')
                 sleep(5)
                 self.pet_doublePrize(data['prizeType'],data['totalPrizeCount'])
-                sleep(3)
+                #sleep(3)
             else:
                 self.print_now(f'抽奖出错了 {data}')
-            
-        
         return
 
     def pet_lotteryPage(self):
