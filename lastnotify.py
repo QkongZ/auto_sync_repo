@@ -6,10 +6,6 @@
 # @Time : 2022/8/10 13:23
 # const $ = new Env("本月最后一天通知");
 
-
-
-from requests import post, get
-from time import sleep, time
 from datetime import datetime
 from os import environ
 from datetime import datetime, timedelta
@@ -18,7 +14,7 @@ import re
 
 now = datetime.now()
 """读取环境变量"""
-lastday = environ.get("lastday") if environ.get("lastday") else True
+lastday = environ.get("lastday") if environ.get("lastday") else False
 
 def is_last_day_of_month():
     """
@@ -38,6 +34,9 @@ def is_last_day_of_month():
 
 # 测试函数
 x = is_last_day_of_month()
+if not lastday:
+    print('无要通知内容，退出')
+    exit(0)
 if x and lastday:
     nt = '当前为本月最后一天，请及时领取：\n'
     print(nt)
