@@ -749,7 +749,7 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本通知 By cc
                                 await GetnickName();
                                 if (!$.nickName) {
                                     console.log("别名获取失败，尝试调用另一个接口获取别名.....");
-                                    await GetnickName2();
+                                    //await GetnickName2();
                                 }
                                 if ($.nickName) {
                                     console.log("好像是新账号，从接口获取别名" + $.nickName);
