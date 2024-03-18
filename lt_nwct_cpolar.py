@@ -71,7 +71,7 @@ def check_os():
 # 下载主程序
 def download_cpolar(cpu):
     if not os.path.exists("cpolar.py"):
-        res = requests.get("https://gha.hhjd.tk/https://raw.githubusercontent.com/jiankujidu/cpolar/main/cpolar.py")
+        res = requests.get("https://gha.980999.xyz/https://raw.githubusercontent.com/jiankujidu/cpolar/main/cpolar.py")
         with open("cpolar.py", "wb") as f:
             f.write(res.content)
     if not os.path.exists("cpolar"):
