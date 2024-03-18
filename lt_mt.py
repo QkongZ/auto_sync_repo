@@ -1,6 +1,6 @@
 '''
 mt论坛签到
-
+new Env('mt论坛签到');
 '''
 
 import time, random
