@@ -45,13 +45,13 @@ commond = "python3 " + os.path.join(path, "cpolar.py") + " &"
 def update():
     print("当前运行的脚本版本：" + str(version))
     try:
-        r1 = requests.get("https://gha.hhjd.tk/https://raw.githubusercontent.com/jiankujidu/cpolar/main/nwct_cpolar.py").text
+        r1 = requests.get("https://gha.980999.xyz/https://raw.githubusercontent.com/jiankujidu/cpolar/main/nwct_cpolar.py").text
         r2 = re.findall(re.compile("version = \d.\d"), r1)[0].split("=")[1].strip()
         if float(r2) > version:
             print("发现新版本：" + r2)
             print("正在自动更新脚本...")
             os.system("killall cpolar")
-            os.system("ql raw https://gha.hhjd.tk/https://raw.githubusercontent.com/jiankujidu/cpolar/main/nwct_cpolar.py &")
+            os.system("ql raw https://gha.980999.xyz/https://raw.githubusercontent.com/jiankujidu/cpolar/main/nwct_cpolar.py &")
     except:
         pass
 
@@ -93,7 +93,7 @@ def get_url():
                 return i.replace('\\', '')
                 break
     except:
-        return "https://gha.hhjd.tk/https://raw.githubusercontent.com/jiankujidu"
+        return "https://gha.980999.xyz/https://raw.githubusercontent.com/jiankujidu"
 
 # 进程守护
 def process_daemon():
