@@ -1,3 +1,10 @@
+
+# -*- coding: UTF-8 -*-
+'''
+cron: 10 10 * * *
+new Env('微信银联抽奖');
+'''
+
 import requests
 from sendNotify import send
 c_url = "https://members.95516.com/wxxcx/club/lottery/findLotteryHomePage"
