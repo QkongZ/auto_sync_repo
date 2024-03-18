@@ -102,7 +102,7 @@ def process_daemon():
     qlurl = get_url()
     try:
         res = requests.get(qlurl + "/login").text
-        if "/images/g5.ico" in res or "/images/favicon.svg" in res:
+        if "/images/g5.ico" in res or "api/env" in res:
             return True
         else:
             return False
