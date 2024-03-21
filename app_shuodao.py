@@ -20,7 +20,7 @@ now = datetime.now()
 uids = environ.get("shuodao") if environ.get("shuodao") else ""
 
 
-uidArr = uids.split('&')
+uidArr = uids.split('\n')
 for phone in uidArr:
     if not phone:
         uidArr.remove(phone)  
@@ -33,6 +33,9 @@ class ShuoDao:
     def __init__(self, uid):
         self.uid = uid.split('@')[0]
         self.userId = uid.split('@')[1]
+        self.appType = uid.split("@")[2]
+        self.userName = ''
+        self.validPoint = ''
         default_ua = f"Mozilla/5.0 (Linux; Android 7.1.2; BRQ-AN00 Build/N6F26Q; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/81.0.4044.117 Mobile Safari/537.36 TengZhan/3"
         run_ua = get_environ(key="UNICOM_USERAGENT", default=default_ua, output=False)
         self.headers = {
@@ -69,7 +72,7 @@ class ShuoDao:
 
     def pet_play(self, toyType):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/play?userId={self.userId}&appType=3&toyType={toyType}&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/play?userId={self.userId}&appType={self.appType}&toyType={toyType}&timeStamp={timestamp}"
         data = self.req(url)
         if data['Result'] == 1:
             self.print_now('任务完成成功')
@@ -79,7 +82,7 @@ class ShuoDao:
 
     def pet_playPage(self):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/playPage?userId={self.userId}&appType=3&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/playPage?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}"
         data = self.req(url)
         if data['Result'] == 1:
             data = data["data"]
@@ -109,10 +112,9 @@ class ShuoDao:
 
     def pet_task_receiveReward(self, taskType, c):
         timestamp = self.timestamp()
-
         if taskType == 3:
             for visitPetId in [85737, 85719, 85730, 85799, 85763]:
-                url = f"https://dt-apigatewayv2.dt-pn1.com/pet/task/receiveReward?userId={self.userId}&appType=3&taskType={taskType}&visitPetId={visitPetId}&timeStamp={timestamp}"
+                url = f"https://dt-apigatewayv2.dt-pn1.com/pet/task/receiveReward?userId={self.userId}&appType={self.appType}&taskType={taskType}&visitPetId={visitPetId}&timeStamp={timestamp}"
                 data = self.req(url)
                 if data['Result'] == 1:
                     self.print_now('任务完成成功')
@@ -120,7 +122,7 @@ class ShuoDao:
                     self.print_now(f'出错了 {data}')
         else:
             for a in range(c):
-                url = f"https://dt-apigatewayv2.dt-pn1.com/pet/task/receiveReward?userId={self.userId}&appType=3&taskType={taskType}&timeStamp={timestamp}"
+                url = f"https://dt-apigatewayv2.dt-pn1.com/pet/task/receiveReward?userId={self.userId}&appType={self.appType}&taskType={taskType}&timeStamp={timestamp}"
                 data = self.req(url)
                 if data['Result'] == 1:
                     self.print_now(f'任务{taskType}完成成功')
@@ -129,7 +131,7 @@ class ShuoDao:
 
     def pet_task_list(self):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/task/list?userId={self.userId}&appType=3&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/task/list?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}"
         data = self.req(url)
         if data['Result'] == 1:
             #self.print_now(data)
@@ -144,10 +146,9 @@ class ShuoDao:
         else:
             self.print_now(f'出错了 {data}')
                     
-
     def pet_doublePrize(self,prizeType,totalPrizeCount):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/doublePrize?userId={self.userId}&appType=3&prizeType={prizeType}&totalPrizeCount={totalPrizeCount}&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/doublePrize?userId={self.userId}&appType={self.appType}&prizeType={prizeType}&totalPrizeCount={totalPrizeCount}&timeStamp={timestamp}"
         data = self.req(url)
         if data['Result'] == 1:
             self.print_now('翻倍成功')
@@ -157,7 +158,7 @@ class ShuoDao:
 
     def pet_lottery(self, c):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/lottery?userId={self.userId}&appType=3&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/lottery?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}"
         for x in range(c):
             data = self.req(url)
             #self.print_now(data)
@@ -176,7 +177,7 @@ class ShuoDao:
 
     def pet_lotteryPage(self):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/lotteryPage?userId={self.userId}&appType=3&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/lotteryPage?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}"
         data = self.req(url)
         if data['Result'] == 1:
             data = data["data"]
@@ -190,16 +191,17 @@ class ShuoDao:
 
     def pet_feed(self, x):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/feed?userId={self.userId}&appType=3&feeFishNum={x}&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/feed?userId={self.userId}&appType={self.appType}&feeFishNum={x}&timeStamp={timestamp}"
         data = self.req(url)
         if data['Result'] == 1:
             self.print_now('喂食成功')
         else:
             self.print_now(f'喂食失败了 {data}')
         return
+
     def pet_treasureHunt(self):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/treasureHunt?userId={self.userId}&appType=3&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/treasureHunt?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}"
         data = self.req(url)
         if data['Result'] == 1:
             self.print_now('寻宝成功')
@@ -209,7 +211,7 @@ class ShuoDao:
 
     def pet_morePrize(self, prizeType):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/morePrize?userId={self.userId}&appType=3&prizeType={prizeType}&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/morePrize?userId={self.userId}&appType={self.appType}&prizeType={prizeType}&timeStamp={timestamp}"
         data = self.req(url)
         if data['Result'] == 1:
             print(data['data'])
@@ -218,13 +220,13 @@ class ShuoDao:
 
     def pet_homePage(self):
         timestamp = self.timestamp()
-        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/homePage?userId={self.userId}&appType=3&timeStamp={timestamp}"
+        url = f"https://dt-apigatewayv2.dt-pn1.com/pet/homePage?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}"
         data = self.req(url)
+        #print(url, data)
         if data['Result'] == 1:
             data = data["data"]
             self.print_now(f'{data["petName"]}：Lv{data["petLevel"]}({data["growthValue"]}/{data["growthValue"]+data["nextLevelRequiredGrowthValue"]}) \n鱼料：{data["fishNum"]}')
             if data["nextFeedRemainingTime"] == 0:
-                
                 for x in [50, 10, 5, 2]:
                     if data["fishNum"] > x:
                         self.print_now(f'去喂食 {x} g。。。')
@@ -232,13 +234,11 @@ class ShuoDao:
                         break
             elif  data["nextFeedRemainingTime"] > 0:
                 self.print_now(f'剩余喂食时间：{int(data["nextFeedRemainingTime"]/60)}分{data["nextFeedRemainingTime"]%60}秒')
-
             if data['treasureHuntStatus'] == 3:
                 self.print_now(f'下次寻宝时间{int(data["nextTreasureHuntRemainingTime"]/60)}分{data["nextTreasureHuntRemainingTime"]%60}秒')
             elif data['treasureHuntStatus'] == 1:
                 self.print_now(f'寻宝中，剩余时间{int(data["treasureHuntEndRemainingTime"]/60)}分{data["treasureHuntEndRemainingTime"]%60}秒')
             elif data['treasureHuntStatus'] == 0:
-                
                 self.print_now('可寻宝，准备去。。。')
                 self.pet_treasureHunt()
             elif data['treasureHuntStatus'] == 2:
@@ -252,8 +252,7 @@ class ShuoDao:
                 self.pet_morePrize(ty)
             else:
                 self.print_now(data)
-            
-                
+              
     def checkin_reward(self):
         url = f"https://dt-apigatewayv2.dt-pn1.com/point/checkin/reward?uid={self.uid}"
         data = self.req(url)
@@ -264,8 +263,6 @@ class ShuoDao:
         else:
             self.print_now(f'checkin_reward出错 {data}')
         return
-
-
 
     def checkin_addtimes(self, c):
         url = f"https://dt-apigatewayv2.dt-pn1.com/point/checkin/addtimes?uid={self.uid}"
@@ -278,7 +275,6 @@ class ShuoDao:
                 self.print_now('失败了呢')
         return
             
-
     def checkin_times(self):
         date = datetime.today().__format__("%Y%m%d%H%M%S")
         timestamp = self.timestamp()
@@ -300,7 +296,6 @@ class ShuoDao:
             exit(0)
 
     def ad_roulette_reward(self, ad_roulette_times):
-
         url = f"https://dt-apigatewayv2.dt-pn1.com/web/ad/roulette/reward?userId={self.userId}&deviceId=And.8b0355c263713b5301559b2a0c222859.dttalk&timeZone=Asia%2FShanghai&isoCC=US"
         for ada in range(ad_roulette_times):
             data = self.req(url)
@@ -311,13 +306,12 @@ class ShuoDao:
                 self.print_now(f'ad_roulette_reward出错 {data["Reason"]}')
             sleep(1)
         return
+
     def ad_roulette_chance_add(self):
         url = f"https://dt-apigatewayv2.dt-pn1.com/web/ad/roulette/chance/add?userId={self.userId}&deviceId=And.8b0355c263713b5301559b2a0c222859.dttalk"
-        
         for ad in range(2):
             data = self.req(url)
             if data['Result'] == 1:
-                
                 ad_roulette_times = data['data']
                 print(f'当前抽奖次数 {ad_roulette_times}')
             else:
@@ -328,23 +322,34 @@ class ShuoDao:
             #print('去抽奖')
             self.ad_roulette_reward(ad_roulette_times)
         
-
+    def pointstore(self):
+        url = f'https://dt-apigatewayv2.dt-pn1.com/pointstore/entrance?uid={self.uid}&lang=cn&osType=2'
+        data = self.req(url)
+        if data['Result'] == 1:
+            data = data["data"]
+            if data['products'] and len(data['products']) > 0:
+                for product in data['products']:
+                    self.print_now(f"{product['name']} 剩余 {product['stock']} 件，需要 {product['price']}")
+                    if product['name'] != 'Credit Coupon' and product['stock'] > 0:
+                        msg = f"用户 {self.userName} ，当前拥有 {self.validPoint} 积分\n{product['name']} 剩余 {product['stock']} 件，需要 {product['price']} 积分"
+                        send('说道/叮咚积分兑换提醒', msg)
 
     def userinfo(self):
         date = datetime.today().__format__("%Y%m%d%H%M%S")
         url = f"https://dt-apigatewayv2.dt-pn1.com/point/userinfo?uid={self.uid}&zone=800"
         data = self.req(url)
-
         if data['Result'] == 1:
             data = data["data"]
+            self.userName = data["userName"]
+            self.validPoint = data["validPoint"]
             self.print_now(f'用户：{data["userName"]} Lv{data["userGrade"]+1}\n可用/总积分：{data["validPoint"]}/{data["historyPoint"]}\n将在{data["expireTime"]}过期：{data["expirePoint"]}')
         else:
             self.print_now(f"获取基本信息失败, 日志为{data}")
             exit(0)
 
-
     def main(self):
         self.userinfo()  #用户会员信息
+        self.pointstore()
         self.ad_roulette_chance_add() #广告抽奖
         self.checkin_times() #查询签到次数
         #self.checkin()
@@ -353,7 +358,6 @@ class ShuoDao:
         self.pet_task_list() #宠物任务
         self.pet_playPage()  #宠物玩耍
         #exit(0)
-
 
 if __name__ == "__main__":
     print('共' + str(len(uidArr)) + '个账户')
