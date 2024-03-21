@@ -100,10 +100,10 @@ async def main1(api_id, api_hash, channel_id):
                 await client.send_read_acknowledge(channel_id)
                 await client.disconnect()
             # 根据button count 区分消息类型
-            if "签到成功" in event.message.text or "今天已签到" in event.message.text or '当前积分' in event.message.text or "已签过到" in event.message.text or "今日不能再签到" in event.message.text:
+            if "签到成功" in event.message.text or "今天已签到" in event.message.text or '当前积分' in event.message.text or "已签过到" in event.message.text or "今日不能再签到" in event.message.text or "今日已签到" in event.message.text:
                 # 结束循环
                 print_now('已签到，终止')
-                if '连续签到' in event.message.text or "签到成功" in event.message.text or '累计签到' in event.message.text or "今天已签到" in event.message.text or "今日不能再签到" in event.message.text:
+                if '连续签到' in event.message.text or "签到成功" in event.message.text or '累计签到' in event.message.text or "今天已签到" in event.message.text or "今日不能再签到" in event.message.text or "今日已签到" in event.message.text:
                     msg.append('已签到:')
                     print_now(event.message.text)
                     msg.append(event.message.text)
