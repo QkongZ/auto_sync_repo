@@ -14,6 +14,7 @@ from tools.encrypt_symmetric import Crypt
 from tools.send_msg import push
 from tools.tool import get_environ, random_sleep
 from sendNotify import send
+from datetime import datetime
 
 now = datetime.now()
 """读取环境变量"""
@@ -36,6 +37,7 @@ class ShuoDao:
         self.appType = uid.split("@")[2]
         self.userName = ''
         self.validPoint = ''
+        self.salt = 'horace-allin'
         default_ua = f"Mozilla/5.0 (Linux; Android 7.1.2; BRQ-AN00 Build/N6F26Q; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/81.0.4044.117 Mobile Safari/537.36 TengZhan/3"
         run_ua = get_environ(key="UNICOM_USERAGENT", default=default_ua, output=False)
         self.headers = {
@@ -423,6 +425,117 @@ class ShuoDao:
         else:
             print(f'😭浇水失败：{data}')
 
+    def knife_homePage(self):
+        timestamp = self.timestamp()
+        url = f'https://dt-apigatewayv2.dt-pn1.com/knife/homePage?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}'
+        data = self.req(url)
+        if data['Result'] == 1:
+            data = data["data"]
+            print(f'当前剩余 {data["remainPlayTimes"]} 次游戏机会')
+            
+            print(f'当前剩余Juice {data["fruitJuiceAmount"]} 个')
+            print(f'当前看广告获取游戏次数：{data["watchingGetPlayTimes"]}/{data["watchingGetPlayTimesLimit"]}')
+            if data['treasureBoxOwned'] and data['treasureBoxOpenTime'] > timestamp:
+                d = datetime.fromtimestamp(data['treasureBoxOpenTime'] / 1000).strftime("%m-%d %H:%M:%S")
+                print(f'开宝箱时间：{d}')
+            elif data['treasureBoxOwned'] and data['treasureBoxOpenTime'] <= timestamp:
+                print('疑似可开宝箱')
+                self.knife_openTreasureBox()
+            t = 2
+            if data["remainPlayTimes"] > 0:
+                if data["remainPlayTimes"] <=  2:
+                    t = data["remainPlayTimes"]
+                for a in range(t):
+                    self.knife_play()
+            #self.knife_lotteryPage() #直接领奖（防止做过任务但领奖失败）
+            if data["watchingGetPlayTimesLimit"] != data["watchingGetPlayTimes"]:
+                self.knife_watchingForPlay()
+        else:
+            print(f'😭查询扎转盘任务失败：{data}')
+    def knife_watchingForPlay(self):
+        timestamp = self.timestamp()
+        url = f'https://dt-apigatewayv2.dt-pn1.com/knife/watchingForPlay?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}'
+        data = self.req(url)
+        if data['Result'] == 1:
+            data = data["data"]
+            print(f'-当前看广告获取游戏次数：{data["watchingGetPlayTimes"]}/{data["watchingGetPlayTimesLimit"]}')
+        else:
+            print(f'😭看广告获取次数失败：{data}')
+    def knife_openTreasureBox(self):
+        timestamp = self.timestamp()
+        url = f'https://dt-apigatewayv2.dt-pn1.com/knife/openTreasureBox?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}'
+        data = self.req(url)
+        if data['Result'] == 1:
+            data = data["data"]
+            print(data)
+        else:
+            print(f'😭玩游戏失败：{data}')
+    def knife_play(self):
+        timestamp = self.timestamp()
+        url = f'https://dt-apigatewayv2.dt-pn1.com/knife/play?userId={self.userId}&appType={self.appType}&timeStamp={timestamp}'
+        data = self.req(url)
+        if data['Result'] == 1:
+            data = data["data"]
+            print(f"⭕玩游戏成功，当前剩余 {data['remainPlayTimes']} 次")
+            print(f"当前Juice {data['fruitJuiceAmount']} 个")
+            sleep(5)
+            self.knife_lotteryPage()
+        else:
+            print(f'😭玩游戏失败：{data}')
+    def knife_lotteryPage(self):
+        timestamp = self.timestamp()
+        level = 10  #10等级转盘
+        #print(f"{int(self.userId)}-{int(self.appType)}-{int(10)}-{int(timestamp)}-{self.salt}")
+        jm = self.md5(f"{int(self.userId)}-{int(self.appType)}-{int(10)}-{int(timestamp)}-{self.salt}")
+        #print(jm)
+        url = f'https://dt-apigatewayv2.dt-pn1.com/knife/lotteryPage?userId={self.userId}&appType={self.appType}&level={level}&md5={jm}&timeStamp={timestamp}'
+        data = self.req(url)
+        if data['Result'] == 1:
+            data = data["data"]
+            #print(data)
+            if data['lotteryId']:
+                sleep(1)
+                self.knife_lottery(data['lotteryId'], data['lotteryPrizeList'])
+        else:
+            print(f'😭打开抽奖页失败：{data}')
+    def knife_lottery(self, lotteryId, lotteryPrizeList):
+        timestamp = self.timestamp()
+        jm = self.md5(f'{self.userId}-{self.appType}-{lotteryId}-{timestamp}-{self.salt}')
+        url = f'https://dt-apigatewayv2.dt-pn1.com/knife/lottery?userId={self.userId}&appType={self.appType}&lotteryId={lotteryId}&md5={jm}&timeStamp={timestamp}'
+        data = self.req(url)
+        if data['Result'] == 1:
+            data = data["data"]
+            #print(data)
+            for x in lotteryPrizeList:
+                if x['prizeId'] == data['prizeId']:
+                    print(f'⭕本次抽中 {x["prizeName"]}')
+                '''
+            if data['prizeType'] == 3:
+                print(f'⭕抽中 {data["totalPrizeCount"]} Juice')
+            elif data['prizeType'] == 1:
+                print(f'⭕抽中 {data["totalPrizeCount"]} Credits')
+            elif data['prizeType'] == 2:
+                print(f'⭕抽中 {data["totalPrizeCount"]} 宝箱')
+            else:
+                print('暂时不知道抽中的啥')
+                '''
+            if data['doublePrize']:
+                self.knife_doublePrize(data['prizeType'], data["totalPrizeCount"])
+        elif data['ErrCode'] == 11018:
+            print(data['Reason'])
+        else:
+            print(f'😭抽奖失败：{data}')
+    def knife_doublePrize(self, prizeType, totalPrizeCount):
+        timestamp = self.timestamp()
+        md5 = md5({self.userId}-{self.appType}-{lotteryId}-{timestamp}-{self.salt})
+        url = f'https://dt-apigatewayv2.dt-pn1.com/knife/doublePrize?userId={self.userId}&appType={self.appType}&prizeType={prizeType}&totalPrizeCount={totalPrizeCount}&timeStamp={timestamp}'
+        data = self.req(url)
+        if data['Result'] == 1:
+            data = data["data"]
+            print(data)
+        else:
+            print('😭翻倍出错')
+
     def main(self):
         print(f'\n------用户信息------\n')
         self.userinfo()  #用户会员信息
@@ -439,6 +552,8 @@ class ShuoDao:
         self.pet_playPage()  #宠物玩耍
         print(f'\n------种水果------\n')
         self.fruit_homepage()#种水果
+        print(f'\n------扎转盘------\n')
+        self.knife_homePage()
         #exit(0)
 
 if __name__ == "__main__":
