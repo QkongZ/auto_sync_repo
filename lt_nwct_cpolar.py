@@ -34,12 +34,37 @@ import sys
 import json
 import requests
 from time import sleep
+from sendNotify import send
 path = os.path.split(os.path.realpath(__file__))[0]
 log_path = os.path.join(path, "nwct_cpolar_log")
 log_name = os.path.join(log_path, "cpolar")
 log_file = os.path.join(log_path, "cpolar.master.log") 
 app_path = os.path.join(path, "cpolar")
 commond = "python3 " + os.path.join(path, "cpolar.py") + " &"
+file_name = 'cpolar.txt'
+
+def read_and_update_file(content):
+    try:
+        # 尝试打开文件
+        with open(file_name, 'r') as file:
+            # 读取文件内容
+            file_content = file.read()
+            
+            # 检查文件内容是否与所给变量一致
+            if file_content.strip() != content.strip():
+                # 如果不一致，将变量内容写入文件
+                with open(file_name, 'w') as file:
+                    file.write(content)
+                print("文件内容已更新")
+                send("内网穿透通知", "青龙面板访问地址：" + content)
+            else:
+                print("文件内容已经是最新的")
+    except FileNotFoundError:
+        # 如果文件不存在，则创建文件并写入内容
+        with open(file_name, 'w') as file:
+            file.write(content)
+        print("文件已创建并写入内容")
+        send("内网穿透通知", "青龙面板访问地址：" + content)
 
 # 检查更新
 def update():
@@ -100,13 +125,19 @@ def process_daemon():
     print("正在检测穿透状态...")
     global qlurl
     qlurl = get_url()
+    print(qlurl)
     try:
+        #print("999")
         res = requests.get(qlurl + "/login").text
+        #print(res)
         if "/images/g5.ico" in res or "api/env" in res:
+            
             return True
         else:
+            #print('111')
             return False
     except:
+        #print('000')
         return False
 
 
@@ -118,7 +149,7 @@ def start_nwct():
         os.system("killall cpolar >/dev/null 2>&1")
         print("正在启动内网穿透...")
         os.system(commond)
-        sleep(10)
+        sleep(30)
         if process_daemon():
             if load_send():
                 print("启动内网穿透成功！\n青龙面板：%s" % qlurl)
@@ -126,7 +157,8 @@ def start_nwct():
         else:
             print("启动内网穿透失败...")
     else:
-        print("穿透程序已在运行...\n公众号:一起瞎折腾\n青龙面板：%s" % qlurl)
+        print("穿透程序已在运行...\n青龙面板：%s" % qlurl)
+        read_and_update_file(qlurl)
 
 
 # 推送
