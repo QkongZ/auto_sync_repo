@@ -55,6 +55,9 @@ def mt(cookie):
         '''
 if __name__ == "__main__":
     cookies = mt_cookie.split("\n")
+    for cookie in cookies:
+        if len(cookie) < 10:
+            cookies.remove(cookie)
     msg = f"共获取到{len(cookies)}个账号"
     print(msg)
     msg = []
