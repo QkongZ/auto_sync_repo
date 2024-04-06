@@ -104,6 +104,33 @@ class bwcj:
         except:
             print_now('签到出错了')
 
+    def userSignStatistics(self):
+        url = self.host + '/web/cmk-center/sign/userSignStatistics'
+        json = {
+            "activityId":"947079313798000641",
+            "appid":"wxafec6f8422cb357b"
+        }
+        try:
+            resp = post(url, headers = self.headers, json = json)
+            #print_now(res.text)
+            if resp.json()['code'] == 0:
+                if 'rewardList' in resp.json()['data']:
+                    res = resp.json()['data']['rewardList']
+                    #print(res)
+                    for r in res:
+                        if r['attain'] == 1:
+                            print_now(f"签到 {r['signNum']} 天获得 {r['rewardList'][0]['sendNum']} {r['rewardList'][0]['rewardName']}：已完成")
+                        elif r['attain'] == 2:
+                            print_now(f"签到 {r['signNum']} 天获得 {r['rewardList'][0]['sendNum']} {r['rewardList'][0]['rewardName']}进度：{resp.json()['data']['signDays']}/{r['signNum']}")
+                        else:
+                            print_now(f'不知道咋回事：{r}')
+                else:
+                    print_now(f"{res.json()['message']}")
+            else:
+                print_now(res.text)
+        except:
+            print_now('查询签到奖励出错')
+
     def signIn_old(self):
         url = self.host + '/web/catering/integral/sign/signIn'
         json = {"activityId":"100820000000000686","mobilePhone":"16888888888","userName":"萧瑟","appid":"wxafec6f8422cb357b"}
@@ -138,6 +165,7 @@ class bwcj:
         
         self.points_info()
         self.takePartInSign()
+        self.userSignStatistics()
         self.signIn_old()
         
 
