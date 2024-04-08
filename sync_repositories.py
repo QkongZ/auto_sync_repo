@@ -11,7 +11,7 @@ with open('config.json', 'r') as config_file:
 github_token = os.environ['PAT']
 
 for repo_info in config['repositories']:
-    #打印完整的配置仓库列表
+    # 打印完整的配置仓库列表
     print(f"处理的仓库列表: {repo_info['source_repo']}")
     source_repo = repo_info['source_repo']
     source_branch = repo_info['source_branch']
@@ -44,7 +44,8 @@ for repo_info in config['repositories']:
             repo = Repo.clone_from(source_repo, repo_dir)
             os.chdir(repo_dir)
             repo.git.checkout(destination_branch)
-        #拉取远程目标仓库分支
+
+        # 拉取远程目标仓库分支
         repo.remotes['origin'].pull(source_branch)
 
         # 合并源分支的代码，排除指定的文件或文件夹
@@ -52,7 +53,8 @@ for repo_info in config['repositories']:
         if excludes:
             excludes_string = ', '.join(excludes)
             merge_message += f"（排除 {excludes_string}）"
-        repo.git.merge(f"origin/{source_branch}", message=merge_message)
+        # 使用指定的合并策略：theirs 表示保留远程分支的更改
+        repo.git.merge(f"origin/{source_branch}", message=merge_message, strategy='theirs')
         for exclude in excludes:
             if os.path.exists(os.path.join(repo.working_dir, exclude)):
                 if os.path.isdir(exclude):
