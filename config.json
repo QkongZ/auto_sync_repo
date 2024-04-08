@@ -47,6 +47,12 @@
       "excludes": ["README.md"]
     },
     {
+      "source_repo": "https://github.com/CHERWING/CHERWIN_SCRIPTS.git",
+      "source_branch": "main",
+      "destination_branch": "CHERWING",
+      "excludes": ["README.md"]
+    },
+    {
       "source_repo": "https://github.com/KingRan/KR.git",
       "source_branch": "main",
       "destination_branch": "KR",
