@@ -40,8 +40,10 @@ for repo_info in config['repositories']:
             repo.remotes['destination'].fetch(destination_branch)
             repo.git.checkout(destination_branch)
         except Exception:
-            # 如果目标分支不存在，创建新的分支
-            repo.git.checkout('HEAD', b=destination_branch)
+            # 如果目标分支不存在，先克隆仓库并切换到源分支
+            repo = Repo.clone_from(source_repo, repo_dir)
+            os.chdir(repo_dir)
+            repo.git.checkout(source_branch)
 
         repo.git.pull('destination', destination_branch)
 
