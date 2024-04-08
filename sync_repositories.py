@@ -1,10 +1,6 @@
 import json
 import os
-import logging
 from git import Repo
-
-# 设置日志记录
-logging.basicConfig(filename='sync_log.txt', level=logging.INFO)
 
 # 从配置文件中读取仓库信息
 with open('config.json', 'r') as config_file:
@@ -15,6 +11,8 @@ with open('config.json', 'r') as config_file:
 github_token = os.environ['PAT']
 
 for repo_info in config['repositories']:
+    #打印完整的配置仓库列表
+    print(f"处理的仓库列表: {repo_info['source_repo']}")
     source_repo = repo_info['source_repo']
     source_branch = repo_info['source_branch']
     destination_branch = repo_info['destination_branch']
@@ -26,10 +24,10 @@ for repo_info in config['repositories']:
         repo = Repo.clone_from(source_repo, repo_dir)
         os.chdir(repo_dir)  # 切换到仓库目录
         repo.git.checkout(source_branch)
-        logging.info(f"Cloned repository {source_repo} and switched to source branch {source_branch}")
+        print(f"已克隆仓库 {source_repo} 并切换到源分支 {source_branch}")
     except Exception as e:
-        logging.error(f"Failed to clone repository {source_repo} or switch to source branch {source_branch}")
-        logging.error(f"Error message: {str(e)}")
+        print(f"克隆仓库 {source_repo} 或切换到源分支 {source_branch} 失败")
+        print(f"错误信息: {str(e)}")
         continue
 
     try:
@@ -48,29 +46,29 @@ for repo_info in config['repositories']:
         repo.git.pull('destination', destination_branch)
 
         # 合并源分支的代码，排除指定的文件或文件夹
-        merge_message = f"Merged {source_branch} from {source_repo} into {destination_branch}"
+        merge_message = f"合并 {source_branch} 自 {source_repo} 到 {destination_branch}"
         if excludes:
             excludes_string = ', '.join(excludes)
-            merge_message += f" (excluding {excludes_string})"
+            merge_message += f"（排除 {excludes_string}）"
         repo.git.merge(f"origin/{source_branch}", message=merge_message)
         for exclude in excludes:
             if os.path.exists(os.path.join(repo.working_dir, exclude)):
                 if os.path.isdir(exclude):
-                    logging.info(f"Excluding directory: {exclude}")
+                    print(f"排除目录: {exclude}")
                     repo.git.rm('-r', '--cached', exclude)
                 else:
-                    logging.info(f"Excluding file: {exclude}")
+                    print(f"排除文件: {exclude}")
                     repo.git.rm('--cached', exclude)
             else:
-                logging.warning(f"Path does not exist: {exclude}")
+                print(f"路径不存在: {exclude}")
 
         # 提交合并的更改
         repo.index.commit(merge_message)
-        print("Committed changes:", repo.index.diff('HEAD'))
+        print("提交更改:", repo.index.diff('HEAD'))
+
         # 推送源分支到目标分支
         repo.remotes['destination'].push(destination_branch)
-        print("Pushed changes to destination branch.")
-        logging.info(f"Pushed {source_branch} from {source_repo} to {destination_branch} in your repository")
+        print(f"已推送 {source_branch} 自 {source_repo} 到 {destination_branch} 到您的仓库")
     except Exception as e:
-        logging.error(f"Error occurred while processing repository {source_repo} and branch {source_branch}")
-        logging.error(f"Error message: {str(e)}")
+        print(f"处理仓库 {source_repo} 和分支 {source_branch} 时发生错误")
+        print(f"错误信息: {str(e)}")
