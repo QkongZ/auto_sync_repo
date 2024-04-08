@@ -66,9 +66,10 @@ for repo_info in config['repositories']:
 
         # 提交合并的更改
         repo.index.commit(merge_message)
-
+        print("Committed changes:", repo.index.diff('HEAD'))
         # 推送源分支到目标分支
         repo.remotes['destination'].push(destination_branch)
+        print("Pushed changes to destination branch.")
         logging.info(f"Pushed {source_branch} from {source_repo} to {destination_branch} in your repository")
     except Exception as e:
         logging.error(f"Error occurred while processing repository {source_repo} and branch {source_branch}")
