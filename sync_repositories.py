@@ -44,8 +44,8 @@ for repo_info in config['repositories']:
             repo = Repo.clone_from(source_repo, repo_dir)
             os.chdir(repo_dir)
             repo.git.checkout(source_branch)
-
-        repo.git.pull('destination', destination_branch)
+        #拉取远程目标仓库分支
+        repo.remotes['origin'].pull(destination_branch)
 
         # 合并源分支的代码，排除指定的文件或文件夹
         merge_message = f"合并 {source_branch} 自 {source_repo} 到 {destination_branch}"
