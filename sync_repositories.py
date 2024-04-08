@@ -22,7 +22,9 @@ for repo_info in config['repositories']:
 
     try:
         # 克隆仓库并切换到源分支
-        repo = Repo.clone_from(source_repo, source_repo.split('/')[-1].split('.git')[0])
+        repo_dir = source_repo.split('/')[-1].split('.git')[0]
+        repo = Repo.clone_from(source_repo, repo_dir)
+        os.chdir(repo_dir)  # 切换到仓库目录
         repo.git.checkout(source_branch)
         logging.info(f"Cloned repository {source_repo} and switched to source branch {source_branch}")
     except Exception as e:
@@ -31,10 +33,6 @@ for repo_info in config['repositories']:
         continue
 
     try:
-        # 设置 Git 配置
-        repo.config_writer().set_value("user", "name", "GitHub Actions").release()
-        repo.config_writer().set_value("user", "email", "actions@github.com").release()
-
         # 添加目标仓库为远程仓库
         your_repo_url = f"https://{github_token}@github.com/{your_repo_info['username']}/{your_repo_info['repository']}.git"
         repo.create_remote('destination', your_repo_url)
