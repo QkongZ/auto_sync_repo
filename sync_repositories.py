@@ -53,22 +53,18 @@ for repo_info in config['repositories']:
         if excludes:
             excludes_string = ', '.join(excludes)
             merge_message += f"（排除 {excludes_string}）"
-        # 使用指定的合并策略：theirs 表示保留远程分支的更改
-        repo.git.merge(f"origin/{source_branch}", message=merge_message, strategy='theirs')
-        for exclude in excludes:
-            if os.path.exists(os.path.join(repo.working_dir, exclude)):
-                if os.path.isdir(exclude):
-                    print(f"排除目录: {exclude}")
-                    repo.git.rm('-r', '--cached', exclude)
-                else:
-                    print(f"排除文件: {exclude}")
-                    repo.git.rm('--cached', exclude)
-            else:
-                print(f"路径不存在: {exclude}")
+        # 使用普通的合并策略
+        repo.git.merge(f"origin/{source_branch}", message=merge_message)
+
+        # 保留远程分支的更改
+        for file_path in repo.untracked_files:
+            repo.git.checkout('--theirs', '--', file_path)
+
+        for file_path in repo.index.diff('HEAD'):
+            repo.git.checkout('--theirs', '--', file_path)
 
         # 提交合并的更改
         repo.index.commit(merge_message)
-        print("提交更改:", repo.index.diff('HEAD'))
 
         # 推送源分支到目标分支
         repo.remotes['destination'].push(destination_branch)
